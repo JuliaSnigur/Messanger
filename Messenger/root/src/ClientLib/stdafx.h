@@ -1,7 +1,20 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
+/*
+#include <QWidget>
 
+#include<QTcpSocket>
+#include<QTcpServer>
+
+#include <QTextEdit>
+#include <QLineEdit>
+#include<QPushButton>
+#include<QVBoxLayout>
+#include<QLabel>
+#include<QTime>
+
+*/
 
 #ifdef __cplusplus
 

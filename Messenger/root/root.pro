@@ -1,4 +1,4 @@
-QT += quick
+QT += quick widgets
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -28,18 +28,24 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    rootserv.pri\
     root.pri\
     common.pri\
     app.pri\
-    lib.pri\
+    lib.pri
 
 
 ##################################
+StaticTest.depends = ClientLib
+Server.depends = ServerLib
+
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    src/ServerLib\
+    src/Server\
     src/ClientLib\
     src/StaticTest
 
-StaticTest.depends = ClientLib
+
 ##################################

@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MyClient c("ds",2323);
+    MyClient c("185.181.16.6",2323);
     c.show();
 
 
