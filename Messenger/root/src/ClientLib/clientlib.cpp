@@ -47,7 +47,7 @@ void MyClient::slotReadyRead()
     так и только часть блока или даже все блоки сразу.
     Каждый переданный блок начинается полем, хранящим размер блока.
     */
-    for (;;) {
+    while(true) {
         if (!m_nNextBlockSize) {
             if (m_pTcpSocket->bytesAvailable() < sizeof(quint16)) {
                 break;

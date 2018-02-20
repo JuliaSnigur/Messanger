@@ -5,8 +5,8 @@ include( ../../root.pri )
 QT       += core gui network widgets
 
 ########################################
-PRECOMPILED_HEADER = stdafx.h
-CONFIG += precompile_header
+#PRECOMPILED_HEADER = stdafx.h
+#CONFIG += precompile_header
 ########################################
 
 TARGET = ClientLib$${LIB_SUFFIX}

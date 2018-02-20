@@ -39,7 +39,9 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     src/ClientLib\
-    src/StaticTest
+    src/MainProject \
+    src/DataBase\
+   # src/GuiLib
 
-StaticTest.depends = ClientLib
+MainProject.depends = ClientLib
 ##################################
