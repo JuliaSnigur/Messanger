@@ -49,9 +49,7 @@ SUBDIRS += \
     src/DataBase\
    # src/GuiLib
 
-<<<<<<< HEAD
-MainProject.depends = ClientLib
-=======
 
->>>>>>> c1b816110e8540f2d8049e21465c3c382c4d088d
+MainProject.depends = ClientLib
+
 ##################################

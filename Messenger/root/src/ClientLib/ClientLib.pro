@@ -5,8 +5,8 @@ include( ../../root.pri )
 QT       += core gui network widgets
 
 ########################################
-#PRECOMPILED_HEADER = stdafx.h
-#CONFIG += precompile_header
+CONFIG += precompile_header
+PRECOMPILED_HEADER = stable.h
 ########################################
 
 TARGET = ClientLib$${LIB_SUFFIX}
@@ -16,6 +16,8 @@ DEFINES += CLIENTLIB_LIBRARY
 
 HEADERS += \
     clientlib.h \
+    stdafx.h\
+    stable.h\
 
 SOURCES += \
     clientlib.cpp

@@ -1,21 +1,7 @@
-//#include "stdafx.h"
-
-
-#include <QWidget>
-
-#include<QTcpSocket>
-#include<QTcpServer>
-
-#include <QTextEdit>
-#include <QLineEdit>
-#include<QPushButton>
-#include<QVBoxLayout>
-#include<QLabel>
-#include<QTime>
-
 #ifndef CLIENTLIB_H
 #define CLIENTLIB_H
 
+#include "stable.h"
 
 class MyClient : public QWidget
 {
