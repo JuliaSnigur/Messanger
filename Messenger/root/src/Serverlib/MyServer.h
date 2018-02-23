@@ -1,7 +1,6 @@
 #pragma once
-
-//#include <QWidget>
-//#include <QTcpServer>
+#include "stdafxs.h"
+//#include "SSLServerLib/SSLServerLib.h"
 
 class QTcpServer;
 class QTextEdit;

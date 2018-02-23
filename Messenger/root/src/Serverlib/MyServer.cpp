@@ -1,6 +1,4 @@
-//#include <QtNetwork>
-//#include <QtWidgets>
-//#include "MyServer.h"
+#include "MyServer.h"
 
 // ----------------------------------------------------------------------
 MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBlockSize(0)

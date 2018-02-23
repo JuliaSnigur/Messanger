@@ -1,4 +1,4 @@
-QT += quick widgets
+QT += quick widgets sql
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -38,18 +38,20 @@ DISTFILES += \
 ##################################
 StaticTest.depends = ClientLib
 Server.depends = ServerLib
-
+Server.depends = SSLServerLib
 TEMPLATE = subdirs
 
 SUBDIRS += \
     src/ServerLib\
     src/Server\
-    src/ClientLib\
-    src/MainProject \
-    src/DataBase\
-   # src/GuiLib
+    src/SSLServerLib\
+    src/SSLClientLib\
+    #src/ClientLib\
+    #src/MainProject \
+    #src/DataBase\
+    #src/GuiLib
 
 
 MainProject.depends = ClientLib
-
+MainProject.depends =SSLClientLib
 ##################################
