@@ -3,7 +3,17 @@
 
 
 #include<QObject>
+<<<<<<< HEAD
 #include<QtQuickWidgets/QQuickWidget>
+=======
+
+
+
+#include<QTcpSocket>
+#include<QTcpServer>
+
+
+>>>>>>> master
 
 #ifdef __cplusplus
 // add C++ includes here
@@ -17,7 +27,14 @@
 
 using namespace std;
 
+<<<<<<< HEAD
 #include"signin.h"
+=======
+#include"clientlib.h"
+#include"structuser.h"
+
+#include "signin.h"
+>>>>>>> master
 
 
 

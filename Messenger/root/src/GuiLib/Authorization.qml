@@ -1,14 +1,14 @@
 import QtQuick 2.10
 import QtQuick.Window 2.10
 import QtQuick.Controls 2.2
-<<<<<<< HEAD
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.3
+
 
 import SignIn 1.0
 
-//import "../GuiLib/functions.js" as funcJS
-
 Window {
-    id: window
+    id: wAuthorization
     visible: true
     width: 300
     height: 200
@@ -16,28 +16,31 @@ Window {
     property alias editLogin: editLogin
     title: qsTr("Messenger")
 
+    signal signalExit   // Задаём сигнал
 
     SignIn{
         id: model
     }
 
 
-
     Column{
         id: column
         width: 300
-        height: 200
+        height: 184
         anchors.top: parent.top
-        anchors.topMargin: 0
+        anchors.topMargin: 10
 
 
         Text{
             id:title
             x:parent.height/2
             anchors.topMargin: 20
-            text:"Messenger"
+            text:"Authorization"
             font.pixelSize: 24
         }
+
+
+
 
         Row{
             id: row1
@@ -83,6 +86,8 @@ Window {
              }
 
 
+
+
         Row{
             id: row2
             anchors.left: parent.left
@@ -124,6 +129,8 @@ Window {
 
         }
 
+
+
         Row{
             id:row3
             anchors.right: parent.right
@@ -136,59 +143,44 @@ Window {
             anchors.topMargin: 50
 
 
-            Button{
-                id: butSignIn
+            MyButton{
+                id: butReg
 
-                width:100
-                height: 30
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
-                font.pixelSize: 14
                 text:"Registration"
                anchors.left: row3.left
 
-
-
+               onClicked:
+               {
+                   wAuthorization.signalExit() // Вызываем сигнал
+                   wRegistration.show()  // Открываем первое окно
+                   wAuthorization.hide()   // Скрываем основное окно
+               }
             }
-            Button{
-            id: butReg
-            width:100
-            height: 30
-            font.pixelSize: 14
-            text:"Sign in"
-            anchors.right: row3.right
 
-            onClicked: model.sendInfoOnServer(editLogin.text,editPassword.text)
+            MyButton {
+                 id: butSignIn
 
-            }
+                 Layout.fillHeight: true
+                 Layout.fillWidth: true
+
+                 anchors.right: row3.right
+
+                 text:"Sign in"
+                 onClicked:
+                 {
+                     // проверка данных
+                     //...
+                     model.m_login=editLogin.text;
+                     model.m_password=editPassword.text;
+                     model.sendRequestToServer();
+                 }
+             }
         }
-=======
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.3
-
-
-import SignIn 1.0
-
-//import "functions.js"
-
- Authorization{
-
-        id:windowAuthorization
-
-
-    Registration{
-        id:windowRegistration
-
->>>>>>> master
     }
 
 
 
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
-    }
-
-
+}
