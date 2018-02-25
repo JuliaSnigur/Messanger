@@ -1,6 +1,10 @@
-#ifndef STDAFX_H
-#define STDAFX_H
+#pragma once
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+/*
+>>>>>>> julia1
 #include <QWidget>
 
 #include<QTcpSocket>
@@ -13,6 +17,20 @@
 #include<QLabel>
 #include<QTime>
 
+<<<<<<< HEAD
+=======
+*/
+
+=======
+#include<QObject>
+>>>>>>> master
+
+#include<QTcpSocket>
+#include<QDataStream>
+
+#include<QTime>
+#include<QString>
+>>>>>>> julia1
 
 #ifdef __cplusplus
 
@@ -22,13 +40,7 @@
 
 #include<iostream>
 #include<string>
-
-using namespace std;
-
-#include<windows.h>
-
-
-
 #endif
 
-#endif // STDAFX_H
+#include"structuser.h"
+

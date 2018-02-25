@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 function ensureVisible(r)
      {
          if (contentX >= r.x)

@@ -1,32 +1,31 @@
 import QtQuick 2.10
 import QtQuick.Window 2.10
 import QtQuick.Controls 2.2
-<<<<<<< HEAD
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.3
 
 import SignIn 1.0
 
-//import "../GuiLib/functions.js" as funcJS
 
-Window {
-    id: window
+Window{
+
+    id: wRegistration
     visible: true
     width: 300
-    height: 200
+    height: 250
     property alias butSignIn: butSignIn
     property alias editLogin: editLogin
     title: qsTr("Messenger")
-
 
     SignIn{
         id: model
     }
 
 
-
     Column{
         id: column
         width: 300
-        height: 200
+        height: 173
         anchors.top: parent.top
         anchors.topMargin: 0
 
@@ -35,16 +34,61 @@ Window {
             id:title
             x:parent.height/2
             anchors.topMargin: 20
-            text:"Messenger"
+            text:"Registration"
             font.pixelSize: 24
         }
+
+
+        Row{
+            id: row0
+            anchors.left: parent.left
+            anchors.leftMargin: 20
+            anchors.top: title.bottom
+            anchors.topMargin: 30
+
+
+            Text{
+                id: labelIP
+                width: 70
+                text:"IP"
+                anchors.top: parent.top
+                anchors.topMargin: 0
+                font.pixelSize: 14
+                anchors.leftMargin: 5
+                anchors.rightMargin: 5
+                }
+
+            Rectangle
+            {
+                anchors.left: labelIP.right
+                anchors.leftMargin: 20
+                 border.width: 1
+
+                width:150
+                height:20
+
+                 TextInput {
+                     id: editIP
+                     clip: true
+                     anchors.fill:parent
+                     focus: true
+                     font.pixelSize: 14
+
+                     anchors.leftMargin: 5
+                     anchors.rightMargin: 5
+
+                     wrapMode: TextEdit.Wrap
+
+                 }
+            }
+             }
 
         Row{
             id: row1
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.top: title.bottom
-            anchors.topMargin: 20
+            anchors.top: row0.bottom
+            anchors.topMargin: 50
 
 
             Text{
@@ -124,71 +168,54 @@ Window {
 
         }
 
+
+
         Row{
             id:row3
             anchors.right: parent.right
-            anchors.rightMargin: 20
+            anchors.rightMargin: 10
 
 
             anchors.left: parent.left
-            anchors.leftMargin: 20
+            anchors.leftMargin: 10
             anchors.top: row2.bottom
             anchors.topMargin: 50
 
 
-            Button{
-                id: butSignIn
+            MyButton{
+                id: butReg
 
-                width:100
-                height: 30
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
-                font.pixelSize: 14
+                 x:parent.height/2
+
                 text:"Registration"
                anchors.left: row3.left
 
 
 
+               onClicked: {
+                   // проверка данных
+                   //...
+                   model.m_ip=editIP.text;
+                   model.m_login=editLogin.text;
+                   model.m_password=editPassword.text;
+                   model.sendRequestToServer();
+               }
             }
-            Button{
-            id: butReg
-            width:100
-            height: 30
-            font.pixelSize: 14
-            text:"Sign in"
-            anchors.right: row3.right
 
-            onClicked: model.sendInfoOnServer(editLogin.text,editPassword.text)
-
-            }
         }
-=======
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.3
-
-
-import SignIn 1.0
-
-//import "functions.js"
-
- Authorization{
-
-        id:windowAuthorization
-
-
-    Registration{
-        id:windowRegistration
-
->>>>>>> master
     }
 
 
 
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> master
     }
+
+
+
+
 
 
