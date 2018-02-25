@@ -1,8 +1,5 @@
-include( ../../common.pri )
-include( ../../app.pri )
-include(../../root.pri)
-
 QT -= gui
+QT+= sql
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -18,34 +15,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
-SOURCES += \
-    main.cpp
+SOURCES += main.cpp \
+    serverdb.cpp \
+    clientdb.cpp \
+    db.cpp \
+    clientdbdeveloper.cpp \
+    serverdbdeveloper.cpp \
+    costumer.cpp \
+    dbdeveloper.cpp \
+    tabledatabase.cpp \
+    dialogtable.cpp \
+    userstable.cpp \
+    messagestable.cpp
 
 HEADERS += \
-    stdafx.h
-
-##############################
-TARGET= StaticTest
-
-
-
-QT += network
-QT += widgets
-
-
-
-LIBS +=  $${CLIENTLIB_LIBRARY}
-INCLUDEPATH+= $${CLIENTLIB_INCLUDEPATH}
-
-#LIBS +=  -lClientLib$${LIB_SUFFIX}
-#INCLUDEPATH += $${INC_PATH}/ClientLib
+    serverdb.h \
+    clientdb.h \
+    db.h \
+    stdafx.h \
+    clientdbdeveloper.h \
+    serverdbdeveloper.h \
+    costumer.h \
+    dbdeveloper.h \
+    tabledatabase.h \
+    dialogtable.h \
+    userstable.h \
+    messagestable.h
 
 PRECOMPILED_HEADER = stdafx.h
 CONFIG += precompile_header
-###################################
-
-
-
-
-

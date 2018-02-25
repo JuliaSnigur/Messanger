@@ -1,12 +1,15 @@
-#pragma once
+
+
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 #include<QObject>
 
-#include<QTcpSocket>
-#include<QDataStream>
 
-#include<QTime>
-#include<QString>
+#include<QTcpSocket>
+#include<QTcpServer>
+
+
 
 #ifdef __cplusplus
 
@@ -16,7 +19,8 @@
 
 #include<iostream>
 #include<string>
-#endif
 
-#include"structuser.h"
+using namespace std;
+
+#endif
 
