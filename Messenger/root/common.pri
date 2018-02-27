@@ -15,7 +15,7 @@ CONFIG(debug, debug|release) {
     BUILD_FLAG = release
 }
 
-LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/
+LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/$${BUILD_FLAG}/
 INC_PATH = $${PROJECT_ROOT_PATH}/src
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/

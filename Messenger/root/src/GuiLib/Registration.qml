@@ -4,20 +4,20 @@ import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
-import SignIn 1.0
+import GuiLib 1.0
 
-
-Window{
-
-    id: wRegistration
+Window {
+    id: wAuthorization
     visible: true
     width: 300
-    height: 250
+    height: 200
     property alias butSignIn: butSignIn
     property alias editLogin: editLogin
-    title: qsTr("Messenger")
+    title: qsTr("Registration")
 
-    SignIn{
+    signal signalExit   // Задаём сигнал
+
+    GuiLib{
         id: model
     }
 
@@ -25,70 +25,28 @@ Window{
     Column{
         id: column
         width: 300
-        height: 173
+        height: 184
         anchors.top: parent.top
-        anchors.topMargin: 0
+        anchors.topMargin: 10
 
 
         Text{
             id:title
             x:parent.height/2
             anchors.topMargin: 20
-            text:"Registration"
+            text:"Authorization"
             font.pixelSize: 24
         }
 
 
-        Row{
-            id: row0
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: title.bottom
-            anchors.topMargin: 30
 
-
-            Text{
-                id: labelIP
-                width: 70
-                text:"IP"
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                font.pixelSize: 14
-                anchors.leftMargin: 5
-                anchors.rightMargin: 5
-                }
-
-            Rectangle
-            {
-                anchors.left: labelIP.right
-                anchors.leftMargin: 20
-                 border.width: 1
-
-                width:150
-                height:20
-
-                 TextInput {
-                     id: editIP
-                     clip: true
-                     anchors.fill:parent
-                     focus: true
-                     font.pixelSize: 14
-
-                     anchors.leftMargin: 5
-                     anchors.rightMargin: 5
-
-                     wrapMode: TextEdit.Wrap
-
-                 }
-            }
-             }
 
         Row{
             id: row1
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.top: row0.bottom
-            anchors.topMargin: 50
+            anchors.top: title.bottom
+            anchors.topMargin: 20
 
 
             Text{
@@ -125,6 +83,8 @@ Window{
                  }
             }
              }
+
+
 
 
         Row{
@@ -173,49 +133,39 @@ Window{
         Row{
             id:row3
             anchors.right: parent.right
-            anchors.rightMargin: 10
+            anchors.rightMargin: 20
 
 
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: 20
             anchors.top: row2.bottom
             anchors.topMargin: 50
 
 
             MyButton{
                 id: butReg
+                width: 150
+                height: 30
 
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                 x:parent.height/2
-
                 text:"Registration"
+                anchors.horizontalCenter: parent.horizontalCenter
                anchors.left: row3.left
 
-
-
-               onClicked: {
-                   // проверка данных
-                   //...
-                   model.m_ip=editIP.text;
-                   model.m_login=editLogin.text;
-                   model.m_password=editPassword.text;
-                   model.sendRequestToServer();
+               onClicked:
+               {
+                   wAuthorization.signalExit() // Вызываем сигнал
+                   wRegistration.show()  // Открываем первое окно
+                   wAuthorization.hide()   // Скрываем основное окно
                }
             }
+
 
         }
     }
 
 
 
-
-
-    }
-
-
-
-
-
-
+}

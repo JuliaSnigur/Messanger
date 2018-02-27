@@ -4,8 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
-
-import SignIn 1.0
+//import GuiLib 1.0
 
 Window {
     id: wAuthorization
@@ -17,12 +16,12 @@ Window {
     title: qsTr("Messenger")
 
     signal signalExit   // Задаём сигнал
-
+/*
     SignIn{
         id: model
     }
 
-
+*/
     Column{
         id: column
         width: 300
@@ -38,9 +37,6 @@ Window {
             text:"Authorization"
             font.pixelSize: 24
         }
-
-
-
 
         Row{
             id: row1
@@ -175,8 +171,7 @@ Window {
                      //...
                      model.m_login=editLogin.text;
                      model.m_password=editPassword.text;
-                     model.sendRequestToServer();
-                 }
+}
              }
         }
     }

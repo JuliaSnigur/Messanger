@@ -1,0 +1,6 @@
+*.user
+*.md
+build/
+*.autosave
+*.obj
+*.vc.pdb

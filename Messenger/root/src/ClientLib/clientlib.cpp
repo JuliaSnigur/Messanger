@@ -1,9 +1,17 @@
 #include"stdafx.h"
 #include "clientlib.h"
 
+MyClient::~MyClient()
+{
+    if(this->m_pTcpSocket)
+        delete m_pTcpSocket;
+}
+
+MyClient::MyClient(QObject* parent):QObject(parent), m_nNextBlockSize(0)
+{}
 
 
-MyClient::MyClient(const QString& strHost,int nPort,QObject* parent) :QObject(parent), m_nNextBlockSize(0)
+void MyClient::createConnection(const QString& strHost, int nPort)
 {
     m_pTcpSocket = new QTcpSocket(this);// создание сокета
     // связь с сервером
@@ -19,6 +27,7 @@ MyClient::MyClient(const QString& strHost,int nPort,QObject* parent) :QObject(pa
 /*
     вызывется при поступлении данных от сервера
 */
+
 void MyClient::slotReadyRead()
 {
     QDataStream in(m_pTcpSocket);
@@ -30,6 +39,7 @@ void MyClient::slotReadyRead()
     так и только часть блока или даже все блоки сразу.
     Каждый переданный блок начинается полем, хранящим размер блока.
     */
+
     while(true) {
         if (!m_nNextBlockSize) {
             if (m_pTcpSocket->bytesAvailable() < sizeof(quint16)) {
@@ -50,13 +60,15 @@ void MyClient::slotReadyRead()
 
         /*присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
           что размер очередного блока данных неизвестен.*/
-        m_nNextBlockSize = 0;
+
+m_nNextBlockSize = 0;
     }
 }
 
-/*
-    вызывается при возникновении ошибок
+
+  /*  вызывается при возникновении ошибок
 */
+
 void MyClient::slotError(QAbstractSocket::SocketError err)
 {
     QString strError =
@@ -73,7 +85,7 @@ void MyClient::slotError(QAbstractSocket::SocketError err)
 }
 
 
-void MyClient::sendToServer(const User& us)
+void MyClient::sendToServer(QString& login, QString& password)
 {
 
 // для того чтобы записывать все данные блока в него, записывая сначала размер равным 0
@@ -81,7 +93,7 @@ void MyClient::sendToServer(const User& us)
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_2);
 
-    out << quint16(0) << QTime::currentTime() << us.IP<<us.login<<us.password;
+    out << quint16(0) << QTime::currentTime() << login<<password;
    // qDebug()<< quint16(0) << QTime::currentTime() << us;
 
 // перемещаем указатель на начало блока
@@ -93,9 +105,12 @@ void MyClient::sendToServer(const User& us)
     m_ptxtInput="";
 }
 
+
+
 void MyClient::slotConnected()
 {
     qDebug()<<"Received the connected() signal";
 }
+
 
 
