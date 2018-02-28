@@ -2,7 +2,8 @@ import QtQuick 2.10
 import QtQuick.Window 2.10
 import QtQuick.Controls 2.2
 
-import SignIn 1.0
+
+//import Presenter 1.0
 
 //import "../GuiLib/functions.js" as funcJS
 
@@ -16,10 +17,10 @@ Window {
     title: qsTr("Messenger")
 
 
-    SignIn{
+  /*  SignIn{
         id: model
     }
-
+*/
 
 
     Column{
@@ -156,17 +157,32 @@ Window {
             text:"Sign in"
             anchors.right: row3.right
 
-            onClicked: model.sendInfoOnServer(editLogin.text,editPassword.text)
+         //   onClicked: model.sendInfoOnServer(editLogin.text,editPassword.text)
 
             }
         }
+
+
+
+//import "functions.js"
+
+ Authorization{
+
+        id:windowAuthorization
+
+/*
+    Registration{
+        id:windowRegistration
+
+
+    }
+
+*/
+
+
+
     }
 
 
-
-
-
-
-    }
-
-
+}
+}

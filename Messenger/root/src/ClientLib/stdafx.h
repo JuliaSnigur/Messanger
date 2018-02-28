@@ -1,17 +1,13 @@
-#ifndef STDAFX_H
-#define STDAFX_H
+#pragma once
 
-#include <QWidget>
+#include<QObject>
+
 
 #include<QTcpSocket>
-#include<QTcpServer>
+#include<QDataStream>
 
-#include <QTextEdit>
-#include <QLineEdit>
-#include<QPushButton>
-#include<QVBoxLayout>
-#include<QLabel>
 #include<QTime>
+#include<QString>
 
 
 #ifdef __cplusplus
@@ -23,12 +19,7 @@
 #include<iostream>
 #include<string>
 
-using namespace std;
 
-#include<windows.h>
-
-
+#include"structuser.h"
 
 #endif
-
-#endif // STDAFX_H

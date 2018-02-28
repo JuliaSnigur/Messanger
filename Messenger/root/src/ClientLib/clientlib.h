@@ -1,24 +1,23 @@
-#ifndef CLIENTLIB_H
-#define CLIENTLIB_H
+#pragma once
 
-#include "stable.h"
+#include "stdafx.h"
 
-class MyClient : public QWidget
+class MyClient: public QObject
 {
 Q_OBJECT
 private:
     QTcpSocket* m_pTcpSocket;
-    QTextEdit*  m_ptxtInfo;
-    QLineEdit*  m_ptxtInput;
+    QString  m_ptxtInput;
     quint16     m_nNextBlockSize;// необходимый для хранения длины следующего полученного от сокета блока
 
 public:
-    MyClient(const QString& strHost, int nPort, QWidget* pwgt = 0) ;
+    MyClient(const QString& strHost, int nPort,QObject* parent=0) ;
+
+     void sendToServer(const User& str);
 
 private slots:
     void slotReadyRead   ( );
     void slotError       (QAbstractSocket::SocketError);
-    void slotSendToServer();
     void slotConnected   ();
 };
-#endif // CLIENTLIB_H
+

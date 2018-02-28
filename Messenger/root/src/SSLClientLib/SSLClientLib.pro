@@ -1,28 +1,36 @@
 include( ../../common.pri )
 include( ../../lib.pri )
+include( ../../root.pri )
 
-QT       += core gui widgets network
+QT      -= gui
+QT      += core widgets network
 
-
+CONFIG+=c++11 static
 
 TARGET = SSLClientLib$${LIB_SUFFIX}
 TEMPLATE = lib
+CONFIG += staticlib
 
-DEFINES += SSLClientLIB_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
 
-HEADERS += $$files($${PWD}/*.h) \
+PRECOMPILED_HEADER =stable.h
+CONFIG -= precompile_header
 
-SOURCES += $$files($${PWD}/*.cpp) \
+SOURCES += $$files($${PWD}/*.cpp)
 
-#PRECOMPILED_HEADER =stdafxs.h
-#CONFIG += precompile_header
+HEADERS += $$files($${PWD}/*.h)\
+           #openssl/$$files($${PWD}/*.h)
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-win32 {
-    QMAKE_TARGET_PRODUCT = My Lib
-    QMAKE_TARGET_DESCRIPTION = It is my library
-}
+INCLUDEPATH+= $${INC_PATH}/openssl/include
+LIBS += $${INC_PATH}/openssl/-llibcrypto
+LIBS += $${INC_PATH}/openssl/-llibssl
+
+#win32 {
+#    QMAKE_TARGET_PRODUCT = My Lib
+#    QMAKE_TARGET_DESCRIPTION = It is my library
+#}

@@ -1,10 +1,12 @@
+#include "stdafx.h"
 #include "MyServer.h"
 
 // ----------------------------------------------------------------------
 MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBlockSize(0)
 {
+
     m_ptcpServer = new QTcpServer(this);
-    // захват порта сервера nPort (2323) поиск коннектов если ошибки то закрываем сервер
+    // захват порта сервера nPort (27015) (для ssl порт на 1 больше) поиск коннектов если ошибки то закрываем сервер
     if (!m_ptcpServer->listen(QHostAddress::Any, nPort)) {
         QMessageBox::critical(0,
                               "Server Error",
@@ -13,7 +15,10 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBloc
                              );
         m_ptcpServer->close();
         return;
+    }else {
+            m_ptxt->append("Порт TCP прослушивается");
     }
+
     //соединяем слот slotNewConnection() с входящим сигналом newConnection()
     connect(m_ptcpServer, SIGNAL(newConnection()),
             this,         SLOT(slotNewConnection())
@@ -23,12 +28,93 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBloc
     m_ptxt = new QTextEdit;
     m_ptxt->setReadOnly(true);
 
-    //Layout setup
+    SSLServer = new SslServer(this);
+    connect(SSLServer, SIGNAL(newConnection()), SLOT(acceptConnection()));
+    //Задаем сертификат сервера и его закрытый ключ
+    SSLServer->setSslLocalCertificate("sslserver.crt");
+    SSLServer->setSslPrivateKey("sslserver.key");
+    //Задаем версию TLS 2.1
+    SSLServer->setSslProtocol(QSsl::TlsV1_2);
+    //Запускаем прослушивание порта на +1 больше TCP
+    bool listen = SSLServer->listen(QHostAddress::Any, (nPort+1));
+    if (listen){
+        m_ptxt->append("Порт SSL прослушивается");
+    }else{SSLServer->close();}
+    //Layout setup - настройки окна отображения !!!- View -!!!
     QVBoxLayout* pvbxLayout = new QVBoxLayout;
     pvbxLayout->addWidget(new QLabel("<H1>Server</H1>"));
     pvbxLayout->addWidget(m_ptxt);
     setLayout(pvbxLayout);
+    //connectDB();
 }
+
+
+//показать кто подключен
+void MyServer::updateStatus(){
+    QStringList List;
+    if (SSLServer->isListening()){
+        int count = ClientList.count();
+        List << QString("Сервер запущен, подключено клиентов: %1").arg(count);
+    }
+    else List << "Сервер выключен";
+    qDebug() << List.join("\n");
+}
+// Функция обработки входящих соединений
+void MyServer::acceptConnection(){
+    //Новый сокет
+    sslConn = new QSslSocket(this);
+    //TCP-соединение, на основе которого построится SSL-соединение
+    QTcpSocket * temp = SSLServer->nextPendingConnection();
+    //Текущая конфигурация
+    QSslConfiguration config = sslConn->sslConfiguration();
+        //Задаем протокол TLS 1.2
+        config.setProtocol(QSsl::TlsV1_2);
+    //Задаем новую конфигурацию
+    sslConn->setSslConfiguration(config);
+    //Новый SSL-сокет на основе созданного TCP-сокета
+    sslConn = qobject_cast<QSslSocket*>(temp);
+    //Десткиптор сокета
+    int idusersocs = sslConn->socketDescriptor();
+
+    //Добавляем полученный дескриптор и сокет в ассоциативный массив
+    SClients[idusersocs] = sslConn;
+    //Устанавливаем связь сигнала "получено сообщение" с функцией его обработки
+    connect(SClients[idusersocs], SIGNAL(readyRead()), this, SLOT(readMessage()));
+    //Если не удалось установить SSL-соединение, выходим из функции
+    if (!sslConn){
+        qDebug() << "Error: TCP connection\n";
+        return;
+    }
+}
+void MyServer::readMessage(){
+    QSslSocket* clientSocket = (QSslSocket*)sender();
+    int idusersocs = clientSocket->socketDescriptor();
+    QByteArray message = clientSocket->readAll();
+    qDebug() << message;
+    int typeOfMess = getTypeOfMess(message, clientSocket);
+    switch (typeOfMess){
+    case 1:
+        registerQuery(message);
+        break;
+    case 2:
+        getMessage(message);
+        break;
+    case 3:
+        loginQuery(message, clientSocket);
+        break;
+    case 4:
+        addClient(message);
+        break;
+    case 5:
+        addClientQuery(message, clientSocket);
+        break;
+    case 6:
+        logOff(message, clientSocket);
+    default:
+        break;
+    }
+}
+
 
 
 

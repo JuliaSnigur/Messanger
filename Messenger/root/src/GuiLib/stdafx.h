@@ -1,9 +1,6 @@
-#ifndef STDAFX_H
-#define STDAFX_H
-
+#pragma once
 
 #include<QObject>
-#include<QtQuickWidgets/QQuickWidget>
 
 #ifdef __cplusplus
 // add C++ includes here
@@ -15,13 +12,8 @@
 #include <string>
 #include<string.h>
 
-using namespace std;
-
-#include"signin.h"
 
 
 
 #endif // __cplusplus
 
-
-#endif // STDAFX_H
