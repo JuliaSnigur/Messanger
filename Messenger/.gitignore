@@ -1,0 +1,9 @@
+*.user
+*.md
+build/
+*.autosave
+*.obj
+*.vc.pdb
+lib.win32/
+.qmake.stash
+MakeFile

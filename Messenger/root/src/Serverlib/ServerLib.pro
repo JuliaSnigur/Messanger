@@ -1,29 +1,33 @@
 include( ../../common.pri )
 include( ../../lib.pri )
+include( ../../root.pri )
 
-QT       += core gui widgets network
-
-
+QT      -= gui
+QT      += core widgets network
 
 TARGET = ServerLib$${LIB_SUFFIX}
 TEMPLATE = lib
+CONFIG += staticlib
 
-DEFINES += SERVERLIB_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
 
-HEADERS += $$files($${PWD}/*.h) \
+PRECOMPILED_HEADER =stable.h
+CONFIG -= precompile_header
 
+SOURCES += $$files($${PWD}/*.cpp)
 
-SOURCES += $$files($${PWD}/*.cpp) \
+HEADERS += $$files($${PWD}/*.h)
 
-PRECOMPILED_HEADER =stdafxs.h
-CONFIG += precompile_header
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-win32 {
-    QMAKE_TARGET_PRODUCT = My Lib
-    QMAKE_TARGET_DESCRIPTION = It is my library
-}
+
+
+
+#win32 {
+#    QMAKE_TARGET_PRODUCT = My Lib
+#    QMAKE_TARGET_DESCRIPTION = It is my library
+#}

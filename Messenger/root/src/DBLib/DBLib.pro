@@ -1,11 +1,16 @@
-QT -= gui
-QT+= sql
+include( ../../common.pri )
+include( ../../lib.pri )
+include( ../../root.pri )
 
-CONFIG += c++11 console
-CONFIG -= app_bundle
+QT       -= gui
+QT      += sql
+
+TARGET = DBLib$${LIB_SUFFIX}
+TEMPLATE = lib
+CONFIG += staticlib
 
 # The following define makes your compiler emit warnings if you use
-# any feature of Qt which as been marked deprecated (the exact warnings
+# any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -15,32 +20,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += main.cpp \
-    serverdb.cpp \
-    clientdb.cpp \
-    db.cpp \
-    clientdbdeveloper.cpp \
-    serverdbdeveloper.cpp \
-    costumer.cpp \
-    dbdeveloper.cpp \
-    tabledatabase.cpp \
-    dialogtable.cpp \
-    userstable.cpp \
-    messagestable.cpp
+SOURCES += \
+    request.cpp \
+    dbserverpresenter.cpp \
+    dbclientpresenter.cpp \
+    dbpresenter.cpp \
+    user.cpp
+
 
 HEADERS += \
-    serverdb.h \
-    clientdb.h \
-    db.h \
+    ipresenter.h \
+    stable.h \
     stdafx.h \
-    clientdbdeveloper.h \
-    serverdbdeveloper.h \
-    costumer.h \
-    dbdeveloper.h \
-    tabledatabase.h \
-    dialogtable.h \
-    userstable.h \
-    messagestable.h
+    request.h \
+    dbserverpresenter.h \
+    dbclientpresenter.h \
+    dbpresenter.h \
+    user.h
 
-PRECOMPILED_HEADER = stdafx.h
-CONFIG += precompile_header
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}
+
+########################################
+
+CONFIG -= precompile_header
+PRECOMPILED_HEADER = stable.h
+
+########################################

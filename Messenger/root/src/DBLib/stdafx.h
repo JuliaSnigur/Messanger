@@ -1,54 +1,21 @@
 #pragma once
 
-#ifdef __cplusplus
-
+#include<QObject>
 #include <QtSql>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QDebug>
 
 #include <stdio.h>
 #include <tchar.h>
 
-#include<iostream>
-#include<string>
-#include<exception>
+#include<string.h>
 
-using namespace std;
+#include"user.h"
+#include"request.h"
 
+#include"ipresenter.h"
+#include"dbpresenter.h"
 
-
-#include"costumer.h"
-
-#include"db.h"
-
-#include"tabledatabase.h"
-
-#include"userstable.h"
-#include"dialogtable.h"
-#include"messagestable.h"
-
-#include"serverdb.h"
-#include"clientdb.h"
-
-#include"dbdeveloper.h"
-#include"clientdbdeveloper.h"
-#include"serverdbdeveloper.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif
-
-
+#include"dbclientpresenter.h"
+#include"dbserverpresenter.h"

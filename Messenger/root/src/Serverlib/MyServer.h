@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafxs.h"
+#include "stdafx.h"
 //#include "SSLServerLib/SSLServerLib.h"
 
 class QTcpServer;

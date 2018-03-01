@@ -1,25 +1,8 @@
-<<<<<<< HEAD
-#ifndef CLIENTLIB_H
-#define CLIENTLIB_H
-
-#include "stable.h"
-
-class MyClient : public QWidget
-=======
-<<<<<<< HEAD
-//#include "stdafx.h"
-
-=======
 #pragma once
->>>>>>> master
 
-//#include"stdafx.h"
-#include "stable.h"
+#include "stdafx.h"
 
-
-
-class MyClient:public QObject
->>>>>>> julia1
+class MyClient: public QObject
 {
 Q_OBJECT
 private:
@@ -28,13 +11,20 @@ private:
     quint16     m_nNextBlockSize;// необходимый для хранения длины следующего полученного от сокета блока
 
 public:
-    MyClient(const QString& strHost, int nPort,QObject* parent=0) ;
+    MyClient(QObject* parent=0);
+    virtual ~MyClient();
 
-     void sendToServer(const User& str);
+
+    void createConnection(const QString& strHost, int nPort);
+    void sendToServer( QString&,QString&);
+
 
 private slots:
     void slotReadyRead   ( );
     void slotError       (QAbstractSocket::SocketError);
     void slotConnected   ();
+
+
+
 };
 
