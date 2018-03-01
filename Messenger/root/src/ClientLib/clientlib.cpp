@@ -42,9 +42,15 @@ void MyClient::slotReadyRead()
 
     while(true) {
         if (!m_nNextBlockSize) {
+
             if (m_pTcpSocket->bytesAvailable() < sizeof(quint16)) {
                 break;
             }
+
+            // switch(..){} - для  распознавания информации от сервера
+
+
+
             in >> m_nNextBlockSize; // читаем данные
         }
 
@@ -61,7 +67,7 @@ void MyClient::slotReadyRead()
         /*присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
           что размер очередного блока данных неизвестен.*/
 
-m_nNextBlockSize = 0;
+        m_nNextBlockSize = 0;
     }
 }
 

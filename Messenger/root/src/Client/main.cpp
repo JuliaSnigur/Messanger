@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     engine.load (QUrl (QStringLiteral ("../../src/GuiLib/main.qml") ) ) ;
 */
 
-    Client cl;
+   Client cl;
 
     cl.startWork();
 

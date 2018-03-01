@@ -25,17 +25,57 @@ Window {
     FirstWindow
     {
         id:firstWindow
+        visible:true
 
         onSignalExit:
         {
-            model.m_port=firstWindow.port
-            model.m_ip=firstWindow.ip
 
-            firstWindow.visible=false
-
+           /* model.m_ip=ip
+            model.m_port=port
+            */firstWindow.visible=false
+            authorWindow.visible=true
         }
     }
 
+    Authorization
+    {
+        id:authorWindow
+        visible: false
+
+        onSignalRegistration:
+        {
+            authorWindow.visible=false
+            registWindow.visible=true
+        }
+
+        onSignalSignIn:
+        {
+            authorWindow.visible=false
+            mainWindow.visible=true
+        }
+
+    }
+
+
+    Registration
+    {
+        id:registWindow
+        visible: false
+
+        onSignalSignIn:
+        {
+            authorWindow.visible=false
+            mainWindow.visible=true
+        }
+    }
+
+
+    MainWindow
+    {
+        id:mainWindow
+        visible:false
+
+    }
 
 
 }

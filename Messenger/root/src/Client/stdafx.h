@@ -12,13 +12,13 @@
 #include <QSqlQuery>
 
 
+#include<openssl/aes.h>
+
 #include <stdio.h>
 #include <tchar.h>
 
 #include<iostream>
 #include<string>
-
-using namespace std;
 
 
 #include<QObject>
@@ -36,8 +36,5 @@ using namespace std;
 #include"guilib.h"
 
 #include"dbclientpresenter.h"
-
-#include"idbview.h"
-#include"dbview.h"
 
 #include "client.h"

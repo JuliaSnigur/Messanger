@@ -14,12 +14,17 @@ public:
     MyClient(QObject* parent=0);
     virtual ~MyClient();
 
+
     void createConnection(const QString& strHost, int nPort);
     void sendToServer( QString&,QString&);
+
 
 private slots:
     void slotReadyRead   ( );
     void slotError       (QAbstractSocket::SocketError);
     void slotConnected   ();
+
+
+
 };
 

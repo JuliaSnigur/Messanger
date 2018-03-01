@@ -25,3 +25,8 @@ DBView::DBView():m_dbPres()
    {
        m_dbPres.insertUser(us);
    }
+
+    User* DBView::searchUsers(const QString log)
+    {
+        m_dbPres.searchUser(log);
+    }

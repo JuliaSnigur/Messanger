@@ -1,7 +1,5 @@
 #pragma once
 
-#include"stdafx.h"
-
 class DBServerPresenter: public DBPresenter
 {
 private:
@@ -12,6 +10,12 @@ public:
     virtual ~DBServerPresenter();
 
     virtual void createTables();
-    virtual void insertUser(User&);
+    virtual void insertUser(User);
+
+    User* searchUser(const QString& login);
+    User* searchUser(const int);
+
+
+
 };
 

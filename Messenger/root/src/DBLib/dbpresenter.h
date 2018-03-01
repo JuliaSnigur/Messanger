@@ -22,7 +22,7 @@ public:
 
      virtual void createConnection();
      virtual void createTables()=0;
-     virtual void insertUser(User&)=0;
+     virtual void insertUser(User)=0;
 
 };
 

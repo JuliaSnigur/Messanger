@@ -9,10 +9,7 @@ Item {
     width: 300
     height: 200
 
-    property string port: port.editText
-    property string ip: ipServer.editText
-
- signal signalExit()   // Задаём сигнал
+ signal signalExit(/*string ip , string port*/)   // Задаём сигнал
 
     MyRow{
         id: ipServer
@@ -53,8 +50,10 @@ Item {
 
          onClicked:
          {
-
-             windowFirst.signalExit() // Вызываем сигнал
+           /*  model.m_ip=ipServer
+             model.m_port=port
+*/
+             windowFirst.signalExit(/*ipServer.text,port.text*/) // Вызываем сигнал
          }
     }
 }

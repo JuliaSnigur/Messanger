@@ -14,7 +14,7 @@ public:
 
      virtual void createTables();
 
-     virtual void insertUser(User&);
+     virtual void insertUser(User);
      void insertDialog();
 
 };

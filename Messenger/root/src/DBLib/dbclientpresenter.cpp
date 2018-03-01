@@ -52,7 +52,7 @@ DBClientPresenter::~DBClientPresenter(){}
   }
 
 
-   void DBClientPresenter::insertUser(User& us)
+   void DBClientPresenter::insertUser(User us)
    {
        QString params="login";
        QString values="'%1'";

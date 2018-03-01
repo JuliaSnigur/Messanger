@@ -1,12 +1,11 @@
 #pragma once
 
-#include"stdafx.h"
 
 class Client
 {
 
 private:
-    DBView m_dbView;
+    DBServerPresenter m_db;
     GuiLib m_gui;
     MyClient m_client;
 
