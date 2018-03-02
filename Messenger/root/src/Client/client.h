@@ -1,9 +1,11 @@
 #pragma once
 
+#include "stdafx.h"
 
-class Client
+class Client: public QObject
 {
 
+  Q_OBJECT
 private:
     DBServerPresenter m_db;
     GuiLib m_gui;
@@ -16,6 +18,12 @@ public:
 
 
     void startWork();
+
+
+public slots:
+    void slotAuthorization(QString,QString);
+    void slotConnection(QString,QString);
+    void slotRegistration(QString,QString);
 
 
 };

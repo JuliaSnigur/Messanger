@@ -1,9 +1,12 @@
 #include"stdafx.h"
 #include "client.h"
 
+#include"parsedata.h"
+
 Client::Client():m_db(),m_gui(),m_client()
 {
-  //  m_client.createConnection("127.0.0.1",27015);
+    QObject::connect(&m_gui,SIGNAL(signalConnection(QString,QString)),this,SLOT(slotConnection(QString,QString)));
+
 }
 
 Client::~Client(){}
@@ -11,31 +14,25 @@ Client::~Client(){}
 
 void Client::startWork()
 {
-    try
-    {
-        m_db.createConnection();
-        m_db.createTables();
-    }
-    catch(std::exception& ex)
-    {
-        qDebug()<<ex.what();
-    }
+   m_client.createConnection("127.0.0.1",27015);
+  m_client.sendToServer(ParseData::concatenation1(Message,"Hello"));
+   m_client.sendToServer(ParseData::concatenation2(Authorization,"user","123"));
 
-    User us("fdfd","fdfdfd");
-
-    //m_client.sendToServer(us.getLogin(),us.getPassword());
-
-    m_db.insertUser(us);
-
-    try
-    {
-
-        User* user =m_db.searchUser(us.getLogin());
-    }
-    catch(std::exception& ex)
-    {
-        qDebug()<<ex.what();
-    }
 }
 
 
+void Client::slotAuthorization(QString login,QString password)
+{
+    qDebug()<<"Authorization";
+}
+
+void Client::slotConnection( QString ip,QString port)
+{
+    qDebug()<<"Connection";
+    //  m_client.createConnection("127.0.0.1",27015);
+}
+
+void Client::slotRegistration( QString login, QString password)
+{
+    qDebug()<<"Registration";
+}

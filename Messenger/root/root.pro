@@ -43,7 +43,9 @@ SUBDIRS += \
     src/ClientLib\
     src/GuiLib\
     src/Client \
-    src/DBLib
+    src/DBLib \
+    src/DBUnitTests \
+    DBUnitTests
 
 Client.depends = ClientLib
 Client.depends=GuiLib

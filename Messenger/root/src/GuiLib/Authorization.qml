@@ -11,7 +11,7 @@ Item {
     height: 200
 
 
-    signal signalSignIn()   // Задаём сигнал
+    signal signalSignIn(string login,string password)   // Задаём сигнал
     signal signalRegistration()
 
     Column{
@@ -32,7 +32,7 @@ Item {
 
         MyRow
         {
-            id: row1
+            id: login
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.top: title.bottom
@@ -43,10 +43,10 @@ Item {
 
 
         MyRow{
-            id: row2
+            id: password
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.top: row1.bottom
+            anchors.top: login.bottom
             anchors.topMargin: 50
             mytext:"Password:"
 
@@ -55,14 +55,14 @@ Item {
 
 
         Row{
-            id:row3
+            id:buttons
             anchors.right: parent.right
             anchors.rightMargin: 20
-
-
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.top: row2.bottom
+
+
+            anchors.top: password.bottom
             anchors.topMargin: 50
 
 
@@ -73,7 +73,7 @@ Item {
                 Layout.fillWidth: true
 
                 text:"Registration"
-               anchors.left: row3.left
+
 
                onClicked:
                {
@@ -88,17 +88,16 @@ Item {
                  Layout.fillHeight: true
                  Layout.fillWidth: true
 
-                 anchors.right: row3.right
+                 anchors.right: parent.right
 
                  text:"Sign in"
+                 anchors.rightMargin: 0
+
                  onClicked:
                  {
                      // проверка данных
                      //...
-                   /*  model.m_login=editLogin.text;
-                     model.m_password=editPassword.text;
-*/
-                     wAuthorization.signalSignIn()
+                     wAuthorization.signalSignIn(login.editText,password.editText)
                  }
              }
         }

@@ -21,12 +21,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        clientlib.cpp
+        clientlib.cpp \
+    parsedata.cpp
 
 HEADERS += \
         clientlib.h \
         stable.h \
-        stdafx.h
+        stdafx.h \
+    parsedata.h
 
 
 unix {

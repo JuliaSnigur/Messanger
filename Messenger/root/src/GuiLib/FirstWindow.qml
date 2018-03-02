@@ -4,12 +4,14 @@ import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
+
+
 Item {
     id: windowFirst
     width: 300
     height: 200
 
- signal signalExit(/*string ip , string port*/)   // Задаём сигнал
+ signal signalExit(string ip , string port)   // Задаём сигнал
 
     MyRow{
         id: ipServer
@@ -50,10 +52,7 @@ Item {
 
          onClicked:
          {
-           /*  model.m_ip=ipServer
-             model.m_port=port
-*/
-             windowFirst.signalExit(/*ipServer.text,port.text*/) // Вызываем сигнал
+             windowFirst.signalExit(ipServer.editText,port.editText) // Вызываем сигнал
          }
     }
 }

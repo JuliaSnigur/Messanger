@@ -57,3 +57,12 @@ void GuiLib::setIP(const QString& str)
     m_ip = str;
     emit ipChange(m_ip);
 }
+
+/////////////////////////////////////////////
+
+void GuiLib::connection()
+{
+    emit signalConnection(m_ip,m_port);
+}
+
+

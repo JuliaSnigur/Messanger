@@ -1,13 +1,15 @@
 #include"stdafx.h"
 #include "clientlib.h"
 
+
+
 MyClient::~MyClient()
 {
     if(this->m_pTcpSocket)
         delete m_pTcpSocket;
 }
 
-MyClient::MyClient(QObject* parent):QObject(parent), m_nNextBlockSize(0)
+MyClient::MyClient(QObject* parent):QObject(parent), m_nNextBlockSize(0),file(0)
 {}
 
 
@@ -30,15 +32,17 @@ void MyClient::createConnection(const QString& strHost, int nPort)
 
 void MyClient::slotReadyRead()
 {
+    QByteArray answer;
+
     QDataStream in(m_pTcpSocket);
     in.setVersion(QDataStream::Qt_4_2);
 
-    /*
-    Цикл for нужен, так как не все данные с сервера могут прийти одновременно.
-    Поэтому клиент должен быть в состоянии получить как весь блок целиком,
-    так и только часть блока или даже все блоки сразу.
-    Каждый переданный блок начинается полем, хранящим размер блока.
-    */
+
+    //Цикл for нужен, так как не все данные с сервера могут прийти одновременно.
+    //Поэтому клиент должен быть в состоянии получить как весь блок целиком,
+    //так и только часть блока или даже все блоки сразу.
+    //Каждый переданный блок начинается полем, хранящим размер блока.
+
 
     while(true) {
         if (!m_nNextBlockSize) {
@@ -47,25 +51,75 @@ void MyClient::slotReadyRead()
                 break;
             }
 
-            // switch(..){} - для  распознавания информации от сервера
-
-
-
-            in >> m_nNextBlockSize; // читаем данные
+            in >> m_nNextBlockSize; // читаем данные            
         }
 
         if (m_pTcpSocket->bytesAvailable() < m_nNextBlockSize) {
             break;
         }
 
-        QTime time;
-        QString str;
-        in >> time >> str;
 
-        qDebug()<<time.toString() + " " + str;
+        in >>answer;
 
-        /*присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
-          что размер очередного блока данных неизвестен.*/
+        std::queue<QByteArray> q=ParseData::separetionQByte(answer);
+
+        if(!q.empty())
+        {
+/*
+        switch(q.front().toInt())
+        {
+            q.pop();
+
+            case Registration:
+
+                //если true - только true, список кто онлайн
+                // false - false и сообщение об ошибке
+                if(q.front().toInt())
+                {
+                    // успешная регистрация
+
+                }
+                else
+                {
+
+                }
+
+                break;
+
+            case Authorization:
+
+                //если true - только true, список кто онлайн
+                // false - false и сообщение об ошибке
+                if(q.front().toInt())
+                {
+                    // успешная регистрация
+
+                }
+                else
+                {
+
+                }
+
+                break;
+
+            case Message:
+
+
+                break;
+
+            case File:
+
+
+                break;
+
+        };
+
+*/
+}
+      //  qDebug()<<time.toString() + " " + str;
+
+        //присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
+         // что размер очередного блока данных неизвестен.
 
         m_nNextBlockSize = 0;
     }
@@ -91,7 +145,7 @@ void MyClient::slotError(QAbstractSocket::SocketError err)
 }
 
 
-void MyClient::sendToServer(QString& login, QString& password)
+void MyClient::sendToServer( const QString& data)
 {
 
 // для того чтобы записывать все данные блока в него, записывая сначала размер равным 0
@@ -99,16 +153,20 @@ void MyClient::sendToServer(QString& login, QString& password)
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_2);
 
-    out << quint16(0) << QTime::currentTime() << login<<password;
-   // qDebug()<< quint16(0) << QTime::currentTime() << us;
+    out << quint16(0) << QTime::currentTime() <<data;
+    qDebug()<< quint16(0) << QTime::currentTime() << data;
 
-// перемещаем указатель на начало блока
+
+    // перемещаем указатель на начало блока
     out.device()->seek(0);
-//записываем размер блока
+
+    //записываем размер блока
     out << quint16(arrBlock.size() - sizeof(quint16));
 
+    // отправка блока на сервер
     m_pTcpSocket->write(arrBlock);
-    m_ptxtInput="";
+
+
 }
 
 
@@ -119,4 +177,92 @@ void MyClient::slotConnected()
 }
 
 
+/*
 
+void MyClient::sendFile(const QString& fileName)
+{
+
+
+    if(file != NULL)
+    {
+        return;
+     }
+
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+
+      file = new QFile(fileName);
+      if(file->open(QFile::ReadOnly))
+      {
+
+          // подготовка данных для записи //
+          m_pTcpSocket->write(data);
+          m_pTcpSocket->waitForBytesWritten();
+          connect(m_pTcpSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(sendPartOfFile()));
+          sendPartOfFile();
+      }
+      else
+      {
+        emit this->slotError(QString("File not can open for read"));
+        return;
+      }
+}
+
+
+void MyClient::sendPartOfFile() {
+
+  char block[SIZE_BLOCK_FOR_SEND_FILE];
+
+  if(!file->atEnd())
+  {
+    qint64 in = file->read(block, sizeof(block));
+    qint64 send = m_pTcpSocket->write(block, in);
+  }
+  else
+  {
+    file->close();
+    file = NULL;
+    disconnect(m_pTcpSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(sendPartOfFile()));
+    emit endSendFile();
+  }
+}
+
+void MyClient::receiveFile(QString fileName) {
+  QString savePath = "Downloads/";
+  QDir dir;
+  dir.mkpath(savePath);
+  file = new QFile(savePath + fileName);
+  m_nNextBlockSize = 0;
+  receiveFile();
+}
+
+
+
+void MyClient::receiveFile()
+{
+  QDataStream in(clientSocket);
+   if(!bufferForUnreadData.isEmpty())
+   {
+        receiveFile->write(bufferForUnreadData);
+        sizeReceivedData += bufferForUnreadData.size();
+        bufferForUnreadData.clear();
+   }
+
+  char block[SIZE_BLOCK_FOR_SEND_FILE];
+
+  while(!in.atEnd())
+  {
+    qint64 toFile = in.readRawData(block, sizeof(block));
+    sizeReceivedData += toFile;
+    receiveFile->write(block, toFile);
+  }
+  if(sizeReceivedData == sizeReceiveFile)
+  {
+    receiveFile->close();
+    receiveFile = NULL;
+    sizeReceiveFile = 0;
+    sizeReceivedData = 0;
+  }
+}
+
+*/

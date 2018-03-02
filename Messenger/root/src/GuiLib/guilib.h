@@ -19,7 +19,6 @@ private:
 
     QString m_port;
     QString m_ip;
-   // MyClient cl;
 
 
 
@@ -33,6 +32,10 @@ public:
     QString getIP() const;
 
 
+ Q_INVOKABLE void connection();
+
+
+
 public slots:
     void setLogin(const QString&);
     void setPassword(const QString&);
@@ -41,12 +44,15 @@ public slots:
     void setIP(const QString&);
 
 signals:
-    void loginChange (QString);
-     void passwordChange (QString);
+    void loginChange (const QString&);
+     void passwordChange (const QString&);
 
-     void portChange (QString);
-      void ipChange (QString);
+     void portChange (const QString&);
+      void ipChange (const QString&);
 
+      void signalConnection( QString, QString );
+      void signalAuthorisation( QString , QString );
+      void signalRegistration( QString , QString );
 
 
 };

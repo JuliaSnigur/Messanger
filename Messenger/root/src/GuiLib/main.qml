@@ -7,7 +7,6 @@ import QtQuick.Layouts 1.3
 import GuiLib 1.0
 
 
-
 Window {
     id: window
     visible: true
@@ -30,9 +29,12 @@ Window {
         onSignalExit:
         {
 
-           /* model.m_ip=ip
+            model.m_ip=ip
             model.m_port=port
-            */firstWindow.visible=false
+
+            model.connection();
+
+            firstWindow.visible=false
             authorWindow.visible=true
         }
     }
@@ -44,12 +46,16 @@ Window {
 
         onSignalRegistration:
         {
+
             authorWindow.visible=false
             registWindow.visible=true
         }
 
         onSignalSignIn:
         {
+            model.m_login=login
+            model.m_password=password
+
             authorWindow.visible=false
             mainWindow.visible=true
         }
@@ -64,6 +70,10 @@ Window {
 
         onSignalSignIn:
         {
+
+            model.m_login=login
+            model.m_password=password
+
             authorWindow.visible=false
             mainWindow.visible=true
         }
