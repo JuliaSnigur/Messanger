@@ -19,6 +19,7 @@
 
 #include<iostream>
 #include<string>
+#include<queue>
 
 
 #include<QObject>
@@ -34,7 +35,8 @@
 
 
 
-#include"user.h"
+#include "user.h"
+#include "parsedata.h"
 
 #include "clientlib.h"
 #include"guilib.h"

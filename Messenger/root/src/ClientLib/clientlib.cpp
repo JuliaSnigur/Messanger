@@ -32,7 +32,8 @@ void MyClient::createConnection(const QString& strHost, int nPort)
 
 void MyClient::slotReadyRead()
 {
-    QByteArray answer;
+    QString answer;
+    QTime time;
 
     QDataStream in(m_pTcpSocket);
     in.setVersion(QDataStream::Qt_4_2);
@@ -59,29 +60,31 @@ void MyClient::slotReadyRead()
         }
 
 
-        in >>answer;
+        in >>time>>answer;
 
-        std::queue<QByteArray> q=ParseData::separetionQByte(answer);
+        qDebug()<<"Client got-> "<<time.toString() + " " + answer;
 
-        if(!q.empty())
+        switch((ParseData::variable(answer)).toInt())
         {
-/*
-        switch(q.front().toInt())
-        {
-            q.pop();
 
-            case Registration:
+        case Connection:
 
-                //если true - только true, список кто онлайн
-                // false - false и сообщение об ошибке
-                if(q.front().toInt())
+                qDebug()<<answer;
+
+                break;
+
+        case Registration:
+
+            //если true - только true, список кто онлайн
+            // false - false и сообщение об ошибке
+            if((ParseData::variable(answer)).toInt())
                 {
-                    // успешная регистрация
+                    qDebug()<<"Good)";
 
                 }
                 else
                 {
-
+                    qDebug()<<"Wrong(";
                 }
 
                 break;
@@ -90,15 +93,6 @@ void MyClient::slotReadyRead()
 
                 //если true - только true, список кто онлайн
                 // false - false и сообщение об ошибке
-                if(q.front().toInt())
-                {
-                    // успешная регистрация
-
-                }
-                else
-                {
-
-                }
 
                 break;
 
@@ -114,7 +108,8 @@ void MyClient::slotReadyRead()
 
         };
 
-*/
+
+
 }
       //  qDebug()<<time.toString() + " " + str;
 
@@ -123,7 +118,6 @@ void MyClient::slotReadyRead()
 
         m_nNextBlockSize = 0;
     }
-}
 
 
   /*  вызывается при возникновении ошибок
@@ -154,7 +148,7 @@ void MyClient::sendToServer( const QString& data)
     out.setVersion(QDataStream::Qt_4_2);
 
     out << quint16(0) << QTime::currentTime() <<data;
-    qDebug()<< quint16(0) << QTime::currentTime() << data;
+    qDebug()<< QTime::currentTime() << data;
 
 
     // перемещаем указатель на начало блока

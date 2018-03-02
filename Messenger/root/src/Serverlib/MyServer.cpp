@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MyServer.h"
 
+#include"parsedata.h"
+
 // ----------------------------------------------------------------------
 MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBlockSize(0)
 {
@@ -48,7 +50,8 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBloc
             this,          SLOT(slotReadClient())
            );
 
-    sendToClient(pClientSocket, "Server Response: Connected!");
+
+    sendToClient(pClientSocket, ParseData::concatenation1(Connection,"Server Response: Connected!"));
 }
 
 // ----------------------------------------------------------------------
@@ -59,7 +62,8 @@ void MyServer::slotReadClient()
     QDataStream in(pClientSocket);
     in.setVersion(QDataStream::Qt_5_3);
     //цикл обработки частей блоков информации передаваемой и принимаемой по сети
-    for (;;) {
+    for (;;)
+    {
         if (!m_nNextBlockSize) { //в if проверяем размер блока не менее 2 байт и m_nNextBlockSize (размер блока) неизвестен
 
             if (pClientSocket->bytesAvailable() < (int)sizeof(quint16)) {
@@ -75,18 +79,45 @@ void MyServer::slotReadClient()
         //тогда данные считываются из потока в time и str
         QTime   time;
         QString str;
+
         in >> time >> str;
+
+
+
         // преобразуем time в строку и вместе с str записываем в strMessage
-        QString strMessage =
-            time.toString() + " " + "Client has sent - " + str;
+        QString strMessage = time.toString() + " " + "Client has sent - " + str;
+
+        switch ((ParseData::variable(str)).toInt()) {
+
+        case Message:
+
+        m_ptxt->append("MESSAGE");
+
+        break;
+
+        case Registration:
+
+        m_ptxt->append("Registration");
+        m_ptxt->append("Server sent-> "+ParseData::concatenationRespond(Registration,true));
+
+        sendToClient(pClientSocket,ParseData::concatenationRespond(Registration,true));
+
+            break;
+
+        case Authorization:
+        m_ptxt->append("Authorization");
+        break;
+
+        default:
+            break;
+        }
+
+
         //добавляем в виджет strMessage
         m_ptxt->append(strMessage);
         //обнуляем размер блока что бы проводить запись следующего блока
         m_nNextBlockSize = 0;
-        //передаем клиенту что нам удалось успешно прочитать данные
-        sendToClient(pClientSocket,
-                     "Server Response: Received \"" + str + "\""
-                    );
+
     }
 }
 

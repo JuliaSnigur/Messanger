@@ -1,7 +1,7 @@
 #include"stdafx.h"
 #include "client.h"
 
-#include"parsedata.h"
+
 
 Client::Client():m_db(),m_gui(),m_client()
 {
@@ -15,9 +15,15 @@ Client::~Client(){}
 void Client::startWork()
 {
    m_client.createConnection("127.0.0.1",27015);
-  m_client.sendToServer(ParseData::concatenation1(Message,"Hello"));
-   m_client.sendToServer(ParseData::concatenation2(Authorization,"user","123"));
+   m_client.sendToServer(ParseData::concatenation2(Registration,"user","123"));
 
+  /*  QString str="0 1 ";
+    qDebug()<<ParseData::variable(str);
+    qDebug()<<str;
+
+    bool flag=ParseData::variable(str).toInt();
+    qDebug()<<flag;
+*/
 }
 
 

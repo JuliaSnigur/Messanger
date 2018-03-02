@@ -14,15 +14,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 PRECOMPILED_HEADER =stable.h
 CONFIG -= precompile_header
 
-SOURCES += $$files($${PWD}/*.cpp)
-
-HEADERS += $$files($${PWD}/*.h)
+SOURCES += \
+    MyServer.cpp
+HEADERS += \
+    MyServer.h \
+    stable.h \
+    stdafx.h
 
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+
+LIBS+=$${PARSEDATALIB_LIBRARY}
+INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
 
 

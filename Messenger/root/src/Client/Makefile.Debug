@@ -14,10 +14,10 @@ CXX           = cl
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_GUI_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_CORE_LIB
 CFLAGS        = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zi -MDd -W3 -w44456 -w44457 -w44458 /Fd..\..\build\debug\Client\obj\Client.vc.pdb $(DEFINES)
 CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -EHsc /Fd..\..\build\debug\Client\obj\Client.vc.pdb $(DEFINES)
-INCPATH       = -I. -I..\..\src -ID:/Project/SecureMessanger/Messenger/root//import// -I..\ClientLib -I..\GuiLib -I..\DBLib -I..\..\..\openssl\include -ID:\QtProgram\5.10.0\msvc2015\include -ID:\QtProgram\5.10.0\msvc2015\include\QtGui -ID:\QtProgram\5.10.0\msvc2015\include\QtANGLE -ID:\QtProgram\5.10.0\msvc2015\include\QtQml -ID:\QtProgram\5.10.0\msvc2015\include\QtNetwork -ID:\QtProgram\5.10.0\msvc2015\include\QtSql -ID:\QtProgram\5.10.0\msvc2015\include\QtCore -I..\..\build\debug\Client\moc -I\include -ID:\QtProgram\5.10.0\msvc2015\mkspecs\win32-msvc 
+INCPATH       = -I. -I..\..\src -ID:/Project/SecureMessanger/Messenger/root//import// -I..\ClientLib -I..\GuiLib -I..\DBLib -I..\..\..\openssl\include -I..\ParseDataLib -ID:\QtProgram\5.10.0\msvc2015\include -ID:\QtProgram\5.10.0\msvc2015\include\QtGui -ID:\QtProgram\5.10.0\msvc2015\include\QtANGLE -ID:\QtProgram\5.10.0\msvc2015\include\QtQml -ID:\QtProgram\5.10.0\msvc2015\include\QtNetwork -ID:\QtProgram\5.10.0\msvc2015\include\QtSql -ID:\QtProgram\5.10.0\msvc2015\include\QtCore -I..\..\build\debug\Client\moc -I\include -ID:\QtProgram\5.10.0\msvc2015\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:CONSOLE "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = /LIBPATH:D:\Project\SecureMessanger\Messenger\root\lib.win32\debug /LIBPATH:D:\Project\SecureMessanger\Messenger\openssl\debug D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\ClientLibd.lib D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\GuiLibd.lib D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\DBLibd.lib D:\Project\SecureMessanger\Messenger\openssl\debug\libeay32.lib D:\Project\SecureMessanger\Messenger\openssl\debug\ssleay32.lib /LIBPATH:D:\QtProgram\5.10.0\msvc2015\lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Guid.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Qmld.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Networkd.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Sqld.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Cored.lib 
+LIBS          = /LIBPATH:D:\Project\SecureMessanger\Messenger\root\lib.win32\debug /LIBPATH:D:\Project\SecureMessanger\Messenger\openssl\debug D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\ClientLibd.lib D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\GuiLibd.lib D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\DBLibd.lib D:\Project\SecureMessanger\Messenger\openssl\debug\libeay32.lib D:\Project\SecureMessanger\Messenger\openssl\debug\ssleay32.lib D:\Project\SecureMessanger\Messenger\root\lib.win32\debug\ParseDataLibd.lib /LIBPATH:D:\QtProgram\5.10.0\msvc2015\lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Guid.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Qmld.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Networkd.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Sqld.lib D:\QtProgram\5.10.0\msvc2015\lib\Qt5Cored.lib 
 QMAKE         = D:\QtProgram\5.10.0\msvc2015\bin\qmake.exe
 IDC           = idc
 IDL           = midl /NOLOGO
@@ -171,7 +171,7 @@ compiler_moc_predefs_clean:
 compiler_moc_header_make_all: ..\..\build\debug\Client\moc\moc_client.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) ..\..\build\debug\Client\moc\moc_client.cpp
-..\..\build\debug\Client\moc\moc_client.cpp: ..\ClientLib\stdafx.h \
+..\..\build\debug\Client\moc\moc_client.cpp: ..\ParseDataLib\stdafx.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QObject \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobjectdefs.h \
@@ -222,41 +222,25 @@ compiler_moc_header_clean:
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvarlengtharray.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontainerfwd.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpSocket \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetworkglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetwork-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qabstractsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTextStream \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qtextstream.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qlocale.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvariant.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvector.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qpoint.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qset.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontiguouscache.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDataStream \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdatastream.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QFile \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfile.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfiledevice.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDir \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdir.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfileinfo.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdatetime.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
-		..\ClientLib\parsedata.h \
 		client.h \
 		..\..\build\debug\Client\moc\moc_predefs.h \
 		D:\QtProgram\5.10.0\msvc2015\bin\moc.exe
-	D:\QtProgram\5.10.0\msvc2015\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/Project/SecureMessanger/Messenger/root//build/debug/Client//moc//moc_predefs.h -ID:/QtProgram/5.10.0/msvc2015/mkspecs/win32-msvc -ID:/Project/SecureMessanger/Messenger/root/src/Client -ID:/Project/SecureMessanger/Messenger/root/src -ID:/Project/SecureMessanger/Messenger/root/import -ID:/Project/SecureMessanger/Messenger/root/src/ClientLib -ID:/Project/SecureMessanger/Messenger/root/src/GuiLib -ID:/Project/SecureMessanger/Messenger/root/src/DBLib -ID:/Project/SecureMessanger/Messenger/openssl/include -ID:/QtProgram/5.10.0/msvc2015/include -ID:/QtProgram/5.10.0/msvc2015/include/QtGui -ID:/QtProgram/5.10.0/msvc2015/include/QtANGLE -ID:/QtProgram/5.10.0/msvc2015/include/QtQml -ID:/QtProgram/5.10.0/msvc2015/include/QtNetwork -ID:/QtProgram/5.10.0/msvc2015/include/QtSql -ID:/QtProgram/5.10.0/msvc2015/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt" client.h -o ..\..\build\debug\Client\moc\moc_client.cpp
+	D:\QtProgram\5.10.0\msvc2015\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/Project/SecureMessanger/Messenger/root//build/debug/Client//moc//moc_predefs.h -ID:/QtProgram/5.10.0/msvc2015/mkspecs/win32-msvc -ID:/Project/SecureMessanger/Messenger/root/src/Client -ID:/Project/SecureMessanger/Messenger/root/src -ID:/Project/SecureMessanger/Messenger/root/import -ID:/Project/SecureMessanger/Messenger/root/src/ClientLib -ID:/Project/SecureMessanger/Messenger/root/src/GuiLib -ID:/Project/SecureMessanger/Messenger/root/src/DBLib -ID:/Project/SecureMessanger/Messenger/openssl/include -ID:/Project/SecureMessanger/Messenger/root/src/ParseDataLib -ID:/QtProgram/5.10.0/msvc2015/include -ID:/QtProgram/5.10.0/msvc2015/include/QtGui -ID:/QtProgram/5.10.0/msvc2015/include/QtANGLE -ID:/QtProgram/5.10.0/msvc2015/include/QtQml -ID:/QtProgram/5.10.0/msvc2015/include/QtNetwork -ID:/QtProgram/5.10.0/msvc2015/include/QtSql -ID:/QtProgram/5.10.0/msvc2015/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt" client.h -o ..\..\build\debug\Client\moc\moc_client.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -543,11 +527,10 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
 		..\DBLib\user.h \
+		..\ParseDataLib\parsedata.h \
+		..\ParseDataLib\stdafx.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTextStream \
 		..\ClientLib\clientlib.h \
-		..\ClientLib\stdafx.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QFile \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDir \
-		..\ClientLib\parsedata.h \
 		..\GuiLib\guilib.h \
 		..\DBLib\dbclientpresenter.h \
 		client.h \
@@ -570,7 +553,7 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlerror.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmldebug.h
 
-..\..\build\debug\Client\obj\client.obj: client.cpp ..\ClientLib\stdafx.h \
+..\..\build\debug\Client\obj\client.obj: client.cpp ..\ParseDataLib\stdafx.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QObject \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobjectdefs.h \
@@ -621,37 +604,21 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvarlengtharray.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontainerfwd.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpSocket \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetworkglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetwork-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qabstractsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTextStream \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qtextstream.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qlocale.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvariant.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvector.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qpoint.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qset.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontiguouscache.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDataStream \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdatastream.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QFile \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfile.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfiledevice.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDir \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdir.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qfileinfo.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdatetime.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
-		..\ClientLib\parsedata.h \
 		client.h
 
 ..\..\build\debug\Client\obj\moc_client.obj: ..\..\build\debug\Client\moc\moc_client.cpp 

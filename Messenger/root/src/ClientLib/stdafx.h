@@ -12,7 +12,6 @@
 #include<QString>
 
 
- enum request{Registration,Authorization,Message,File} ;
 
 
 #include <stdio.h>
@@ -25,5 +24,5 @@
 #include <cstdarg>
 #include "stdarg.h"
 
-#include"parsedata.h"
+#include"ParseDataLib/parsedata.h"
 
