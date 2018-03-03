@@ -21,7 +21,33 @@ Window {
     }
 
 
-    FirstWindow
+    MyTest{
+        id: test
+        visible: true
+
+        onSignalExit:
+        {
+             model.connection();
+           // messageDialog.visible=true;
+        }
+    }
+
+
+    MessageDialog {
+        id: messageDialog
+        title: "May I have your attention please"
+
+        text: "It's so cool that you are using Qt Quick."
+
+        onAccepted: {
+            console.log("And of course you could only agree.")
+
+        }
+        Component.onCompleted: visible = false
+    }
+
+
+  /*  FirstWindow
     {
         id:firstWindow
         visible:true
@@ -86,6 +112,6 @@ Window {
         visible:false
 
     }
-
+*/
 
 }

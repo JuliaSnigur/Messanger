@@ -1,5 +1,9 @@
 #include "stdafx.h"
-#include "MyServer.h"
+
+
+#include"ServerSocket.h"
+
+using namespace ServerNamespace;
 
 
 
@@ -7,9 +11,11 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    MyServer     server(27015);
 
-    server.show();
+   ServerSocket server(27015);
+
+
+
 
     return app.exec();
 }

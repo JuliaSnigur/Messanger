@@ -2,7 +2,9 @@
 
 #include<QObject>
 #include<QTextStream>
-
+#include<QtDebug>
+#include<QString>
+#include<QVector>
 
 
 
@@ -12,6 +14,4 @@
 #include<queue>
 #include<iostream>
 #include<string.h>
-
-enum request{Connection, Registration, Authorization, Message, File} ;
 

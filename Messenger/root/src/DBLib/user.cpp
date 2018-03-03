@@ -1,7 +1,7 @@
 #include"stdafx.h"
 #include "user.h"
 
-User::User():m_login(""),m_id(0),m_password(""),m_status(false)
+User::User():m_login(""),m_id(-1),m_password(""),m_status(false)
 {
 
 }

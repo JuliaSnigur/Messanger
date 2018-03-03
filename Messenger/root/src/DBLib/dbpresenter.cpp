@@ -1,5 +1,13 @@
 #include "stdafx.h"
+
+#include"request.h"
+
+#include"user.h"
+#include"ipresenter.h"
 #include "dbpresenter.h"
+
+
+
 
 DBPresenter::DBPresenter()
 {

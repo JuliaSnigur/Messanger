@@ -1,10 +1,29 @@
 #include "stdafx.h"
+
+#include"request.h"
+#include"user.h"
+#include"ipresenter.h"
+#include"dbpresenter.h"
+
 #include "dbserverpresenter.h"
+
 
 DBServerPresenter::DBServerPresenter()
 {
     m_nameDB="Server_db.db";
     m_tabUsers="users";
+
+    try{
+        createConnection();
+        createTables();
+    }
+    catch(std::exception& ex)
+    {
+        qDebug()<<ex.what();
+    }
+
+
+
 }
 
 DBServerPresenter::~DBServerPresenter(){}
@@ -27,7 +46,8 @@ DBServerPresenter::~DBServerPresenter(){}
             qDebug() << "DataBase: error of create " <<m_tabUsers;
             qDebug() << m_query->lastError().text();
      }
-     qDebug()<<"The table "<<m_tabUsers<<" is creating";
+    else
+         qDebug()<<"The table "<<m_tabUsers<<" is creating";
  }
 
 
@@ -51,20 +71,20 @@ DBServerPresenter::~DBServerPresenter(){}
 
  }
 
-  User* DBServerPresenter::searchUser(const int id)
+  User DBServerPresenter::searchUser(const int id)
   {
-      User* us=nullptr;
+      User us;
       QString params='*';
-      QString values="id="+id;
+      QString values="id="+QString::number(id);
       QString str=m_req.searchData(m_tabUsers,params,values);
 
         m_query->exec(str);
         if(m_query->next())
            {
-            us=new User();
-               us->setID( m_query->value(0).toInt());
-               us->setLogin( m_query->value(1).toString());
-               us->setPassword(m_query->value(2).toString());
+
+               us.setID( m_query->value(0).toInt());
+               us.setLogin( m_query->value(1).toString());
+               us.setPassword(m_query->value(2).toString());
                qDebug()<<"The data search";
 
            }
@@ -74,26 +94,63 @@ DBServerPresenter::~DBServerPresenter(){}
         return us;
   }
 
- User* DBServerPresenter::searchUser(const QString& log)
+ User DBServerPresenter::searchUser(const QString& log)
  {
-     User* us=nullptr;
+     User us;
      QString params="id,login,password";
-     QString values="login = "+log;
+     QString values="login = '"+log+"'";
      QString str=m_req.searchData(m_tabUsers,params,values);
 
        m_query->exec(str);
        if(m_query->next())
           {
-           us=new User();
-              us->setID( m_query->value(0).toInt());
-              us->setLogin( m_query->value(1).toString());
-              us->setPassword(m_query->value(2).toString());
+
+              us.setID( m_query->value(0).toInt());
+              us.setLogin( m_query->value(1).toString());
+              us.setPassword(m_query->value(2).toString());
               qDebug()<<"The data search";
           }
           else
           qDebug()<<"The data dosn't search";
 
        return us;
+ }
+
+ int DBServerPresenter::searchID(const QString& log)
+ {
+     QString params="id";
+     QString values="login = '"+log+"'";
+     QString str=m_req.searchData(m_tabUsers,params,values);
+
+       m_query->exec(str);
+       if(m_query->next())
+          {
+              qDebug()<<"The data search";
+              return m_query->value(0).toInt();
+          }
+          else
+          qDebug()<<"The data dosn't search";
+
+       return -1;
+ }
+
+ QString DBServerPresenter::searchLogin(const int& id)
+ {
+
+     QString params="login";
+     QString values="id="+QString::number(id);
+     QString str=m_req.searchData(m_tabUsers,params,values);
+
+       m_query->exec(str);
+       if(m_query->next())
+          {
+              qDebug()<<"The data search";
+              return m_query->value(0).toString();
+          }
+          else
+           qDebug()<<"The data dosn't search";
+
+       return "";
  }
 
 

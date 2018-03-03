@@ -48,4 +48,5 @@ DISTFILES += \
     Registration.qml \
     MainWindow.qml \
     FirstWindow.qml \
-    MyRow.qml
+    MyRow.qml \
+    MyTest.qml

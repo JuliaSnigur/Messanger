@@ -35,28 +35,23 @@ DISTFILES += \
 ##################################
 
 TEMPLATE = subdirs
+CONFIG += ordered
 
 SUBDIRS += \
-    src/ServerLib\
-    src/Server\
-    src/SSLServerLib\
-    src/SSLClientLib\
-    src/ClientLib\
-    src/GuiLib\
-    src/Client \
     src/DBLib \
-    src/ParseDataLib
+    src/ParseDataLib \
+    src/ServerLib \
+    src/ClientLib \
+    src/Server \
+    src/GuiLib \
+    src/Client
 
 
-Client.depends = ClientLib
-Client.depends=GuiLib
-Client.depends=DBLib
 
-Server.depends = ServerLib
 
-ClientLib.depends=ParseDataLib
-ServerLib.depends=ParseDataLib
-Client.depends=ParseDataLib
+Client.depends = ClientLib GuiLib DBLib ParseDataLib
+
+Server.depends = ServerLib DBLib ParseDataLib
 
 
 ##################################

@@ -62,7 +62,8 @@ void GuiLib::setIP(const QString& str)
 
 void GuiLib::connection()
 {
-    emit signalConnection(m_ip,m_port);
+   // emit signalConnection(m_ip,m_port);
+   emit signalHello();
 }
 
 

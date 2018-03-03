@@ -20,7 +20,7 @@ QString Request::insertData(QString& name_tb,QString& params,QString& values)
 
  QString Request::searchData(QString& nameTable,QString& params,QString& values)
  {
-     return "SELECT "+params+" FROM "+nameTable+" WHERE "+values+";";
+     return "SELECT "+params+" FROM "+nameTable+" WHERE "+values;
  }
 
  QString Request::updateData(QString& nameTable, QString& params, QString values)

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
 
 class DBPresenter:IPresenter
 {
@@ -14,14 +13,15 @@ protected:
 
     QString m_tabUsers;
 
+    virtual void createConnection();
+    virtual void createTables()=0;
+
 public:
     DBPresenter();
 
     virtual ~DBPresenter();
 
 
-     virtual void createConnection();
-     virtual void createTables()=0;
      virtual void insertUser(User)=0;
 
 };

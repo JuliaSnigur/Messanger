@@ -1,5 +1,12 @@
 #include "stdafx.h"
+
+#include"request.h"
+#include"user.h"
+#include"ipresenter.h"
+#include"dbpresenter.h"
 #include "dbclientpresenter.h"
+
+
 
 DBClientPresenter::DBClientPresenter()
 {
@@ -8,6 +15,18 @@ DBClientPresenter::DBClientPresenter()
     m_tabUsers="users";
     m_tabDialogs="dialogs";
     m_tabMessages="messangers";
+
+
+    try{
+        createConnection();
+        createTables();
+    }
+    catch(std::exception& ex)
+    {
+        qDebug()<<ex.what();
+    }
+
+
 }
 
 DBClientPresenter::~DBClientPresenter(){}

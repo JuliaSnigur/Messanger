@@ -6,16 +6,21 @@
 
 #include <QTcpServer>
 
-#include <stdio.h>
-#include <tchar.h>
-
-#include<iostream>
-//#include<string>
-
-//using namespace std;
-
+#include <QtSql>
+#include<QObject>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include<QDataStream>
 
 #include<QTime>
 #include<QString>
+
+
+#include <stdio.h>
+#include <tchar.h>
+
+#include<iostream>
+
+

@@ -54,5 +54,6 @@ signals:
       void signalAuthorisation( QString , QString );
       void signalRegistration( QString , QString );
 
+      void signalHello();
 
 };

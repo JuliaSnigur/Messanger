@@ -1,17 +1,19 @@
 #include"stdafx.h"
 
-#include <QCoreApplication>
-#include <QGuiApplication>
-#include<QtQml/QQmlApplicationEngine>
+#include"client.h"
 
+#include"parsedata.h"
 
+#include<QString>
+
+using namespace StringHandlNamespace ;
 
 
 int main(int argc, char *argv[])
 {
     QCoreApplication  app(argc, argv);
 
-   /* QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  /*  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
@@ -21,10 +23,10 @@ int main(int argc, char *argv[])
 
     engine.load (QUrl (QStringLiteral ("../../src/GuiLib/main.qml") ) ) ;
 */
-
-   Client cl;
+    Client cl;
 
     cl.startWork();
+
 
     return app.exec();
 }

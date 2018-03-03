@@ -1,9 +1,10 @@
 *.user
 *.md
-build/
+/obj
 *.autosave
 *.obj
 *.vc.pdb
 lib.win32/
 .qmake.stash
 MakeFile
+openssl/

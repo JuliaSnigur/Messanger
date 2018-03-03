@@ -8,10 +8,13 @@
 #include<QFile>
 #include<QDir>
 
+#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+
 #include<QTime>
 #include<QString>
-
-
 
 
 #include <stdio.h>
@@ -24,5 +27,5 @@
 #include <cstdarg>
 #include "stdarg.h"
 
-#include"ParseDataLib/parsedata.h"
+
 

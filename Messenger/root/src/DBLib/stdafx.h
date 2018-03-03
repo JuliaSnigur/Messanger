@@ -11,11 +11,4 @@
 
 #include<string.h>
 
-#include"user.h"
-#include"request.h"
 
-#include"ipresenter.h"
-#include"dbpresenter.h"
-
-#include"dbclientpresenter.h"
-#include"dbserverpresenter.h"

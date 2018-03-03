@@ -3,7 +3,7 @@ include( ../../lib.pri )
 include( ../../root.pri )
 
 QT      -= gui
-QT      += core widgets network
+QT      += core widgets network sql
 
 TARGET = ServerLib$${LIB_SUFFIX}
 TEMPLATE = lib
@@ -15,11 +15,11 @@ PRECOMPILED_HEADER =stable.h
 CONFIG -= precompile_header
 
 SOURCES += \
-    MyServer.cpp
+    ServerSocket.cpp
 HEADERS += \
-    MyServer.h \
     stable.h \
-    stdafx.h
+    stdafx.h \
+    ServerSocket.h
 
 
 unix {
@@ -28,13 +28,9 @@ unix {
 }
 
 
+
 LIBS+=$${PARSEDATALIB_LIBRARY}
 INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
-
-
-
-#win32 {
-#    QMAKE_TARGET_PRODUCT = My Lib
-#    QMAKE_TARGET_DESCRIPTION = It is my library
-#}
+LIBS +=  $${DBLIB_LIBRARY}
+INCLUDEPATH+= $${DBLIB_INCLUDEPATH}

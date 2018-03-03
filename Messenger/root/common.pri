@@ -29,7 +29,7 @@ OPENSSL_PATH=$${PROJECT_ROOT_PATH}/../openssl/$${BUILD_FLAG}/
 #Ниже стоит блок, который задает пути сборки для файлов ресурсов rcc,
 #файлов графического интерфейса ui,
 #МОК-файлов moc и объектных файлов obj
-BUILD_PATH = $${PROJECT_ROOT_PATH}/build/$${BUILD_FLAG}/$${TARGET}/
+BUILD_PATH = $${PROJECT_ROOT_PATH}/obj/$${BUILD_FLAG}/$${TARGET}/
 RCC_DIR = $${BUILD_PATH}/rcc/
 UI_DIR = $${BUILD_PATH}/ui/
 MOC_DIR = $${BUILD_PATH}/moc/
