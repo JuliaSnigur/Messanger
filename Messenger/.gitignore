@@ -1,6 +1,6 @@
 *.user
 *.md
-/obj
+/obj/debug
 *.autosave
 *.obj
 *.vc.pdb
@@ -10,9 +10,10 @@ MakeFile
 openssl/
 *.qmlc
 *.qmlc.*
-*.Debug
-*.Release
+MakeFile.Debug
+MakeFile.Release
 *.nQoMel
 .qmake.stash
 *.db
 1/
+/openssl
