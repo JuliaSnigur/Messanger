@@ -19,7 +19,7 @@ using namespace StringHandlNamespace;
 
 
 
-Client::Client(QObject* obj):QObject(obj),m_db(),m_gui(),m_client(m_db),m_isStartDialog(false)
+Client::Client(QObject* obj):QObject(obj),m_db("Client_"+QString::number(rand()%500)+".db"),m_gui(),m_client(),m_isStartDialog(false)
 {
 
     //connect(&m_gui,SIGNAL(signalConnection(QString,QString)),this,SLOT(slotConnection(QString,QString)));
@@ -28,8 +28,6 @@ Client::Client(QObject* obj):QObject(obj),m_db(),m_gui(),m_client(m_db),m_isStar
     connect(&m_client,&ClientSocket::signalInsertUserIntoTabSession,this,&Client::slotInsertUserIntoTabSession);
     connect(&m_client,&ClientSocket::signalGetListsClients,this,&Client::slotGetListsClients);
     connect(&m_client,&ClientSocket::signalGetID,this,&Client::slotGetID);
-
-
 
 
 }
@@ -54,9 +52,6 @@ void Client::startWork()
    m_us.setPassword(QString::fromStdString(password));
 
    m_client.sendToServer(QString::number(Registration)+' '+m_us.getLogin()+' '+m_us.getPassword());
-
-
-
 
 }
 
@@ -84,7 +79,6 @@ void Client::slotRegistration( QString login, QString password)
 
  void Client::slotInsertUserIntoTabSession()
  {
-     // id
     m_db.insertUser(m_us);
  }
 
@@ -92,42 +86,36 @@ void Client::slotRegistration( QString login, QString password)
  {
      m_isStartDialog=true;
       m_vecClients=vec;
-
-     qDebug()<<"Get list";
-
-     dialog();
+    sendMessage();
 
  }
 
   void Client::slotGetID(int id)
   {
+      qDebug()<<"My id-> "<<id;
       m_us.setID(id);
   }
 
-  void Client::dialog()
+
+
+  void Client::sendMessage()
   {
-      if(m_isStartDialog)
-       {
-          int idFriend=m_vecClients[rand()%m_vecClients.size()];
-          while(m_us.getID()==idFriend)
-              idFriend=m_vecClients[rand()%m_vecClients.size()];
+
+          int idFriend;
+
+          if(m_us.getID()==1)
+              idFriend=2;
+          else
+              idFriend=1;
 
           qDebug()<<"My friend-> "<<idFriend;
+
           std::string mess;
 
-          while(true)
-         {
-              std::cout<<"Message: ";
-              std::getline(std::cin,mess);
+          std::cout<<"Message: ";
+          std::getline(std::cin,mess);
 
-              // serchDialog
-              // createDialog
+        m_client.sendToServer(QString::number(Message)+' '+QString::number(m_us.getID())+' '+QString::number(idFriend)+' '+QString::fromStdString("Hello! I'm ")+m_us.getLogin());
 
-              // insertMessage
 
-            // req,receiver,text
-            //  m_client.sendToServer(QString::number(Message)+' '+/*my id*/+' '+QString::number(idFriend)+mess);
-              m_client.sendToServer(QString::number(Message)+" "+QString::number(idFriend)+" "+QString::fromStdString(mess));
-         }
-        }
   }

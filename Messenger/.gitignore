@@ -8,3 +8,11 @@ lib.win32/
 .qmake.stash
 MakeFile
 openssl/
+*.qmlc
+*.qmlc.*
+*.Debug
+*.Release
+*.nQoMel
+.qmake.stash
+*.db
+1/

@@ -27,11 +27,21 @@ private:
 
     quint16     m_nNextBlockSize;// block's lenghth
 
-    QVector<int> m_vecClientsID;
-    QVector<QTcpSocket*> m_vecSockets;
+    QHash<int,QTcpSocket*> m_hash;
 
     DBServerPresenter m_db;
-    User m_us;
+
+    bool m_flag;
+    QQueue<QString> m_QueueRequest;
+    QTcpSocket* m_ClientSocket;
+
+    QString m_req;
+
+    std::thread m_thr;
+    std::mutex m_lock;
+
+
+
 
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
@@ -47,12 +57,14 @@ public:
 
     void createServer(int port);
 
-    void registration(QTcpSocket*,QString&);
+    void registration(QString&);
     void authorization(QString&);
+    void sendList();
   //  void message(QString&);
  void message(QString&);
 
 
+ void threadHandler();
 
 
 public slots:

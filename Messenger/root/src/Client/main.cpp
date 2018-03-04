@@ -1,10 +1,22 @@
 #include"stdafx.h"
 
-#include"client.h"
+
 
 #include"parsedata.h"
 
-#include<QString>
+
+
+#include"request.h"
+#include "user.h"
+#include"ipresenter.h"
+#include "dbpresenter.h"
+#include "dbclientpresenter.h"
+
+#include"guilib.h"
+#include"ClientSocket.h"
+
+#include"client.h"
+using namespace ClientNamespace;
 
 using namespace StringHandlNamespace ;
 
@@ -12,6 +24,8 @@ using namespace StringHandlNamespace ;
 int main(int argc, char *argv[])
 {
     QCoreApplication  app(argc, argv);
+
+    srand(time(NULL));
 
   /*  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Client_t {
-    QByteArrayData data[10];
-    char stringdata0[140];
+    QByteArrayData data[11];
+    char stringdata0[152];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,14 +41,15 @@ QT_MOC_LITERAL(5, 58, 9), // "slotHello"
 QT_MOC_LITERAL(6, 68, 28), // "slotInsertUserIntoTabSession"
 QT_MOC_LITERAL(7, 97, 19), // "slotGetListsClients"
 QT_MOC_LITERAL(8, 117, 12), // "QVector<int>"
-QT_MOC_LITERAL(9, 130, 9) // "slotGetID"
+QT_MOC_LITERAL(9, 130, 9), // "slotGetID"
+QT_MOC_LITERAL(10, 140, 11) // "sendMessage"
 
     },
     "Client\0slotAuthorization\0\0slotConnection\0"
     "slotRegistration\0slotHello\0"
     "slotInsertUserIntoTabSession\0"
     "slotGetListsClients\0QVector<int>\0"
-    "slotGetID"
+    "slotGetID\0sendMessage"
 };
 #undef QT_MOC_LITERAL
 
@@ -58,7 +59,7 @@ static const uint qt_meta_data_Client[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -66,13 +67,14 @@ static const uint qt_meta_data_Client[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    2,   49,    2, 0x0a /* Public */,
-       3,    2,   54,    2, 0x0a /* Public */,
-       4,    2,   59,    2, 0x0a /* Public */,
-       5,    0,   64,    2, 0x0a /* Public */,
-       6,    0,   65,    2, 0x0a /* Public */,
-       7,    1,   66,    2, 0x0a /* Public */,
-       9,    1,   69,    2, 0x0a /* Public */,
+       1,    2,   54,    2, 0x0a /* Public */,
+       3,    2,   59,    2, 0x0a /* Public */,
+       4,    2,   64,    2, 0x0a /* Public */,
+       5,    0,   69,    2, 0x0a /* Public */,
+       6,    0,   70,    2, 0x0a /* Public */,
+       7,    1,   71,    2, 0x0a /* Public */,
+       9,    1,   74,    2, 0x0a /* Public */,
+      10,    0,   77,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    2,    2,
@@ -82,6 +84,7 @@ static const uint qt_meta_data_Client[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 8,    2,
     QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -99,6 +102,7 @@ void Client::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 4: _t->slotInsertUserIntoTabSession(); break;
         case 5: _t->slotGetListsClients((*reinterpret_cast< QVector<int>(*)>(_a[1]))); break;
         case 6: _t->slotGetID((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 7: _t->sendMessage(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -140,13 +144,13 @@ int Client::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

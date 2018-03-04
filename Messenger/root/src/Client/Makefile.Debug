@@ -171,7 +171,7 @@ compiler_moc_predefs_clean:
 compiler_moc_header_make_all: ..\..\obj\debug\Client\moc\moc_client.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) ..\..\obj\debug\Client\moc\moc_client.cpp
-..\..\obj\debug\Client\moc\moc_client.cpp: stdafx.h \
+..\..\obj\debug\Client\moc\moc_client.cpp: ..\DBLib\stdafx.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QObject \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobjectdefs.h \
@@ -222,28 +222,6 @@ compiler_moc_header_clean:
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvarlengtharray.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontainerfwd.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qobject_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpSocket \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetworkglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetwork-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qabstractsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qtextstream.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qlocale.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvariant.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvector.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qpoint.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qset.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontiguouscache.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer_impl.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpServer \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpserver.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qhostaddress.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QtSql \
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QtSqlDepends \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QtCore \
@@ -252,6 +230,20 @@ compiler_moc_header_clean:
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qabstracteventdispatcher.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qeventloop.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qabstractitemmodel.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvariant.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qmap.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qdebug.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qhash.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qtextstream.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qiodevice.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qlocale.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qshareddata.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qvector.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qpoint.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qset.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qcontiguouscache.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qsharedpointer_impl.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qabstractnativeeventfilter.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qabstractproxymodel.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\qabstractstate.h \
@@ -434,40 +426,13 @@ compiler_moc_header_clean:
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QSqlDatabase \
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QSqlError \
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QSqlQuery \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QCoreApplication \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\QGuiApplication \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\qguiapplication.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\qinputmethod.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\QQmlApplicationEngine \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlapplicationengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qjsengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qjsvalue.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qtqmlglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qtqml-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqml.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlprivate.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlparserstatus.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlpropertyvaluesource.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmllist.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlerror.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmldebug.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDataStream \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
 		..\DBLib\request.h \
 		..\DBLib\user.h \
-		..\DBLib\stdafx.h \
 		..\DBLib\ipresenter.h \
 		..\DBLib\dbpresenter.h \
 		..\DBLib\dbclientpresenter.h \
 		..\GuiLib\guilib.h \
 		..\ClientLib\ClientSocket.h \
-		..\..\src\DBLib\user.h \
-		..\..\src\DBLib\request.h \
-		..\..\src\DBLib\ipresenter.h \
-		..\..\src\DBLib\dbpresenter.h \
-		..\..\src\DBLib\dbclientpresenter.h \
 		client.h \
 		..\..\obj\debug\Client\moc\moc_predefs.h \
 		D:\QtProgram\5.10.0\msvc2015\bin\moc.exe
@@ -773,7 +738,8 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDataStream \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
-		client.h \
+		..\ParseDataLib\parsedata.h \
+		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QVector \
 		..\DBLib\request.h \
 		..\DBLib\user.h \
 		..\DBLib\stdafx.h \
@@ -782,13 +748,7 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		..\DBLib\dbclientpresenter.h \
 		..\GuiLib\guilib.h \
 		..\ClientLib\ClientSocket.h \
-		..\..\src\DBLib\user.h \
-		..\..\src\DBLib\request.h \
-		..\..\src\DBLib\ipresenter.h \
-		..\..\src\DBLib\dbpresenter.h \
-		..\..\src\DBLib\dbclientpresenter.h \
-		..\ParseDataLib\parsedata.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QVector
+		client.h
 
 ..\..\obj\debug\Client\obj\client.obj: client.cpp ..\DBLib\stdafx.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QObject \
@@ -1052,44 +1012,9 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		..\DBLib\dbclientpresenter.h \
 		..\GuiLib\guilib.h \
 		..\ClientLib\ClientSocket.h \
-		..\..\src\DBLib\user.h \
-		..\..\src\DBLib\request.h \
-		..\..\src\DBLib\ipresenter.h \
-		..\..\src\DBLib\dbpresenter.h \
-		..\..\src\DBLib\dbclientpresenter.h \
 		..\ParseDataLib\parsedata.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QVector \
-		client.h \
-		stdafx.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpSocket \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetworkglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtnetwork-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qabstractsocket.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\QTcpServer \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qtcpserver.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtNetwork\qhostaddress.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QCoreApplication \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\QGuiApplication \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\qguiapplication.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtGui\qinputmethod.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\QQmlApplicationEngine \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlapplicationengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qjsengine.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qjsvalue.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qtqmlglobal.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qtqml-config.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqml.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlprivate.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlparserstatus.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlpropertyvaluesource.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmllist.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmlerror.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtQml\qqmldebug.h \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QDataStream \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
-		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString
+		client.h
 
 ..\..\obj\debug\Client\obj\moc_client.obj: ..\..\obj\debug\Client\moc\moc_client.cpp 
 

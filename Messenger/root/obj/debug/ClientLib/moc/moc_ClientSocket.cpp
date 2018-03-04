@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ClientNamespace__ClientSocket_t {
-    QByteArrayData data[10];
-    char stringdata0[176];
+    QByteArrayData data[11];
+    char stringdata0[194];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,16 +38,18 @@ QT_MOC_LITERAL(2, 61, 0), // ""
 QT_MOC_LITERAL(3, 62, 21), // "signalGetListsClients"
 QT_MOC_LITERAL(4, 84, 12), // "QVector<int>"
 QT_MOC_LITERAL(5, 97, 11), // "signalGetID"
-QT_MOC_LITERAL(6, 109, 13), // "slotReadyRead"
-QT_MOC_LITERAL(7, 123, 9), // "slotError"
-QT_MOC_LITERAL(8, 133, 28), // "QAbstractSocket::SocketError"
-QT_MOC_LITERAL(9, 162, 13) // "slotConnected"
+QT_MOC_LITERAL(6, 109, 17), // "signalSendMessage"
+QT_MOC_LITERAL(7, 127, 13), // "slotReadyRead"
+QT_MOC_LITERAL(8, 141, 9), // "slotError"
+QT_MOC_LITERAL(9, 151, 28), // "QAbstractSocket::SocketError"
+QT_MOC_LITERAL(10, 180, 13) // "slotConnected"
 
     },
     "ClientNamespace::ClientSocket\0"
     "signalInsertUserIntoTabSession\0\0"
     "signalGetListsClients\0QVector<int>\0"
-    "signalGetID\0slotReadyRead\0slotError\0"
+    "signalGetID\0signalSendMessage\0"
+    "slotReadyRead\0slotError\0"
     "QAbstractSocket::SocketError\0slotConnected"
 };
 #undef QT_MOC_LITERAL
@@ -58,31 +60,33 @@ static const uint qt_meta_data_ClientNamespace__ClientSocket[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   44,    2, 0x06 /* Public */,
-       3,    1,   45,    2, 0x06 /* Public */,
-       5,    1,   48,    2, 0x06 /* Public */,
+       1,    0,   49,    2, 0x06 /* Public */,
+       3,    1,   50,    2, 0x06 /* Public */,
+       5,    1,   53,    2, 0x06 /* Public */,
+       6,    0,   56,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    0,   51,    2, 0x08 /* Private */,
-       7,    1,   52,    2, 0x08 /* Private */,
-       9,    0,   55,    2, 0x08 /* Private */,
+       7,    0,   57,    2, 0x08 /* Private */,
+       8,    1,   58,    2, 0x08 /* Private */,
+      10,    0,   61,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 4,    2,
     QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 8,    2,
+    QMetaType::Void, 0x80000000 | 9,    2,
     QMetaType::Void,
 
        0        // eod
@@ -97,9 +101,10 @@ void ClientNamespace::ClientSocket::qt_static_metacall(QObject *_o, QMetaObject:
         case 0: _t->signalInsertUserIntoTabSession(); break;
         case 1: _t->signalGetListsClients((*reinterpret_cast< QVector<int>(*)>(_a[1]))); break;
         case 2: _t->signalGetID((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 3: _t->slotReadyRead(); break;
-        case 4: _t->slotError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
-        case 5: _t->slotConnected(); break;
+        case 3: _t->signalSendMessage(); break;
+        case 4: _t->slotReadyRead(); break;
+        case 5: _t->slotError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
+        case 6: _t->slotConnected(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -112,7 +117,7 @@ void ClientNamespace::ClientSocket::qt_static_metacall(QObject *_o, QMetaObject:
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QVector<int> >(); break;
             }
             break;
-        case 4:
+        case 5:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -140,6 +145,13 @@ void ClientNamespace::ClientSocket::qt_static_metacall(QObject *_o, QMetaObject:
             typedef void (ClientSocket::*_t)(int );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ClientSocket::signalGetID)) {
                 *result = 2;
+                return;
+            }
+        }
+        {
+            typedef void (ClientSocket::*_t)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ClientSocket::signalSendMessage)) {
+                *result = 3;
                 return;
             }
         }
@@ -171,13 +183,13 @@ int ClientNamespace::ClientSocket::qt_metacall(QMetaObject::Call _c, int _id, vo
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }
@@ -200,6 +212,12 @@ void ClientNamespace::ClientSocket::signalGetID(int _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void ClientNamespace::ClientSocket::signalSendMessage()
+{
+    QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

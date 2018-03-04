@@ -11,14 +11,17 @@ protected:
 
 public:
     DBClientPresenter();
+    DBClientPresenter(const QString&);
 
   virtual  ~DBClientPresenter();
 
 
 
 
-     virtual void insertUser(User);
+     virtual bool insertUser(User);
      void insertDialog();
+
+      void createDB(const QString& );
 
 };
 

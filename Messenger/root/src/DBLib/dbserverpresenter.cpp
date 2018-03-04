@@ -56,7 +56,7 @@ DBServerPresenter::~DBServerPresenter(){}
      Атрибуты: User& us - объект юзера
      Возвращает: true -юзер добавлен, false - сообщение об ошибке
  */
- void DBServerPresenter::insertUser(User us)
+ bool DBServerPresenter::insertUser(User us)
  {
      QString params="login, password";
      QString values="'%1','%2'";
@@ -65,10 +65,17 @@ DBServerPresenter::~DBServerPresenter(){}
      QString str=str_insert.arg(us.getLogin()).arg(us.getPassword());
 
      if (!m_query->exec(str))
+        {
          qDebug() << "Unable to make insert operation";
+         return false;
+     }
      else
-         qDebug() << "To make insert operation";
+       {
 
+         qDebug() << "To make insert operation";
+         return true;
+
+        }
  }
 
   User DBServerPresenter::searchUser(const int id)

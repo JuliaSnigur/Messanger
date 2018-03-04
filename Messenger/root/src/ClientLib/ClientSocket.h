@@ -3,16 +3,9 @@
 #include"stdafx.h"
 
 
-#include"DBLib/user.h"
-#include"DBLib/request.h"
-#include"DBLib/ipresenter.h"
-#include"DBLib/dbpresenter.h"
-#include "DBLib/dbclientpresenter.h"
 
 
 namespace ClientNamespace {
-
-
 
 
 class ClientSocket: public QObject
@@ -24,13 +17,15 @@ private:
 
     QFile* file;
 
-    DBClientPresenter m_db;
+    QQueue<QString> m_request;
+    bool m_flag;
+
 
 
 
 
 public:
-    ClientSocket(const DBClientPresenter& db,QObject* parent=0);
+    ClientSocket(QObject* parent=0);
     virtual ~ClientSocket();
 
 
@@ -54,6 +49,7 @@ signals:
     void signalInsertUserIntoTabSession();
     void signalGetListsClients(QVector<int>);
     void signalGetID(int);
+    void signalSendMessage();
 
 };
 

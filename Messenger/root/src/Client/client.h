@@ -38,7 +38,7 @@ public:
 
     void startWork();
 
-    void dialog();
+
 
 public slots:
     void slotAuthorization(QString,QString);
@@ -49,6 +49,7 @@ public slots:
 
     void slotInsertUserIntoTabSession();
     void slotGetListsClients(QVector<int>);
-    void slotGetID(int);
+   void slotGetID(int);
+   void sendMessage();
 };
 

@@ -15,22 +15,23 @@ DBClientPresenter::DBClientPresenter()
     m_tabUsers="users";
     m_tabDialogs="dialogs";
     m_tabMessages="messangers";
-
-
-    try{
-        createConnection();
-        createTables();
-    }
-    catch(std::exception& ex)
-    {
-        qDebug()<<ex.what();
-    }
-
-
 }
 
 DBClientPresenter::~DBClientPresenter(){}
 
+DBClientPresenter::DBClientPresenter(const QString& nameDB)
+{
+    this->m_nameDB=nameDB;
+
+      try{
+          createConnection();
+          createTables();
+      }
+      catch(std::exception& ex)
+      {
+          qDebug()<<ex.what();
+      }
+}
 
   void DBClientPresenter::createTables()
   {
@@ -71,7 +72,7 @@ DBClientPresenter::~DBClientPresenter(){}
   }
 
 
-   void DBClientPresenter::insertUser(User us)
+   bool DBClientPresenter::insertUser(User us)
    {
        QString params="login";
        QString values="'%1'";
@@ -80,8 +81,13 @@ DBClientPresenter::~DBClientPresenter(){}
        QString str=str_insert.arg(us.getLogin());
 
        if (!m_query->exec(str))
+         {
            qDebug() << "Unable to make insert operation";
+           return false;
+       }
        else
+          {
            qDebug() << "To make insert operation";
-
+           return true;
+}
    }

@@ -16,10 +16,12 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <dos.h>
 
 #include<iostream>
 #include<string>
 #include<queue>
+#include<ctime>
 
 
 #include<QObject>

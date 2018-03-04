@@ -19,6 +19,8 @@
 #include<QString>
 
 
+
+
 #include <stdio.h>
 #include <tchar.h>
 
@@ -26,6 +28,7 @@
 #include<iostream>
 #include<string>
 #include <algorithm>
+#include<thread>
 
 
 

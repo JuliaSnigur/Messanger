@@ -22,7 +22,7 @@ public:
     virtual ~DBPresenter();
 
 
-     virtual void insertUser(User)=0;
+     virtual bool insertUser(User)=0;
 
 };
 

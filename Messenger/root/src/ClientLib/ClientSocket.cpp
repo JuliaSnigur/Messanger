@@ -1,11 +1,10 @@
 #include"stdafx.h"
 
-
-
 #include "ClientSocket.h"
 
 
 #include"ParseDataLib/parsedata.h"
+
 
 using namespace StringHandlNamespace;
 using namespace ClientNamespace;
@@ -16,7 +15,8 @@ ClientSocket::~ClientSocket()
         delete m_pTcpSocket;
 }
 
-ClientSocket::ClientSocket(const DBClientPresenter& db,QObject* parent):QObject(parent), m_nNextBlockSize(0),file(0),m_db(db)
+ClientSocket::ClientSocket(QObject* parent):QObject(parent),
+                        m_nNextBlockSize(0),file(0),m_request(),m_flag(true)
 {
     qDebug()<<"Client";
 }
@@ -55,7 +55,6 @@ void ClientSocket::slotReadyRead()
     //так и только часть блока или даже все блоки сразу.
     //Каждый переданный блок начинается полем, хранящим размер блока.
 
-
     while(true) {
         if (!m_nNextBlockSize) {
 
@@ -72,16 +71,27 @@ void ClientSocket::slotReadyRead()
 
 
         in >>time>>answer;
-
-
-
         qDebug()<<"Client got-> "<<time << ' ' << answer;
+
+        m_request.push_back(answer);
+
+        if(!m_flag)
+            break;
+
+        m_flag=false;
+
+        answer=m_request.front();
+
+        qDebug()<<"QUEUE is poped: "<<answer;
+
+        m_request.pop_front();
+
 
         switch((variable(answer)).toInt())
         {
 
         case Error:
-            qDebug()<<"Upss..";
+            qDebug()<<"Upss.. "<<answer;
             break;
 
         case Connection:
@@ -97,37 +107,48 @@ void ClientSocket::slotReadyRead()
             // insert user into tables session
               emit signalInsertUserIntoTabSession();
 
+            qDebug()<<"GetID";
+            emit signalGetID(variable(answer).toInt());
+
+            // get lists of clients who are online
+            sendToServer(QString::number(GetNewList));
+
+
+
+
                 break;
 
             case Authorization:
                 break;
 
             case Message:
-                qDebug()<<answer;
+            qDebug()<<answer;
+
+           emit signalSendMessage();
+
                 break;
 
             case File:
                 break;
 
         case GetNewList:
+            qDebug()<<"GetNewList";
             emit signalGetListsClients(separateVec(answer));
-            break;
-
-        case GetID:
-            emit signalGetID(variable(answer).toInt());
             break;
 
         };
 
 
+        m_flag=true;
+
 
 }
-      //  qDebug()<<time.toString() + " " + str;
-
         //присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
          // что размер очередного блока данных неизвестен.
 
         m_nNextBlockSize = 0;
+
+
     }
 
 
@@ -171,11 +192,9 @@ void ClientSocket::sendToServer( const QString& data)
 
     // отправка блока на сервер
     m_pTcpSocket->write(arrBlock);
-    m_pTcpSocket->waitForBytesWritten();
+   // m_pTcpSocket->waitForBytesWritten(1000);
 
 }
-
-
 
 void ClientSocket::slotConnected()
 {

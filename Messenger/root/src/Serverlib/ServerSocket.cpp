@@ -14,7 +14,7 @@
 using namespace ServerNamespace;
 using namespace StringHandlNamespace;
 
-ServerSocket::ServerSocket(QWidget*pwgt):QWidget(pwgt),m_db(),m_us()
+ServerSocket::ServerSocket(QWidget*pwgt):QWidget(pwgt),m_db(),m_hash(),m_flag(true),m_QueueRequest()
 {
     qDebug()<<"Server:";
 }
@@ -67,17 +67,17 @@ void ServerSocket::createServer(int nPort)
 {
 
     //возврат сокета nextPendingConnection, посредством которого можно осуществлять дальнейшую связь с клиентом
-   QTcpSocket*  pClientSocket =  m_ptcpServer->nextPendingConnection();
+    m_ClientSocket =  m_ptcpServer->nextPendingConnection();
 
 
     //дисконектим пользователя
-    connect(pClientSocket, SIGNAL(disconnected()),pClientSocket, SLOT(deleteLater()));
-    connect(pClientSocket,&QTcpSocket::disconnected, this, &ServerSocket::slotDisconnect);
+    connect(m_ClientSocket, SIGNAL(disconnected()),m_ClientSocket, SLOT(deleteLater()));
+    connect(m_ClientSocket,&QTcpSocket::disconnected, this, &ServerSocket::slotDisconnect);
     //При поступлении запросов от клиентов
     //отправляется сигнал readyToRead ( ) , который мы соединяем со слотом slotReadClient().
-    connect(pClientSocket, SIGNAL(readyRead()),this, SLOT(slotReadClient()));
+    connect(m_ClientSocket, SIGNAL(readyRead()),this, SLOT(slotReadClient()));
 
-    sendToClient(pClientSocket, QString::number(Connection)+" Server Response: Connected!");
+    sendToClient(m_ClientSocket, QString::number(Connection)+" Server Response: Connected!");
 
      qDebug()<<"New connection";   
 
@@ -88,8 +88,8 @@ void ServerSocket::createServer(int nPort)
 void ServerSocket::slotReadClient()
 {
     //преобразование указателя sender к типу QTcpSocket.
-   QTcpSocket* pClientSocket = (QTcpSocket*)sender();
-    QDataStream in(pClientSocket);
+    m_ClientSocket = (QTcpSocket*)sender();
+    QDataStream in(m_ClientSocket);
     in.setVersion(QDataStream::Qt_5_3);
     //цикл обработки частей блоков информации передаваемой и принимаемой по сети
     while (true)
@@ -97,13 +97,13 @@ void ServerSocket::slotReadClient()
         if (!m_nNextBlockSize)
         { //в if проверяем размер блока не менее 2 байт и m_nNextBlockSize (размер блока) неизвестен
 
-            if (pClientSocket->bytesAvailable() < (int)sizeof(quint16)) {
+            if (m_ClientSocket->bytesAvailable() < (int)sizeof(quint16)) {
                 break;
             }
             in >> m_nNextBlockSize; //считываем вносим данные
         }
         //если размер полученных данных менее размера блока данных то данные не записываем
-        if (pClientSocket->bytesAvailable() < m_nNextBlockSize)
+        if (m_ClientSocket->bytesAvailable() < m_nNextBlockSize)
         {
             break;
         }
@@ -112,13 +112,29 @@ void ServerSocket::slotReadClient()
         QTime   time;
         QString req;
 
+
+
+
         in >> time >> req;
 
-        User us;
+
 
         // преобразуем time в строку и вместе с str записываем в strMessage
         //добавляем в виджет strMessage
         qDebug()<< time.toString() << " " << "Client has sent - " << req;
+
+
+        m_QueueRequest.push_back(req);
+
+        if(!m_flag)// сервер занят
+            break;
+
+        m_flag=false;
+
+        req=m_QueueRequest.front();
+        m_QueueRequest.pop_front();
+
+         qDebug()<<"QUEUE is poped: "<<req;
 
         switch ((StringHandlNamespace::variable(req)).toInt())
         {
@@ -131,36 +147,36 @@ void ServerSocket::slotReadClient()
         qDebug()<<"MESSAGE\n";
 
         message(req);
-
-
-
         break;
 
         case Registration:
         qDebug()<<"Registration\n";
 
-        registration(pClientSocket,req);
+        registration(req);
 
         break;
 
         case Authorization:
         qDebug()<<"Authorization\n";
-
-
-
         break;
+
+        case GetNewList:
+
+            qDebug()<<"GetNewList";
+            sendList();
+            break;
 
         default:
             break;
         }
 
+        m_flag=true;
 
-
-
-        //обнуляем размер блока что бы проводить запись следующего блока
-        m_nNextBlockSize = 0;
 
     }
+
+    //обнуляем размер блока что бы проводить запись следующего блока
+     m_nNextBlockSize = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -181,20 +197,27 @@ void ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& str)
 
     //записываем созданный блок
     pSocket->write(arrBlock);
-    pSocket->waitForBytesWritten();
+   // pSocket->waitForBytesWritten(1000);
 
 }
 
-void ServerSocket::registration(QTcpSocket* pSocket,QString& req)
+void ServerSocket::registration(QString& req)
 {
-    m_us.setLogin(variable(req));
-    m_us.setPassword(variable(req));
+
+    int id=0;
+
+    QString log=variable(req), pas=variable(req);
+    User us(log,pas);
 
     // insert user into db
-    qDebug()<<"User: "<<m_us.getLogin()<<", "<<m_us.getPassword();
-    m_db.insertUser(m_us);
+    qDebug()<<"User: "<<us.getLogin()<<", "<<us.getPassword();
 
-    int id=m_db.searchID(m_us.getLogin());
+    if(!m_db.insertUser(us))
+      {
+        sendToClient(m_ClientSocket,QString::number(Error)+" The login is exist");
+        return;
+      }
+     id=m_db.searchID(us.getLogin());
 
     if(id<0)
     {
@@ -203,53 +226,41 @@ void ServerSocket::registration(QTcpSocket* pSocket,QString& req)
     else
     {
          qDebug()<<"ID: "<<id;
-         m_us.setID(id);
-         m_vecClientsID.push_back(id);
+         us.setID(id);
 
-         QTcpSocket* p=new QTcpSocket(this);
-         p=pSocket;
-         m_vecSockets.push_back(p);
 
-        sendToClient(pSocket,QString::number(Registration));
+         m_hash.insert(id,m_ClientSocket);
 
-        sendToClient(pSocket,QString::number(GetID)+" "+QString::number(m_us.getID()));
-
-        if(m_vecClientsID.size()>1)
-            sendToAllClients(QString::number(GetNewList)+' '+concatenationVec(m_vecClientsID));
-        else
-          qDebug()<<m_vecClientsID.size()<< " client";
-
+        sendToClient(m_ClientSocket,QString::number(Registration)+" "+QString::number(us.getID()));
  }
-
+    m_flag=true;
 }
 
 void ServerSocket::slotDisconnect()
 {
-    bool flag;
-    int i=0;
-
-    do
+    // ошибка
+    QHash<int,QTcpSocket*>::iterator iter=m_hash.begin();
+    while(iter!=m_hash.end())
     {
-        flag=false;
-        if(m_us.getID()==m_vecClientsID[i])
-            flag=true;
-        else
-           if(i<m_vecClientsID.size())
-               ++i;
-
-
-    }while(i<m_vecClientsID.size()||!flag);
-
-    m_vecClientsID.erase(m_vecClientsID.begin()+i);
-    m_vecSockets.erase(m_vecSockets.begin()+i);
+        if(!iter.value()->state()==QAbstractSocket::ClosingState)
+        {
+            m_hash.erase(iter);
+            qDebug()<<"Dissconect";
+        }
+         ++iter;
+    }
 }
 
 
 
   void ServerSocket::sendToAllClients( const QString& str)
   {
-      for(int i=0;i<m_vecSockets.size();i++)
-          sendToClient(m_vecSockets[i],str);  
+      QHash<int,QTcpSocket*>::iterator iter=m_hash.begin();
+      while(iter!=m_hash.end())
+      {
+           sendToClient(iter.value(),str);
+            ++iter;
+      }
   }
 
 /*
@@ -259,25 +270,40 @@ bool ServerSocket::authorization(QString&);
 
 void ServerSocket::message(QString& str)
 {
-    int id=variable(str).toInt();
-    int index=0;
+    // id friend
+    int myID=variable(str).toInt();
+    int friendID=variable(str).toInt();
 
-    qDebug()<<"ID->"<<id;
+    QString login=m_db.searchLogin(myID);
 
-   for( index=0;index<m_vecClientsID.size();index++)
-       if(id==m_vecClientsID[index])
-           break;
-
-    if(index<m_vecClientsID.size()|| str!="")
-    {
-        qDebug()<<"Index: "<<index;
-
-        sendToClient(m_vecSockets[index],QString::number(Message)+' '+m_us.getLogin()+": "+str);
-     }
+    if(login!="")
+         sendToClient(m_hash[friendID],QString::number(Message)+' '+login+": "+str);
     else
-        sendToClient(m_vecSockets[index],QString::number(Error));
+        sendToClient(m_hash[myID],QString::number(Error)+" The message dosn't send");
+
 
 }
 
+void ServerSocket::sendList()
+{
+    QVector<int> vec;
+    QHash<int,QTcpSocket*>::iterator iter;
 
+    if(m_hash.size()>1)
+   {
+      iter=m_hash.begin();
+      while(iter!=m_hash.end())
+      {
+          vec.push_back(iter.key());
+          ++iter;
+      }
+      qDebug()<<"Vector: "+concatenationVec(vec);
+     sendToAllClients(QString::number(GetNewList)+' '+concatenationVec(vec));
+  }
+  else
+    {
+        qDebug()<<m_hash.size()<< " client";
+        sendToAllClients(QString::number(Error)+" Just 1 connection");
+    }
+}
 

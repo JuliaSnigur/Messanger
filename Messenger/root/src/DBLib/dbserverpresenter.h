@@ -15,7 +15,7 @@ public:
     virtual ~DBServerPresenter();
 
 
-    virtual void insertUser(User);
+    virtual bool insertUser(User);
 
     User searchUser(const QString& login);
     User searchUser(const int);

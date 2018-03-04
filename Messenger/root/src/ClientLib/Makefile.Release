@@ -429,12 +429,6 @@ compiler_moc_header_clean:
 		D:\QtProgram\5.10.0\msvc2015\include\QtSql\QSqlQuery \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
-		..\..\src\DBLib\user.h \
-		..\DBLib\stdafx.h \
-		..\..\src\DBLib\request.h \
-		..\..\src\DBLib\ipresenter.h \
-		..\..\src\DBLib\dbpresenter.h \
-		..\..\src\DBLib\dbclientpresenter.h \
 		ClientSocket.h \
 		..\..\obj\release\ClientLib\moc\moc_predefs.h \
 		D:\QtProgram\5.10.0\msvc2015\bin\moc.exe
@@ -722,12 +716,6 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QTime \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QString \
 		ClientSocket.h \
-		..\..\src\DBLib\user.h \
-		..\DBLib\stdafx.h \
-		..\..\src\DBLib\request.h \
-		..\..\src\DBLib\ipresenter.h \
-		..\..\src\DBLib\dbpresenter.h \
-		..\..\src\DBLib\dbclientpresenter.h \
 		..\..\src\ParseDataLib\parsedata.h \
 		D:\QtProgram\5.10.0\msvc2015\include\QtCore\QVector
 
