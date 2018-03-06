@@ -1,11 +1,8 @@
 #pragma once
 
-
-#include "stdafx.h"
-
 class QTcpServer;
-class QTextEdit;
 class QTcpSocket;
+
 
 
 #include"DBLib/user.h"
@@ -14,12 +11,11 @@ class QTcpSocket;
 #include"DBLib/dbpresenter.h"
 #include "DBLib/dbserverpresenter.h"
 
+
 namespace ServerNamespace {
 
 
-
-
-class ServerSocket : public QWidget
+class ServerSocket : public QObject
 {
 Q_OBJECT
 private:
@@ -31,17 +27,7 @@ private:
 
     DBServerPresenter m_db;
 
-    bool m_flag;
-    QQueue<QString> m_QueueRequest;
     QTcpSocket* m_ClientSocket;
-
-    QString m_req;
-
-    std::thread m_thr;
-    std::mutex m_lock;
-
-
-
 
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
@@ -49,8 +35,8 @@ private:
 
 
 public:
-    ServerSocket(QWidget*pwgt=0);
-    ServerSocket(int nPort, QWidget* pwgt = 0);
+    ServerSocket(QObject*pwgt=0);
+    ServerSocket(int nPort, QObject* pwgt = 0);
 
     virtual~ServerSocket();
 

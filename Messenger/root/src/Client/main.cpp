@@ -1,24 +1,8 @@
 #include"stdafx.h"
 
-
-
-#include"parsedata.h"
-
-
-
-#include"request.h"
-#include "user.h"
-#include"ipresenter.h"
-#include "dbpresenter.h"
-#include "dbclientpresenter.h"
-
-#include"guilib.h"
-#include"ClientSocket.h"
+#include"secureclientlib.h"
 
 #include"client.h"
-using namespace ClientNamespace;
-
-using namespace StringHandlNamespace ;
 
 
 int main(int argc, char *argv[])
@@ -37,10 +21,15 @@ int main(int argc, char *argv[])
 
     engine.load (QUrl (QStringLiteral ("../../src/GuiLib/main.qml") ) ) ;
 */
-    Client cl;
+
+    /*Client cl;
 
     cl.startWork();
+*/
 
+    SecureClient client;
+
+    client.createConnection("127.0.0.1",27015);
 
     return app.exec();
 }

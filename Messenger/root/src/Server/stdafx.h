@@ -11,8 +11,10 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-
+#include<QFile>
+#include<QIODevice>
 #include<QDataStream>
+#include <QTextStream>
 
 #include<QTime>
 #include<QString>

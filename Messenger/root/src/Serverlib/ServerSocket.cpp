@@ -11,19 +11,19 @@
 
 #include"ServerSocket.h"
 
-using namespace ServerNamespace;
-using namespace StringHandlNamespace;
 
-ServerSocket::ServerSocket(QWidget*pwgt):QWidget(pwgt),m_db(),m_hash(),m_flag(true),m_QueueRequest()
+
+
+ServerNamespace::ServerSocket::ServerSocket(QObject*pwgt):QObject(pwgt),m_db(),m_hash()
 {
     qDebug()<<"Server:";
 }
 
 
 
-ServerSocket::~ServerSocket(){}
+ServerNamespace::ServerSocket::~ServerSocket(){}
 
-ServerSocket::ServerSocket(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_nNextBlockSize(0), m_db()
+ServerNamespace::ServerSocket::ServerSocket(int nPort, QObject* pwgt /*=0*/) : QObject(pwgt), m_nNextBlockSize(0), m_db()
 {
     qDebug()<<"Server:";
     m_ptcpServer = new QTcpServer(this);
@@ -36,59 +36,75 @@ ServerSocket::ServerSocket(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt), m_n
     }
     else
     {
-        qDebug()<<"Creat socket";
+        qDebug()<<"Create socket";
         connect(m_ptcpServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
     }
 
 
 }
 
-void ServerSocket::createServer(int nPort)
+void ServerNamespace::ServerSocket::createServer(int nPort)
 {
     m_ptcpServer = new QTcpServer(this);
 
-   // catch the port
-    if (!m_ptcpServer->listen(QHostAddress::Any, nPort)) {
-        QMessageBox::critical(0, "Server Error","Unable to start the server:"+ m_ptcpServer->errorString());
-        m_ptcpServer->close();
+    if(m_ptcpServer!=nullptr)
+    {
+        // catch the port
+        if (!m_ptcpServer->listen(QHostAddress::Any, nPort)) {
+            QMessageBox::critical(0, "Server Error","Unable to start the server:"+ m_ptcpServer->errorString());
+            m_ptcpServer->close();
 
+        }
+        else
+        {
+            qDebug()<<"Creat socket";
+            connect(m_ptcpServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
+        }
     }
     else
-    {
-        qDebug()<<"Creat socket";
-        connect(m_ptcpServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
-    }
+        qDebug()<<"Create Server:: ptr=nullptr";
 }
 
 
 
 // ----------------------------------------------------------------------
- void ServerSocket::slotNewConnection()
+ void ServerNamespace::ServerSocket::slotNewConnection()
 {
 
     //возврат сокета nextPendingConnection, посредством которого можно осуществлять дальнейшую связь с клиентом
     m_ClientSocket =  m_ptcpServer->nextPendingConnection();
 
+    if(m_ClientSocket!=nullptr)
+    {
+        //дисконектим пользователя
+        connect(m_ClientSocket, SIGNAL(disconnected()),m_ClientSocket, SLOT(deleteLater()));
+        connect(m_ClientSocket,&QTcpSocket::disconnected, this, &ServerSocket::slotDisconnect);
+        //При поступлении запросов от клиентов
+        //отправляется сигнал readyToRead ( ) , который мы соединяем со слотом slotReadClient().
+        connect(m_ClientSocket, SIGNAL(readyRead()),this, SLOT(slotReadClient()));
 
-    //дисконектим пользователя
-    connect(m_ClientSocket, SIGNAL(disconnected()),m_ClientSocket, SLOT(deleteLater()));
-    connect(m_ClientSocket,&QTcpSocket::disconnected, this, &ServerSocket::slotDisconnect);
-    //При поступлении запросов от клиентов
-    //отправляется сигнал readyToRead ( ) , который мы соединяем со слотом slotReadClient().
-    connect(m_ClientSocket, SIGNAL(readyRead()),this, SLOT(slotReadClient()));
+        sendToClient(m_ClientSocket, QString::number(Connection)+" Server Response: Connected!");
 
-    sendToClient(m_ClientSocket, QString::number(Connection)+" Server Response: Connected!");
-
-     qDebug()<<"New connection";   
-
+         qDebug()<<"New connection";
+    }
+    else
+        qDebug()<<"NewConnection: ptr_Client=nullptr";
 }
 
 
 // ----------------------------------------------------------------------
-void ServerSocket::slotReadClient()
+void ServerNamespace::ServerSocket::slotReadClient()
 {
     //преобразование указателя sender к типу QTcpSocket.
-    m_ClientSocket = (QTcpSocket*)sender();
+    if(sender()!=nullptr)
+    {
+        m_ClientSocket = (QTcpSocket*)sender();
+    }
+    else
+    {
+        qDebug()<<"Sender=nullptr";
+    }
+
     QDataStream in(m_ClientSocket);
     in.setVersion(QDataStream::Qt_5_3);
     //цикл обработки частей блоков информации передаваемой и принимаемой по сети
@@ -112,29 +128,12 @@ void ServerSocket::slotReadClient()
         QTime   time;
         QString req;
 
-
-
-
         in >> time >> req;
-
-
 
         // преобразуем time в строку и вместе с str записываем в strMessage
         //добавляем в виджет strMessage
         qDebug()<< time.toString() << " " << "Client has sent - " << req;
 
-
-        m_QueueRequest.push_back(req);
-
-        if(!m_flag)// сервер занят
-            break;
-
-        m_flag=false;
-
-        req=m_QueueRequest.front();
-        m_QueueRequest.pop_front();
-
-         qDebug()<<"QUEUE is poped: "<<req;
 
         switch ((StringHandlNamespace::variable(req)).toInt())
         {
@@ -170,7 +169,6 @@ void ServerSocket::slotReadClient()
             break;
         }
 
-        m_flag=true;
 
 
     }
@@ -180,7 +178,7 @@ void ServerSocket::slotReadClient()
 }
 
 // ----------------------------------------------------------------------
-void ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& str)
+void ServerNamespace::ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& str)
 { //формируем данные клиенту
     // поскольку размер файла должен быть выслан первым перед блоком информации то создаем arrBlock с значением ноль
     QByteArray  arrBlock;
@@ -195,18 +193,23 @@ void ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& str)
     //вычисляем размер блока данных
     out << quint16(arrBlock.size() - sizeof(quint16));
 
-    //записываем созданный блок
-    pSocket->write(arrBlock);
-   // pSocket->waitForBytesWritten(1000);
+    if (pSocket != nullptr)
+    {
 
+          pSocket->write(arrBlock);
+    }
+    else
+    {
+        qDebug() << "Invalid socket ptr";
+    }
 }
 
-void ServerSocket::registration(QString& req)
+void ServerNamespace::ServerSocket::registration(QString& req)
 {
 
     int id=0;
 
-    QString log=variable(req), pas=variable(req);
+    QString log=StringHandlNamespace::variable(req), pas=StringHandlNamespace::variable(req);
     User us(log,pas);
 
     // insert user into db
@@ -233,27 +236,29 @@ void ServerSocket::registration(QString& req)
 
         sendToClient(m_ClientSocket,QString::number(Registration)+" "+QString::number(us.getID()));
  }
-    m_flag=true;
 }
 
-void ServerSocket::slotDisconnect()
+void ServerNamespace::ServerSocket::slotDisconnect()
 {
-    // ошибка
     QHash<int,QTcpSocket*>::iterator iter=m_hash.begin();
     while(iter!=m_hash.end())
     {
-        if(!iter.value()->state()==QAbstractSocket::ClosingState)
+        if(iter.value()->state()==QAbstractSocket::UnconnectedState)
         {
             m_hash.erase(iter);
             qDebug()<<"Dissconect";
+            return;
         }
          ++iter;
     }
+
+     sendList();
+
 }
 
 
 
-  void ServerSocket::sendToAllClients( const QString& str)
+  void ServerNamespace::ServerSocket::sendToAllClients( const QString& str)
   {
       QHash<int,QTcpSocket*>::iterator iter=m_hash.begin();
       while(iter!=m_hash.end())
@@ -268,11 +273,11 @@ bool ServerSocket::authorization(QString&);
 */
 
 
-void ServerSocket::message(QString& str)
+void ServerNamespace::ServerSocket::message(QString& str)
 {
     // id friend
-    int myID=variable(str).toInt();
-    int friendID=variable(str).toInt();
+    int myID=StringHandlNamespace::variable(str).toInt();
+    int friendID=StringHandlNamespace::variable(str).toInt();
 
     QString login=m_db.searchLogin(myID);
 
@@ -284,7 +289,7 @@ void ServerSocket::message(QString& str)
 
 }
 
-void ServerSocket::sendList()
+void ServerNamespace::ServerSocket::sendList()
 {
     QVector<int> vec;
     QHash<int,QTcpSocket*>::iterator iter;
@@ -297,8 +302,8 @@ void ServerSocket::sendList()
           vec.push_back(iter.key());
           ++iter;
       }
-      qDebug()<<"Vector: "+concatenationVec(vec);
-     sendToAllClients(QString::number(GetNewList)+' '+concatenationVec(vec));
+      qDebug()<<"Vector: "+StringHandlNamespace::concatenationVec(vec);
+     sendToAllClients(QString::number(GetNewList)+' '+StringHandlNamespace::concatenationVec(vec));
   }
   else
     {

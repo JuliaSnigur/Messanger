@@ -9,13 +9,13 @@ enum request{Error, Connection, Registration, Authorization, Message, File, GetN
 namespace StringHandlNamespace {
 
 
-    static QString concatenationVec(const QVector<int>&);
+  //  QString concatenationVec(const QVector<int>&);
 
-    static QString variable(QString&);
-    static QVector<int> separateVec(QString&);
+    //QString variable(QString& str);
+   // QVector<int> separateVec(QString&);
 
 
-    QString  variable(QString& str)
+   static QString variable(QString& str)
     {
         QString res;
         QString st;
@@ -38,7 +38,7 @@ namespace StringHandlNamespace {
     }
 
 
-    QVector<int> separateVec(QString& str)
+  static  QVector<int>separateVec(QString& str)
     {
         QVector<int> vec;
         QString res;
@@ -59,8 +59,8 @@ namespace StringHandlNamespace {
     }
 
 
-  QString concatenationVec(const QVector<int>& vec)
-  {
+  static  QString concatenationVec(const QVector<int>& vec)
+    {
       QString str;
 
       for (int i=0;i<vec.size();i++)
@@ -69,7 +69,9 @@ namespace StringHandlNamespace {
       }
 
       return str;
-  }
+    }
+
+
 
 
    }

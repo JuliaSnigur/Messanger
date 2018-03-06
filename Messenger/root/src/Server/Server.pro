@@ -22,4 +22,9 @@ INCLUDEPATH+= $${SERVERLIB_INCLUDEPATH}
 LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
 
-Server.depends = ServerLib DBLib ParseDataLib
+
+LIBS +=  $${SECURESERVERLIB_LIBRARY}
+INCLUDEPATH+= $${SECURESERVERLIB_INCLUDEPATH}
+
+CONFIG += ordered
+Server.depends = ServerLib SecureServerLib DBLib ParseDataLib

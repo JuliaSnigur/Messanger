@@ -3,8 +3,6 @@
 #include"stdafx.h"
 
 
-
-
 namespace ClientNamespace {
 
 
@@ -17,8 +15,6 @@ private:
 
     QFile* file;
 
-    QQueue<QString> m_request;
-    bool m_flag;
 
 
 

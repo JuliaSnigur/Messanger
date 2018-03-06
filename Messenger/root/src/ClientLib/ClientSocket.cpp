@@ -1,28 +1,23 @@
 #include"stdafx.h"
 
 #include "ClientSocket.h"
+#include"parsedata.h"
 
 
-#include"ParseDataLib/parsedata.h"
-
-
-using namespace StringHandlNamespace;
-using namespace ClientNamespace;
-
-ClientSocket::~ClientSocket()
+ClientNamespace::ClientSocket::~ClientSocket()
 {
     if(this->m_pTcpSocket)
         delete m_pTcpSocket;
 }
 
-ClientSocket::ClientSocket(QObject* parent):QObject(parent),
-                        m_nNextBlockSize(0),file(0),m_request(),m_flag(true)
+ClientNamespace::ClientSocket::ClientSocket(QObject* parent):QObject(parent),
+                        m_nNextBlockSize(0),file(0)
 {
     qDebug()<<"Client";
 }
 
 
-void ClientSocket::createConnection(const QString& strHost, int nPort)
+void ClientNamespace::ClientSocket::createConnection(const QString& strHost, int nPort)
 {
     m_pTcpSocket = new QTcpSocket(this);// создание сокета
     // связь с сервером
@@ -41,7 +36,7 @@ void ClientSocket::createConnection(const QString& strHost, int nPort)
     вызывется при поступлении данных от сервера
 */
 
-void ClientSocket::slotReadyRead()
+void ClientNamespace::ClientSocket::slotReadyRead()
 {
     QString answer;
     QTime time;
@@ -73,21 +68,9 @@ void ClientSocket::slotReadyRead()
         in >>time>>answer;
         qDebug()<<"Client got-> "<<time << ' ' << answer;
 
-        m_request.push_back(answer);
-
-        if(!m_flag)
-            break;
-
-        m_flag=false;
-
-        answer=m_request.front();
-
-        qDebug()<<"QUEUE is poped: "<<answer;
-
-        m_request.pop_front();
 
 
-        switch((variable(answer)).toInt())
+        switch((StringHandlNamespace::variable(answer)).toInt())
         {
 
         case Error:
@@ -108,7 +91,7 @@ void ClientSocket::slotReadyRead()
               emit signalInsertUserIntoTabSession();
 
             qDebug()<<"GetID";
-            emit signalGetID(variable(answer).toInt());
+            emit signalGetID(StringHandlNamespace::variable(answer).toInt());
 
             // get lists of clients who are online
             sendToServer(QString::number(GetNewList));
@@ -124,8 +107,7 @@ void ClientSocket::slotReadyRead()
             case Message:
             qDebug()<<answer;
 
-           emit signalSendMessage();
-
+            emit signalSendMessage();
                 break;
 
             case File:
@@ -133,14 +115,10 @@ void ClientSocket::slotReadyRead()
 
         case GetNewList:
             qDebug()<<"GetNewList";
-            emit signalGetListsClients(separateVec(answer));
+            emit signalGetListsClients(StringHandlNamespace::separateVec(answer));
             break;
 
         };
-
-
-        m_flag=true;
-
 
 }
         //присваиваем атрибуту m_nNextBlockSize значение 0, которое указывает на то,
@@ -155,7 +133,7 @@ void ClientSocket::slotReadyRead()
   /*  вызывается при возникновении ошибок
 */
 
-void ClientSocket::slotError(QAbstractSocket::SocketError err)
+void ClientNamespace::ClientSocket::slotError(QAbstractSocket::SocketError err)
 {
     QString strError =
         "Error: " + (err == QAbstractSocket::HostNotFoundError ?
@@ -171,7 +149,7 @@ void ClientSocket::slotError(QAbstractSocket::SocketError err)
 }
 
 
-void ClientSocket::sendToServer( const QString& data)
+void ClientNamespace::ClientSocket::sendToServer( const QString& data)
 {
 
 // для того чтобы записывать все данные блока в него, записывая сначала размер равным 0
@@ -196,7 +174,7 @@ void ClientSocket::sendToServer( const QString& data)
 
 }
 
-void ClientSocket::slotConnected()
+void ClientNamespace::ClientSocket::slotConnected()
 {
     qDebug()<<"Received the connected() signal";
 }

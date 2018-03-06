@@ -1,41 +1,62 @@
 #include "stdafx.h"
-
 #include "parsedata.h"
 
-using namespace StringHandlNamespace;
-
 /*
-  QString concatenation2(request req,const QString& str1,const QString& str2)
- {
-     return QString::number(req)+' '+str1+' '+str2;
- }
+
+QString StringHandlNamespace::variable(QString& str)
+{
+    QString res;
+    QString st;
+    int i=0;
+
+    while(i<str.size() && str[i]!=' ')
+    {
+        res+=str[i];
+        i++;
+    }
+     if(str[i]==' ')
+         i++;
+
+    for(;i<str.size();i++)
+        st+=str[i];
+
+    str=st;
+
+    return res;
+}
 
 
-  QString concatenation1(request req,const QString& str)
+QVector<int> StringHandlNamespace::separateVec(QString& str)
+{
+    QVector<int> vec;
+    QString res;
+    int i=0;
+    for(;i<str.size();i++)
+    {
+        res="";
+        while(i<str.size() && str[i]!=' ')
+        {
+            res+=str[i];
+            i++;
+        }
+
+        vec.push_back(res.toInt());
+    }
+
+    return vec;
+}
+
+
+QString StringHandlNamespace::concatenationVec(const QVector<int>& vec)
+{
+  QString str;
+
+  for (int i=0;i<vec.size();i++)
   {
-      return QString::number(req)+' '+str;
+      str+=QString::number(vec[i])+' ';
   }
 
-
-    QString concatenationRespond(request req,bool flag,const QString& str)
-    {
-        return QString::number(req)+' '+QString::number(flag)+' '+str;
-    }
-
-
-
-
-QString concatenationVec(request req,const QVector<int>& vec)
-{
-    QString str=QString::number(req);
-
-    for (int i=0;i<vec.size();i++)
-    {
-        str+=' ';
-        str=vec[i];
-    }
-
-    return str;
+  return str;
 }
-*/
 
+*/

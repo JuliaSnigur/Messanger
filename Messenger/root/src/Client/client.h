@@ -2,8 +2,8 @@
 
 #include"stdafx.h"
 
-
 #include"request.h"
+
 #include "user.h"
 #include"ipresenter.h"
 #include "dbpresenter.h"
@@ -11,8 +11,6 @@
 
 #include"guilib.h"
 #include"ClientSocket.h"
-
-using namespace ClientNamespace;
 
 
 class Client: public QObject
@@ -23,7 +21,7 @@ private:
     DBClientPresenter
     m_db;
     GuiLib m_gui;
-    ClientSocket m_client;
+    ClientNamespace::ClientSocket m_client;
     User m_us;
 
     QVector<int> m_vecClients;
@@ -50,6 +48,6 @@ public slots:
     void slotInsertUserIntoTabSession();
     void slotGetListsClients(QVector<int>);
    void slotGetID(int);
-   void sendMessage();
+   void slotSendMessage();
 };
 
