@@ -10,6 +10,12 @@
 #include<QSslConfiguration>
 #include<QSslCertificate>
 
+#include <QString>
+#include <QThread>
+
+
+
+
 #include <stdio.h>
 #include <tchar.h>
 

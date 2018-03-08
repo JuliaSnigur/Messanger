@@ -178,25 +178,13 @@ void ServerNamespace::ServerSocket::slotReadClient()
 }
 
 // ----------------------------------------------------------------------
-void ServerNamespace::ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& str)
-{ //формируем данные клиенту
-    // поскольку размер файла должен быть выслан первым перед блоком информации то создаем arrBlock с значением ноль
-    QByteArray  arrBlock;
-    QDataStream out(&arrBlock, QIODevice::WriteOnly);
-
-    out.setVersion(QDataStream::Qt_5_3);
-    //определяем значение первого бита в памяти текущего блока данных и начинаем записывать данные
-    out << quint16(0) << QTime::currentTime() << str;
-    qDebug()<<"Server sent-> " << QTime::currentTime() << str;
-    //ищем созданное нами нулевое значение что бы определить начало блока (перенос указателя в начало блока)
-    out.device()->seek(0);
-    //вычисляем размер блока данных
-    out << quint16(arrBlock.size() - sizeof(quint16));
-
+void ServerNamespace::ServerSocket::sendToClient(QTcpSocket* pSocket, const QString& message)
+{
     if (pSocket != nullptr)
     {
 
-          pSocket->write(arrBlock);
+        qDebug()<<"Server sent-> "<< QTime::currentTime() << message;
+        pSocket->write(message.toLocal8Bit());
     }
     else
     {

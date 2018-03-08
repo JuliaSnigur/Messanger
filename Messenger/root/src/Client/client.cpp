@@ -6,26 +6,26 @@
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
 
-#include"guilib.h"
-
-#include "ClientSocket.h"
-#include "parsedata.h"
-
-#include "secureclientlib.h"
+//#include"guilib.h"
 
 #include"client.h"
 
-Client::Client(QObject* obj):QObject(obj),m_db("Client_"+QString::number(rand()%500)+".db"),m_gui(),m_client(),m_isStartDialog(false)
+
+enum request{Error, Connection, Registration, Authorization, Message, File, GetNewList,GetID};
+
+
+
+Client::Client(QObject* obj):QObject(obj),m_db("Client_"+QString::number(rand()%500)+".db"),/*m_gui(),*/m_client(),m_isStartDialog(false)
 {
 
     //connect(&m_gui,SIGNAL(signalConnection(QString,QString)),this,SLOT(slotConnection(QString,QString)));
    // connect(&m_gui,&GuiLib::signalHello, this, &Client::slotHello);
 
-    connect(&m_client,&ClientNamespace::ClientSocket::signalInsertUserIntoTabSession,this,&Client::slotInsertUserIntoTabSession);
-    connect(&m_client,&ClientNamespace::ClientSocket::signalGetListsClients,this,&Client::slotGetListsClients);
-    connect(&m_client,&ClientNamespace::ClientSocket::signalGetID,this,&Client::slotGetID);
-    connect(&m_client,&ClientNamespace::ClientSocket::signalSendMessage,this,&Client::slotSendMessage);
-// signal
+    connect(&m_client,&ClientConnection::signalInsertUserIntoTabSession,this,&Client::slotInsertUserIntoTabSession);
+    connect(&m_client,&ClientConnection::signalGetListsClients,this,&Client::slotGetListsClients);
+    connect(&m_client,&ClientConnection::signalGetID,this,&Client::slotGetID);
+    connect(&m_client,&ClientConnection::signalSendMessage,this,&Client::slotSendMessage);
+    connect(&m_client,&ClientConnection::signalSendInfo,this,&Client::slotSendInfo);
 
 }
 
@@ -37,19 +37,7 @@ Client::~Client()
 void Client::startWork()
 {
     qDebug()<<"______________________________";
-   m_client.createConnection("127.0.0.1",27015);
-
-   std::string login,password;
-   std::cout<<"Login: ";
-   std::cin>>login;
-   std::cout<<"Password: ";
-   std::cin>>password;
-
-   m_us.setLogin(QString::fromStdString(login));
-   m_us.setPassword(QString::fromStdString(password));
-
-   m_client.sendToServer(QString::number(Registration)+' '+m_us.getLogin()+' '+m_us.getPassword());
-
+   m_client.start("127.0.0.1",27015);
 }
 
 
@@ -115,4 +103,18 @@ void Client::slotRegistration( QString login, QString password)
 
      //   m_client.sendToServer(QString::number(Message)+' '+QString::number(m_us.getID())+' '+QString::number(idFriend)+' '+QString::fromStdString("Hello! I'm ")+m_us.getLogin());
   m_client.sendToServer(QString::number(Message)+' '+QString::number(m_us.getID())+' '+QString::number(idFriend)+' '+QString::fromStdString(mess));
+  }
+
+  void Client::slotSendInfo()
+  {
+      std::string login,password;
+      std::cout<<"Login: ";
+      std::cin>>login;
+      std::cout<<"Password: ";
+      std::cin>>password;
+
+      m_us.setLogin(QString::fromStdString(login));
+      m_us.setPassword(QString::fromStdString(password));
+
+      m_client.sendToServer(QString::number(Registration)+' '+ m_us.getLogin()+' '+m_us.getPassword());
   }

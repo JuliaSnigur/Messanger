@@ -2,9 +2,9 @@
 
 
 #include"ServerSocket.h"
-#include"secureserverlib.h"
 
-using namespace ServerNamespace;
+
+#include "ServerConnection.h"
 
 
 
@@ -13,10 +13,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-  // ServerSocket server(27015);
+//  ServerSocket server(27015);
 
-    SecureServer server;
-    server.createServer(27015);
+    ServerConnection server;
+    server.start(27015);
 
     return app.exec();
 }

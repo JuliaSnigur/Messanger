@@ -48,7 +48,7 @@ SUBDIRS += \
 
 
 
-Client.depends = ClientLib SecureClientLib GuiLib DBLib ParseDataLib
+Client.depends = ClientLib SecureClientLib  GuiLib DBLib ParseDataLib
 
 Server.depends = ServerLib SecureServerLib DBLib ParseDataLib
 

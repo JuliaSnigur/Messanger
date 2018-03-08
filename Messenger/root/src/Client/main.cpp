@@ -1,6 +1,6 @@
 #include"stdafx.h"
 
-#include"secureclientlib.h"
+#include"ClientConnect.h"
 
 #include"client.h"
 
@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
     engine.load (QUrl (QStringLiteral ("../../src/GuiLib/main.qml") ) ) ;
 */
 
-    /*Client cl;
+    Client cl;
 
     cl.startWork();
-*/
 
-    SecureClient client;
 
-    client.createConnection("127.0.0.1",27015);
+  //  ClientConnection client;
+
+   // client.start("127.0.0.1",27015);
 
     return app.exec();
 }

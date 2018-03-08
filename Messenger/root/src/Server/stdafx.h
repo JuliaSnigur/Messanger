@@ -15,6 +15,7 @@
 #include<QIODevice>
 #include<QDataStream>
 #include <QTextStream>
+#include<QSslSocket>
 
 #include<QTime>
 #include<QString>

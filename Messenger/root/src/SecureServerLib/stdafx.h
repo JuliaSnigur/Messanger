@@ -16,6 +16,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
+#include <QCoreApplication>
+#include <QHostAddress>
+#include <QThread>
+
 #include <stdio.h>
 #include <tchar.h>
 

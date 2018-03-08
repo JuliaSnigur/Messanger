@@ -9,8 +9,8 @@
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
 
-#include"guilib.h"
-#include"ClientSocket.h"
+//#include"guilib.h"
+#include"ClientConnect.h"
 
 
 class Client: public QObject
@@ -20,8 +20,8 @@ class Client: public QObject
 private:
     DBClientPresenter
     m_db;
-    GuiLib m_gui;
-    ClientNamespace::ClientSocket m_client;
+    //GuiLib m_gui;
+    ClientConnection m_client;
     User m_us;
 
     QVector<int> m_vecClients;
@@ -49,5 +49,6 @@ public slots:
     void slotGetListsClients(QVector<int>);
    void slotGetID(int);
    void slotSendMessage();
+   void slotSendInfo();
 };
 
