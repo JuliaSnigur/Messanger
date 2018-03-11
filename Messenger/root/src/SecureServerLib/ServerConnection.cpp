@@ -11,14 +11,18 @@
 #include"dbpresenter.h"
 #include"dbserverpresenter.h"
 
+#include<threadrunnable.h>
+
 ServerConnection::ServerConnection(QObject *parent) :
     QObject(parent)
   ,m_sslServer(nullptr)
   ,m_sslClient(nullptr)
   ,m_hash()
   ,m_db()
+  ,m_pool(nullptr)
 {
-
+    m_pool=new QThreadPool(this);
+    m_pool->setMaxThreadCount(20);
 }
 
 ServerConnection::~ServerConnection(){}
@@ -37,38 +41,31 @@ ServerConnection::~ServerConnection(){}
      //set sertificate and private key
      m_sslServer->setSslLocalCertificate("../../secure/sslserver.pem");
      m_sslServer->setSslPrivateKey("../../secure/sslserver.key",QSsl::Rsa, QSsl::Pem,"password");
-
-     //set version TLS 2.1
-     m_sslServer->setSslProtocol(QSsl::TlsV1_2);
+     m_sslServer->setSslProtocol(QSsl::TlsV1_2);//set version TLS 2.1
 
      //start listening
      if (m_sslServer->listen(QHostAddress::Any, port))
      {
          qDebug() << "Now listening on:" << port;
-
           connect(m_sslServer, SIGNAL(newConnection()),SLOT(slotConnection()));
-
      }
      else
          qDebug() << "ERROR: could not bind to:" << port;
-
-
  }
 
 
  void ServerConnection::slotConnection()
  {
      qDebug() << "New connection";
-
      m_sslClient = dynamic_cast<QSslSocket*>(m_sslServer->nextPendingConnection());
-
      if(m_sslClient!=nullptr)
      {
           connect(m_sslClient, &QSslSocket::readyRead, this, &ServerConnection::slotReadyRead);
          // connect(m_sslClient, &QSslSocket::disconnected,this, &ServerConnection::deleteLater);
           connect(m_sslClient,&QSslSocket::disconnected, this, &ServerConnection::slotDisconnect);
          sendToClient(m_sslClient,QString::number(Connection)+" Hello Client");
-     }
+
+}
      else
      {
          qDebug()<<"Connect: m_sslClient=nullptr";
@@ -92,8 +89,8 @@ ServerConnection::~ServerConnection(){}
 
 
   void ServerConnection::slotReadyRead()
-  {
-      m_sslClient = (QSslSocket*)sender();
+  {   
+       m_sslClient = (QSslSocket*)sender();
 
       if(m_sslClient==nullptr)
       {
@@ -141,6 +138,7 @@ ServerConnection::~ServerConnection(){}
       default:
           break;
       }
+
   }
 
 
@@ -173,7 +171,6 @@ ServerConnection::~ServerConnection(){}
 
   void ServerConnection::authorization(QString& str)
   {
-
   }
 
 

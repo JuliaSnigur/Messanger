@@ -39,11 +39,11 @@ SUBDIRS += \
     src/ParseDataLib \
     #src/ServerLib \
    # src/ClientLib \
-    src/Server \
     src/GuiLib \
-    src/Client \
     src/SecureClientLib \
-    src/SecureServerLib
+    src/SecureServerLib \
+    src/Client \
+    src/Server
 
 
 
@@ -51,6 +51,7 @@ SUBDIRS += \
 Client.depends =  SecureClientLib ParseDataLib
 
 Server.depends =  SecureServerLib DBLib ParseDataLib
+
 SecureClientLib.depends=DBLib
 SecureServerLib.depends=DBLib
 

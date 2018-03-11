@@ -7,6 +7,8 @@
 #include"ipresenter.h"
 #include<DBLib/request.h>
 
+
+
 class DBPresenter:IPresenter
 {
 protected:

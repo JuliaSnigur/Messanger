@@ -201,7 +201,6 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
        QString str_insert=m_req.insertData(m_tabMessages,params,values);
        QString str=str_insert.arg(mess).arg(idDialog);
 
-        qDebug()<<str;
 
        if (!m_query->exec(str))
          {

@@ -4,6 +4,11 @@
 #include<QSslSocket>
 #include<QMutex>
 
+
+
+#include<QSslSocket>
+
+
 #include"request.h"
 #include"user.h"
 #include"ipresenter.h"
@@ -15,20 +20,18 @@ class ThreadRunnable:public QObject, public QRunnable
     Q_OBJECT
 private:
 
-     QSslSocket* m_sslClient;
+    // QSslSocket* m_sslClient;
      QMutex m_mutexDB,m_mutexHashTab;
 
-    static QHash<int,QSslSocket*> m_hash;
-    static DBServerPresenter m_db ;
-    qintptr m_socketDescriptor;
-
+   // static QHash<int,QSslSocket*> m_hash;
+   // static DBServerPresenter m_db ;
 
 protected:
     void run();
 
 
 public:
-    ThreadRunnable(qintptr socketDescriptor,QObject* obj=0);
+    ThreadRunnable(QSslSocket* socket=0,QObject* obj=0);
 
     virtual ~ThreadRunnable();
 
@@ -39,6 +42,9 @@ public:
     void authorization(QString& str);
     void sendList();
     void message(QString& str);
+
+    qintptr m_socketDescriptor;
+     QSslSocket* m_sslClient;
 
 public slots:
 

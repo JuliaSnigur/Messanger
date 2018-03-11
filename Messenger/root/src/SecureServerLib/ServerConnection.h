@@ -42,6 +42,8 @@ public:
 
  void start(int port);
 
+signals:
+ void signalRead(QSslSocket* socket);
 
 public slots:
     void run();

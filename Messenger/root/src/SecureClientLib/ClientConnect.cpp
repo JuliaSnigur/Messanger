@@ -144,12 +144,10 @@ void ClientConnection::slotEncrypted()
 
              idSender=(StringHandlNamespace::variable(message)).toInt();
 
-            if(idSender<1)
-            {
                 qDebug()<<message;
                  m_idDialog=m_db.searchIdDialog(idSender,m_user.getID());
 
-                 if(m_idDialog<0)
+                 if(m_idDialog<0 )
                  {
                      qDebug()<<"The dialog dosn't exist";
                      m_db.insertDialog(idSender,m_user.getID());
@@ -158,7 +156,7 @@ void ClientConnection::slotEncrypted()
                     m_db.insertMessage(time+' '+message,m_idDialog);
 
                  emit signalSendMessage();
-            }
+
                  break;
 
              case File:
@@ -185,20 +183,26 @@ void ClientConnection::slotEncrypted()
 
  void ClientConnection::registration(const QString& login,const QString& pass)
  {
-   /*  m_user.setLogin(login);
+     m_user.setLogin(login);
      m_user.setPassword(pass);
 
     sendToServer(QString::number(Registration)+' '+login +' '+pass);
-*/
-    // create db
-    m_db.createDB("Client_user.db");
 
-   QQueue<QString> q=m_db.showDialog(0);
-   for(int i=0;i<q.size();i++)
-   {
-       qDebug()<<q[i];
-   }
+
  }
+
+  void ClientConnection::showDialog()
+  {
+    QQueue<QString> q=m_db.showDialog(0);
+
+    for(int i=0;i<q.size();i++)
+    {
+        qDebug()<<q[i];
+    }
+  }
+
+
+
  void ClientConnection::authorization(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
@@ -225,6 +229,7 @@ void ClientConnection::slotEncrypted()
 
     // search dialog
     int idDialog=m_db.searchIdDialog(m_user.getID(),m_idFriend);
+
     if(idDialog<0)
     {
         qDebug()<<"The dialog doesn't exist";
@@ -292,38 +297,3 @@ void ClientConnection::getFile()
 }
 
 
- ///////////////////////////////////////////////
-void ClientConnection::run()
-{
-    QString hostName = "127.0.0.1";    // DO NOT CHANGE THIS AS IT MUST MATCH THE FQDN OF THE CERTIFICATE (you MUST create your own certificate in order to change this)
-    quint16 port = 22333;
-
-    QSslSocket sslSocket;
-    sslSocket.addCaCertificates("../../SslProject/sslserver.pem");
-    sslSocket.connectToHostEncrypted(hostName, port);
-
-    if (sslSocket.waitForEncrypted(-1))    // Wait until encrypted connection is established, -1 means no timeout
-    {
-        qDebug() << "Connected";
-        sslSocket.write("Hello, World!");    // Send message to the server
-
-        if (sslSocket.waitForBytesWritten(-1))    // Wait until message is sent (also makes QSslSocket flush the buffer)
-            qDebug() << "Message sent";
-        else
-            qDebug().nospace() << "ERROR: could not send message (" << qPrintable(sslSocket.errorString()) << ")";
-
-        while (!sslSocket.waitForDisconnected())    // Wait until disconnected
-            QThread::msleep(10);
-
-        qDebug() << "Disconnected";
-    }
-
-    else
-    {
-        qDebug().nospace() << "ERROR: could not establish encrypted connection (" << qPrintable(sslSocket.errorString()) << ")";
-    }
-
-   // this->deleteLater();
-    //QThread::currentThread()->quit();
-    //qApp->exit();
-}

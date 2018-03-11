@@ -22,16 +22,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    ServerConnection.cpp \
     SslServer.cpp \
-    threadrunnable.cpp
+    mythread.cpp
 
 HEADERS += \
     stable.h \
     stdafx.h \
-    ServerConnection.h \
     SslServer.h \
-    threadrunnable.h
+    mythread.h
 
 
 unix {
@@ -50,4 +48,5 @@ LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
 
 CONFIG += ordered
+
 SecureServerLib.depends=DBLib ParseDataLib

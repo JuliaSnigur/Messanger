@@ -24,6 +24,8 @@
 #include<QSslSocket>
 #include<QMutex>
 
+#include<QPointer>
+
 #include <stdio.h>
 #include <tchar.h>
 

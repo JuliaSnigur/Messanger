@@ -1,8 +1,6 @@
 #pragma once
 
-#include"stdafx.h"
-
-
+#include<QObject>
 
 //#include"guilib.h"
 #include"ClientConnect.h"

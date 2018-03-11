@@ -26,11 +26,11 @@ Client::~Client()
 void Client::startWork()
 {
     qDebug()<<"______________________________";
-  //m_client.start("127.0.0.1",27015);
+  m_client.start("127.0.0.1",27015);
 
    // QString filename="txt.txt";
    // m_client.sendFile(filename);
-    m_client.getFile();
+
 }
 
 

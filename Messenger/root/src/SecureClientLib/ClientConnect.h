@@ -19,7 +19,7 @@ class ClientConnection : public QObject
 {
     Q_OBJECT
 private:
-    QSslSocket* m_client;
+    QPointer<QSslSocket> m_client;
     DBClientPresenter m_db;
     User m_user;
     int m_idFriend;
@@ -40,10 +40,9 @@ public:
     void setIdFriend(int id);
     void sendFile(const QString& filename);
     void getFile();
-
+    void showDialog();
 
 public slots:
-    void run();
 
    void slotEncrypted();
    void slotReadyRead();
