@@ -89,20 +89,21 @@ void MyThread::slotReadyRead()
         break;
     case Message:
 
-    qDebug()<<"MESSAGE\n";
+        qDebug()<<"MESSAGE\n";
 
-    message(mess);
+        message(mess);
     break;
 
     case Registration:
-    qDebug()<<"Registration\n";
+        qDebug()<<"Registration\n";
 
-    registration(mess);
+        registration(mess);
 
     break;
 
     case Authorization:
-    qDebug()<<"Authorization\n";
+        qDebug()<<"Authorization\n";
+        authorization(mess);
     break;
 
     case GetNewList:
@@ -130,7 +131,7 @@ void MyThread::registration(QString& req)
 
     if(!m_db->insertUser(User(log,pass)))
       {
-        sendToClient(m_sslClient,QString::number(Error)+" The login is exist");
+        sendToClient(m_sslClient,QString::number(Error)+" The user's already existed with that login");
         return;
       }
      id=m_db->searchID(log);
@@ -155,8 +156,41 @@ void MyThread::registration(QString& req)
     }
 }
 
-void MyThread::authorization(QString& str)
+void MyThread::authorization(QString& req)
 {
+    int id=0;
+    QString log=StringHandlNamespace::variable(req), pass=StringHandlNamespace::variable(req);
+
+    // search user into db
+    qDebug()<<"User: "<<log<<", "<<pass;
+
+    User us=m_db->searchUser(log);
+
+    if(us.getLogin()!="")
+    {
+        // compare passwords
+        if(us.getPassword()==pass)
+        {
+
+            m_mutexHashTab.lock();
+
+            qDebug()<<"ID: "<<id;
+            m_hash->insert(id,m_sslClient);
+
+            m_mutexHashTab.unlock();
+
+
+             sendToClient(m_sslClient,QString::number(Authorization)+" "+QString::number(id));
+        }
+        else
+        {
+              sendToClient(m_sslClient,QString::number(Error)+" The wrong password");
+        }
+    }
+    else
+    {
+        sendToClient(m_sslClient,QString::number(Error)+" The user didn't exist with that login");
+    }
 
 }
 
@@ -201,7 +235,7 @@ void MyThread::message(QString& str)
     if(login!="")
          sendToClient((*m_hash)[friendID],QString::number(Message)+' '+QString::number(myID)+' '+login+": "+str);
     else
-        sendToClient((*m_hash)[myID],QString::number(Error)+" The message dosn't send");
+        sendToClient((*m_hash)[myID],QString::number(Error)+" The message doesn't send");
 }
 
 

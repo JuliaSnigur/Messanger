@@ -83,7 +83,7 @@ void ClientConnection::slotEncrypted()
          {
 
          case Error:
-             qDebug()<<"Upss.. "<<message;
+             qDebug()<<"Error... "<<message;
              break;
 
          case Connection:
@@ -100,10 +100,8 @@ void ClientConnection::slotEncrypted()
              m_db.createDB("Client_"+m_user.getLogin()+".db");
 
              // insert user into tables session
-             if(m_db.insertUser(m_user))
-                 qDebug()<<"User was added";
+             m_db.insertUser(m_user);
 
-             qDebug()<<"GetID";
              m_user.setID(StringHandlNamespace::variable(message).toInt());
 
              qDebug()<<"My ID-> "<<m_user.getID();
@@ -119,20 +117,11 @@ void ClientConnection::slotEncrypted()
              // create db
              m_db.createDB("Client_"+m_user.getLogin()+".db");
 
+             m_db.insertUser(m_user);
 
-
-             if(m_db.insertUser(m_user))
-                  qDebug()<<"User was added";
-             else
-                  qDebug()<<"User exists";
-
-
-             qDebug()<<"GetID";
              m_user.setID(StringHandlNamespace::variable(message).toInt());
 
              qDebug()<<"My ID-> "<<m_user.getID();
-
-
 
              // get lists of clients who are online
              sendToServer(QString::number(GetNewList));
@@ -210,6 +199,7 @@ void ClientConnection::slotEncrypted()
 
     sendToServer(QString::number(Authorization)+' '+login +' '+pass);
  }
+
  void ClientConnection::sendMessage(const QString& mess)
  {
     sendToServer(QString::number(Message)+' '+QString::number(m_user.getID())+' '+QString::number(m_idFriend)+' '+mess);
