@@ -13,7 +13,10 @@
 #include <QString>
 #include <QThread>
 
-
+#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 
 
 #include <stdio.h>

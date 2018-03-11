@@ -3,7 +3,7 @@
 class QTcpServer;
 class QTcpSocket;
 
-
+#include<QObject>
 
 #include"DBLib/user.h"
 #include"DBLib/request.h"

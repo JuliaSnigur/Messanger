@@ -3,7 +3,7 @@ include( ../../lib.pri )
 include( ../../root.pri )
 
 QT       -= gui
-QT += network
+QT += network sql
 
 TARGET = ClientLib$${LIB_SUFFIX}
 TEMPLATE = lib

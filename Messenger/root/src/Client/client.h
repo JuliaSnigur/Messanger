@@ -2,12 +2,7 @@
 
 #include"stdafx.h"
 
-#include"request.h"
 
-#include "user.h"
-#include"ipresenter.h"
-#include "dbpresenter.h"
-#include "dbclientpresenter.h"
 
 //#include"guilib.h"
 #include"ClientConnect.h"
@@ -18,15 +13,9 @@ class Client: public QObject
 
   Q_OBJECT
 private:
-    DBClientPresenter
-    m_db;
     //GuiLib m_gui;
     ClientConnection m_client;
-    User m_us;
-
     QVector<int> m_vecClients;
-
-    bool m_isStartDialog;
 
 public:
     Client(QObject* obj=0);
@@ -45,9 +34,7 @@ public slots:
     void slotHello();
 
 
-    void slotInsertUserIntoTabSession();
     void slotGetListsClients(QVector<int>);
-   void slotGetID(int);
    void slotSendMessage();
    void slotSendInfo();
 };

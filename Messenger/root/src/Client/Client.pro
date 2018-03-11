@@ -30,9 +30,6 @@ PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
 
 
-#LIBS +=  $${CLIENTLIB_LIBRARY}
-#INCLUDEPATH+= $${CLIENTLIB_INCLUDEPATH}
-
 #LIBS +=  $${GUILIB_LIBRARY}
 #INCLUDEPATH+= $${GUILIB_INCLUDEPATH}
 
@@ -43,4 +40,4 @@ LIBS+=$${SECURECLIENTLIB_LIBRARY}
 INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
 
 CONFIG += ordered
-Client.depends = SecureClientLib  DBLib ParseDataLib
+Client.depends =  SecureClientLib

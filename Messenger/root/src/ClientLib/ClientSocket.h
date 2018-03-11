@@ -3,6 +3,12 @@
 #include"stdafx.h"
 
 
+#include"request.h"
+#include "user.h"
+#include"ipresenter.h"
+#include "dbpresenter.h"
+#include "dbclientpresenter.h"
+
 namespace ClientNamespace {
 
 
@@ -12,20 +18,25 @@ Q_OBJECT
 private:
     QTcpSocket* m_pTcpSocket;
     quint16     m_nNextBlockSize;// необходимый для хранения длины следующего полученного от сокета блока
+    DBClientPresenter m_db;
+
+    User m_user;
 
     QFile* file;
 
 
 
-
-
+    void sendToServer(const QString&);
 
 public:
     ClientSocket(QObject* parent=0);
     virtual ~ClientSocket();
 
 
-    void sendToServer(const QString&);
+    void registration(const QString& login,const QString& pass);
+    void authorization(const QString& login,const QString& pass);
+    void sendMessage(const QString& mess);
+
     void createConnection(const QString& strHost, int nPort);
 
 /*

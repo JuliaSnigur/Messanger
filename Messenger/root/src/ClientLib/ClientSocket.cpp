@@ -10,8 +10,12 @@ ClientNamespace::ClientSocket::~ClientSocket()
         delete m_pTcpSocket;
 }
 
-ClientNamespace::ClientSocket::ClientSocket(QObject* parent):QObject(parent),
-                        m_nNextBlockSize(0),file(0)
+ClientNamespace::ClientSocket::ClientSocket(QObject* parent)
+    :QObject(parent),
+    m_nNextBlockSize(0),
+    file(0),
+    m_db(),
+    m_user()
 {
     qDebug()<<"Client";
 }

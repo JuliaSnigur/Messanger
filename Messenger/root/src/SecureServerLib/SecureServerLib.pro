@@ -23,13 +23,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ServerConnection.cpp \
-    SslServer.cpp
+    SslServer.cpp \
+    threadrunnable.cpp
 
 HEADERS += \
     stable.h \
     stdafx.h \
     ServerConnection.h \
-    SslServer.h
+    SslServer.h \
+    threadrunnable.h
 
 
 unix {
@@ -46,3 +48,6 @@ INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
 LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
+
+CONFIG += ordered
+SecureServerLib.depends=DBLib ParseDataLib

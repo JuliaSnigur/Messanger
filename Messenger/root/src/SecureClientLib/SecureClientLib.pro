@@ -4,7 +4,7 @@ include( ../../root.pri )
 
 
 QT       -= gui
-QT += network
+QT += network sql
 
 TARGET = SecureClientLib$${LIB_SUFFIX}
 TEMPLATE = lib
@@ -34,10 +34,17 @@ unix {
     INSTALLS += target
 }
 
+
+LIBS +=  $${DBLIB_LIBRARY}
+INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
+
 LIBS+=$${PARSEDATALIB_LIBRARY}
 INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
 
-
 CONFIG -= precompile_header
 PRECOMPILED_HEADER = stable.h
+
+CONFIG += ordered
+SecureClientLib.depends=DBLib
+

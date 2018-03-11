@@ -37,8 +37,8 @@ CONFIG += ordered
 SUBDIRS += \
     src/DBLib \
     src/ParseDataLib \
-    src/ServerLib \
-    src/ClientLib \
+    #src/ServerLib \
+   # src/ClientLib \
     src/Server \
     src/GuiLib \
     src/Client \
@@ -48,9 +48,10 @@ SUBDIRS += \
 
 
 
-Client.depends = ClientLib SecureClientLib  GuiLib DBLib ParseDataLib
+Client.depends =  SecureClientLib ParseDataLib
 
-Server.depends = ServerLib SecureServerLib DBLib ParseDataLib
-
+Server.depends =  SecureServerLib DBLib ParseDataLib
+SecureClientLib.depends=DBLib
+SecureServerLib.depends=DBLib
 
 ##################################

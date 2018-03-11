@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include<QSslSocket>
+#include<QThreadPool>
 
 
 #include"SslServer.h"
@@ -21,6 +22,7 @@ private:
 
      QHash<int,QSslSocket*> m_hash;
      DBServerPresenter m_db;
+     QThreadPool* m_pool;
 
 
 
@@ -31,6 +33,7 @@ private:
 
 public:
     ServerConnection(QObject *parent = 0);
+    virtual ~ServerConnection();
 
     void registration(QString& str);
     void authorization(QString& str);
@@ -46,6 +49,7 @@ public slots:
     void slotConnection();
     void slotReadyRead();
     void slotDisconnect();
+    //void slotSslError(QList<QSslError> errors);
     //void slotEncrypted();
 
 };

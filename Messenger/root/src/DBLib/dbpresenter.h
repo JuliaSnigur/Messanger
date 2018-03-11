@@ -1,6 +1,12 @@
 #pragma once
 
 
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+#include"ipresenter.h"
+#include<DBLib/request.h>
+
 class DBPresenter:IPresenter
 {
 protected:

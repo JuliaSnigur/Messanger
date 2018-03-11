@@ -16,8 +16,8 @@ SOURCES += main.cpp
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
 
-LIBS +=  $${SERVERLIB_LIBRARY}
-INCLUDEPATH+= $${SERVERLIB_INCLUDEPATH}
+#LIBS +=  $${SERVERLIB_LIBRARY}
+#INCLUDEPATH+= $${SERVERLIB_INCLUDEPATH}
 
 LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
@@ -28,4 +28,4 @@ INCLUDEPATH+= $${SECURESERVERLIB_INCLUDEPATH}
 
 
 CONFIG += ordered
-Server.depends = SecureServerLib  DBLib ParseDataLib
+Server.depends = SecureServerLib

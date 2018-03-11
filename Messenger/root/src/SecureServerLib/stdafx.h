@@ -9,7 +9,7 @@
 #include<QFile>
 #include<QSslConfiguration>
 #include<QSslKey>
-
+#include<QThreadPool>
 
 #include <QtSql>
 #include <QSqlDatabase>
@@ -20,13 +20,18 @@
 #include <QHostAddress>
 #include <QThread>
 
+#include<QRunnable>
+#include<QSslSocket>
+#include<QMutex>
+
 #include <stdio.h>
 #include <tchar.h>
 
 #include<iostream>
 #include<string>
 
-#include<memory>
+#include <memory>
+#include <utility>
 
 
 

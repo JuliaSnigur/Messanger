@@ -23,6 +23,10 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
 {
     this->m_nameDB=nameDB;
 
+    m_tabUsers="users";
+    m_tabDialogs="dialogs";
+    m_tabMessages="messangers";
+
       try{
           createConnection();
           createTables();
@@ -32,6 +36,25 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
           qDebug()<<ex.what();
       }
 }
+
+ void DBClientPresenter::createDB(const QString&  nameDB)
+ {
+     this->m_nameDB=nameDB;
+
+     m_tabUsers="users";
+     m_tabDialogs="dialogs";
+     m_tabMessages="messangers";
+
+       try{
+           createConnection();
+           createTables();
+       }
+       catch(std::exception& ex)
+       {
+           qDebug()<<ex.what();
+       }
+ }
+
 
   void DBClientPresenter::createTables()
   {
@@ -58,7 +81,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
       qDebug()<<"The table "<<m_tabDialogs<<" is creating";
 
       //messanges
-       params="id INTEGER PRIMARY KEY AUTOINCREMENT,messange TEXT,idDialogs INTEGER ";
+       params="id INTEGER PRIMARY KEY AUTOINCREMENT,messange TEXT,idDialog INTEGER ";
        str=m_req.createTable(m_tabMessages,params);
 
       if(!m_query->exec(str))
@@ -91,3 +114,68 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
            return true;
 }
    }
+
+
+   bool DBClientPresenter::insertDialog(const int& id1,const int& id2 )
+   {
+       QString params="idSender, idReceiver";
+       QString values="%1, %2";
+
+       QString str_insert=m_req.insertData(m_tabUsers,params,values);
+       QString str=str_insert.arg(id1).arg(id2);
+
+       if (!m_query->exec(str))
+         {
+           qDebug() << "Unable to make insert operation";
+           return false;
+       }
+       else
+          {
+           qDebug() << "To make insert operation";
+           return true;
+       }
+   }
+
+   int DBClientPresenter::searchIdDialog(const int& id1,const int& id2)
+   {
+       int id=-1;
+
+       QString params="id";
+       QString values="idSender="+QString::number(id1)+"AND idReceiver="+QString::number(id2);
+       QString str=m_req.searchData(m_tabUsers,params,values);
+
+         m_query->exec(str);
+         if(m_query->next())
+            {
+
+                id= m_query->value(0).toInt();
+                qDebug()<<"The data search";
+
+            }
+            else
+             qDebug()<<"The data dosn't search";
+
+         return id;
+   }
+
+   bool DBClientPresenter::insertMessage(const QString& mess,const int& idDialog)
+   {
+       QString params="messange, idDialogs";
+       QString values="'%1',%2";
+
+       QString str_insert=m_req.insertData(m_tabUsers,params,values);
+       QString str=str_insert.arg(mess).arg(idDialog);
+
+       if (!m_query->exec(str))
+         {
+           qDebug() << "Unable to make insert operation";
+           return false;
+       }
+       else
+          {
+           qDebug() << "To make insert operation";
+           return true;
+}
+   }
+
+

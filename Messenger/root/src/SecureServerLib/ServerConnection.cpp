@@ -21,6 +21,8 @@ ServerConnection::ServerConnection(QObject *parent) :
 
 }
 
+ServerConnection::~ServerConnection(){}
+
 
  void ServerConnection::start(int port)
  {
@@ -63,9 +65,8 @@ ServerConnection::ServerConnection(QObject *parent) :
      if(m_sslClient!=nullptr)
      {
           connect(m_sslClient, &QSslSocket::readyRead, this, &ServerConnection::slotReadyRead);
-         connect(m_sslClient, &QSslSocket::disconnected,this, &ServerConnection::deleteLater);
-         connect(m_sslClient,&QSslSocket::disconnected, this, &ServerConnection::slotDisconnect);
-
+         // connect(m_sslClient, &QSslSocket::disconnected,this, &ServerConnection::deleteLater);
+          connect(m_sslClient,&QSslSocket::disconnected, this, &ServerConnection::slotDisconnect);
          sendToClient(m_sslClient,QString::number(Connection)+" Hello Client");
      }
      else
@@ -93,6 +94,12 @@ ServerConnection::ServerConnection(QObject *parent) :
   void ServerConnection::slotReadyRead()
   {
       m_sslClient = (QSslSocket*)sender();
+
+      if(m_sslClient==nullptr)
+      {
+          qDebug()<<"Read: m_sslClient=nullptr";
+          return;
+      }
 
 
       QString mess = m_sslClient->readAll();    // Read message
@@ -213,28 +220,31 @@ ServerConnection::ServerConnection(QObject *parent) :
 
   void ServerConnection::slotDisconnect()
   {
+       m_sslClient = (QSslSocket*)sender();
+
       QHash<int,QSslSocket*>::iterator iter=m_hash.begin();
 
       qDebug()<<"Disconnect: size of hash="<<m_hash.size();
 
-      if(m_hash.size()>0)
-      {
           while(iter!=m_hash.end())
           {
-              if(iter.value()==nullptr)
+              if(iter.value()==m_sslClient)
               {
                   qDebug()<<"Dissconect: id="<<iter.key();
-                  m_hash.erase(iter);
+
+                    m_hash.erase(iter);
+
+                    m_sslClient->disconnect();
+                    m_sslClient->deleteLater();
+
                    qDebug()<<" Size of hash="<<m_hash.size();
+
+
 
                   return;
               }
                ++iter;
           }
-
-           sendList();
-      }
-
   }
 
 

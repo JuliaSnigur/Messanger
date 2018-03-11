@@ -19,7 +19,11 @@ public:
 
 
      virtual bool insertUser(User);
-     void insertDialog();
+     bool insertDialog(const int& id1,const int& id2 );
+
+     int searchIdDialog(const int& id1,const int& id2);
+     bool insertMessage(const QString& mess,const int& idDialog);
+
 
       void createDB(const QString& );
 
