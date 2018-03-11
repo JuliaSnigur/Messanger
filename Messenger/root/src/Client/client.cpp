@@ -26,7 +26,11 @@ Client::~Client()
 void Client::startWork()
 {
     qDebug()<<"______________________________";
-   m_client.start("127.0.0.1",27015);
+  //m_client.start("127.0.0.1",27015);
+
+   // QString filename="txt.txt";
+   // m_client.sendFile(filename);
+    m_client.getFile();
 }
 
 
@@ -87,4 +91,7 @@ void Client::slotRegistration( QString login, QString password)
       std::cin>>password;
 
       m_client.registration(QString::fromStdString(login),QString::fromStdString(password));
-  }
+
+
+
+}

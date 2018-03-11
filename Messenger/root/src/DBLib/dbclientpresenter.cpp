@@ -15,6 +15,7 @@ DBClientPresenter::DBClientPresenter()
     m_tabUsers="users";
     m_tabDialogs="dialogs";
     m_tabMessages="messangers";
+    m_tabFiles="files";
 }
 
 DBClientPresenter::~DBClientPresenter(){}
@@ -26,6 +27,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
     m_tabUsers="users";
     m_tabDialogs="dialogs";
     m_tabMessages="messangers";
+    m_tabFiles="files";
 
       try{
           createConnection();
@@ -44,6 +46,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
      m_tabUsers="users";
      m_tabDialogs="dialogs";
      m_tabMessages="messangers";
+     m_tabFiles="files";
 
        try{
            createConnection();
@@ -81,7 +84,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
       qDebug()<<"The table "<<m_tabDialogs<<" is creating";
 
       //messanges
-       params="id INTEGER PRIMARY KEY AUTOINCREMENT,messange TEXT,idDialog INTEGER ";
+       params="id INTEGER PRIMARY KEY AUTOINCREMENT,messange TEXT,idDialog INTEGER, idFile INTEGER ";
        str=m_req.createTable(m_tabMessages,params);
 
       if(!m_query->exec(str))
@@ -91,6 +94,18 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
       }
       else
         qDebug()<<"The table "<<m_tabMessages<<" is creating";
+
+      //files
+       params="id INTEGER PRIMARY KEY AUTOINCREMENT,filename TEXT,file BLOB ";
+       str=m_req.createTable(m_tabFiles,params);
+
+      if(!m_query->exec(str))
+      {
+             qDebug() << "DataBase: error of create " << m_tabFiles;
+             qDebug() << m_query->lastError().text();
+      }
+      else
+        qDebug()<<"The table "<<m_tabFiles<<" is creating";
 
   }
 
@@ -116,12 +131,13 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
    }
 
 
-   bool DBClientPresenter::insertDialog(const int& id1,const int& id2 )
+   bool DBClientPresenter::insertDialog( int id1, int id2 )
    {
        QString params="idSender, idReceiver";
-       QString values="%1, %2";
+       QString values="%1,%2";
 
-       QString str_insert=m_req.insertData(m_tabUsers,params,values);
+       QString str_insert=m_req.insertData(m_tabDialogs,params,values);
+
        QString str=str_insert.arg(id1).arg(id2);
 
        if (!m_query->exec(str))
@@ -136,13 +152,32 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
        }
    }
 
+
+   QQueue<QString> DBClientPresenter::showDialog(const int& idDialog)
+   {
+       QQueue<QString> dialog;
+       QString params="messange";
+       QString values="idDialog="+QString::number(idDialog);
+       QString str=m_req.searchData(m_tabMessages,params,values);
+         m_query->exec(str);
+
+         while(m_query->next())
+            {
+                dialog.push_back( m_query->value(0).toString());
+            }
+
+         return dialog;
+   }
+
+
    int DBClientPresenter::searchIdDialog(const int& id1,const int& id2)
    {
        int id=-1;
 
        QString params="id";
-       QString values="idSender="+QString::number(id1)+"AND idReceiver="+QString::number(id2);
-       QString str=m_req.searchData(m_tabUsers,params,values);
+       QString values="idSender="+QString::number(id1)+" AND idReceiver="+QString::number(id2);
+       QString str=m_req.searchData(m_tabDialogs,params,values);
+      // qDebug()<<str;
 
          m_query->exec(str);
          if(m_query->next())
@@ -160,11 +195,13 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
 
    bool DBClientPresenter::insertMessage(const QString& mess,const int& idDialog)
    {
-       QString params="messange, idDialogs";
+       QString params="messange, idDialog";
        QString values="'%1',%2";
 
-       QString str_insert=m_req.insertData(m_tabUsers,params,values);
+       QString str_insert=m_req.insertData(m_tabMessages,params,values);
        QString str=str_insert.arg(mess).arg(idDialog);
+
+        qDebug()<<str;
 
        if (!m_query->exec(str))
          {
@@ -178,4 +215,46 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB)
 }
    }
 
+   bool DBClientPresenter::insertFile( QString filename,  QByteArray file)
+   {
+       QString params="filename, file";
+       QString values=":Name, :File";
+
+       m_query->prepare( "INSERT INTO "+m_tabFiles+" ( "+params+") VALUES ("+values+")");
+       m_query->bindValue(":Name",filename);
+       m_query->bindValue(":File", file);
+
+       if (!m_query->exec())
+         {
+           qDebug() << "Unable to make insert operation";
+           return false;
+       }
+       else
+          {
+           qDebug() << "To make insert operation";
+           return true;
+}
+   }
+
+   QVariantList DBClientPresenter::searchFile(const int& id)
+   {
+       QVariantList list;
+
+       QString params='*';
+       QString values="id="+QString::number(id);
+       QString str=m_req.searchData(m_tabFiles,params,values);
+
+       qDebug()<<str;
+         m_query->exec(str);
+         if(m_query->next())
+            {
+             list.append(m_query->value(1).toString());
+             list.append(m_query->value(2).toByteArray());
+             qDebug()<<"The data search";
+            }
+            else
+             qDebug()<<"The data dosn't search";
+
+         return list;
+   }
 

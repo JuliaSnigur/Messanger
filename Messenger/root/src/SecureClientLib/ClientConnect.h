@@ -38,6 +38,8 @@ public:
     void authorization(const QString& login,const QString& pass);
     void sendMessage(const QString& mess);
     void setIdFriend(int id);
+    void sendFile(const QString& filename);
+    void getFile();
 
 
 public slots:

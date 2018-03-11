@@ -12,8 +12,9 @@ ClientConnection::ClientConnection(QObject *parent) :
     QObject(parent)
   , m_client(nullptr)
   ,m_user()
-  ,m_idFriend()
   , m_db()
+  ,m_idDialog(0)
+  ,m_idFriend(0)
 {
 
 }
@@ -70,6 +71,8 @@ void ClientConnection::slotEncrypted()
 
  void  ClientConnection::slotReadyRead()
  {
+     int idSender=-1;
+
      QString message = m_client->readAll();    // Read message
      qDebug()<<"Client got-> " << message;
 
@@ -103,6 +106,8 @@ void ClientConnection::slotEncrypted()
              qDebug()<<"GetID";
              m_user.setID(StringHandlNamespace::variable(message).toInt());
 
+             qDebug()<<"My ID-> "<<m_user.getID();
+
              // get lists of clients who are online
              sendToServer(QString::number(GetNewList));
 
@@ -122,24 +127,38 @@ void ClientConnection::slotEncrypted()
                   qDebug()<<"User exists";
 
 
+             qDebug()<<"GetID";
+             m_user.setID(StringHandlNamespace::variable(message).toInt());
+
+             qDebug()<<"My ID-> "<<m_user.getID();
+
+
+
              // get lists of clients who are online
              sendToServer(QString::number(GetNewList));
+
 
                  break;
 
              case Message:
-             qDebug()<<message;
 
-             m_idDialog=m_db.searchIdDialog(m_idFriend,m_user.getID());
+             idSender=(StringHandlNamespace::variable(message)).toInt();
 
-             if(m_idDialog<0)
-             {
-                 qDebug()<<"The dialog dosn't exist";
-             }
-             else
-                m_db.insertMessage(message,m_idDialog);
+            if(idSender<1)
+            {
+                qDebug()<<message;
+                 m_idDialog=m_db.searchIdDialog(idSender,m_user.getID());
 
-             emit signalSendMessage();
+                 if(m_idDialog<0)
+                 {
+                     qDebug()<<"The dialog dosn't exist";
+                     m_db.insertDialog(idSender,m_user.getID());
+                 }
+                 else
+                    m_db.insertMessage(time+' '+message,m_idDialog);
+
+                 emit signalSendMessage();
+            }
                  break;
 
              case File:
@@ -166,10 +185,19 @@ void ClientConnection::slotEncrypted()
 
  void ClientConnection::registration(const QString& login,const QString& pass)
  {
-     m_user.setLogin(login);
+   /*  m_user.setLogin(login);
      m_user.setPassword(pass);
 
     sendToServer(QString::number(Registration)+' '+login +' '+pass);
+*/
+    // create db
+    m_db.createDB("Client_user.db");
+
+   QQueue<QString> q=m_db.showDialog(0);
+   for(int i=0;i<q.size();i++)
+   {
+       qDebug()<<q[i];
+   }
  }
  void ClientConnection::authorization(const QString& login,const QString& pass)
  {
@@ -193,13 +221,75 @@ void ClientConnection::slotEncrypted()
     else
         m_idFriend=1;
 
-    m_db.insertDialog(m_user.getID(),m_idFriend);
+    qDebug()<<"My id-> "<<m_user.getID()<<"Friend id-> "<<m_idFriend;
+
+    // search dialog
+    int idDialog=m_db.searchIdDialog(m_user.getID(),m_idFriend);
+    if(idDialog<0)
+    {
+        qDebug()<<"The dialog doesn't exist";
+        // add dialog
+        m_db.insertDialog(m_user.getID(),m_idFriend);
+
+    }
+    else
+        qDebug()<<"The dialog exists";
 
  }
 
 
+ void ClientConnection::sendFile(const QString& filename)
+ {
+
+     QFile file(filename);
+
+     if(!file.open(QIODevice::ReadOnly))
+     {
+         qDebug() << "Error";
+     }
+     // create inByteArray for saving file
+     QByteArray inByteArray=file.readAll();
+     qDebug()<<inByteArray;
 
 
+     file.close();
+
+     m_db.insertFile(filename,inByteArray);
+
+
+
+ }
+
+
+void ClientConnection::getFile()
+{
+    int i=1;
+    QFile file;
+    QVariantList list= m_db.searchFile(i);
+    if(list.empty())
+    {
+        qDebug()<<"Not File";
+        return;
+    }
+    else {
+           qDebug()<<list[0].toString();
+           qDebug()<<list[1].toByteArray();
+
+           file.setFileName(list[0].toString());
+
+           if(!file.open(QIODevice::WriteOnly))
+           {
+               qDebug() << "Error";
+           }
+           else
+           {
+               file.write(list[1].toByteArray());
+           }
+
+    }
+
+     file.close();
+}
 
 
  ///////////////////////////////////////////////

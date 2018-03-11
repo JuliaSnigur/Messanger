@@ -211,7 +211,7 @@ ServerConnection::~ServerConnection(){}
       QString login=m_db.searchLogin(myID);
 
       if(login!="")
-           sendToClient(m_hash[friendID],QString::number(Message)+' '+login+": "+str);
+           sendToClient(m_hash[friendID],QString::number(Message)+' '+myID+' '+login+": "+str);
       else
           sendToClient(m_hash[myID],QString::number(Error)+" The message dosn't send");
 

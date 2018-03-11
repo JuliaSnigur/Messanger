@@ -14,7 +14,10 @@ DBPresenter::DBPresenter()
 
 }
 
-DBPresenter::~DBPresenter(){}
+DBPresenter::~DBPresenter()
+{
+    m_db.close();
+}
 
 
 void DBPresenter::createConnection()
@@ -30,3 +33,4 @@ void DBPresenter::createConnection()
 
     m_query=new QSqlQuery(m_db);
 }
+
