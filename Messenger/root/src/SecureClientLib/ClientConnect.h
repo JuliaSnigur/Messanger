@@ -32,10 +32,10 @@ public:
     ClientConnection(QObject *parent = 0);
     virtual~ClientConnection();
 
-    void start(const QString& hostName,int port);
+   // void start(const QString& hostName,int port);
 
-    void registration(const QString& login,const QString& pass);
-    void authorization(const QString& login,const QString& pass);
+   // void slotRegistration(const QString& login,const QString& pass);
+   // void slotAuthorization(const QString& login,const QString& pass);
     void sendMessage(const QString& mess);
     void setIdFriend(int id);
     void sendFile(const QString& filename);
@@ -49,12 +49,22 @@ public slots:
    void sslError( QList<QSslError> errors );
    void slotDisconnect();
 
+    void slotConnection(const QString& hostName,int port);
+   void slotRegistration(const QString& login,const QString& pass);
+   void slotAuthorization(const QString& login,const QString& pass);
+
+
 signals:
+
+
+   void signalSuccessful(int num);
 
     void signalGetListsClients(QVector<int>);
     void signalGetID(int);
     void signalSendMessage();
     void signalSendInfo();
+
+    void signalError(const QString&);
 
 };
 

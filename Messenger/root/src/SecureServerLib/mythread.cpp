@@ -1,3 +1,4 @@
+#include"stdafx.h"
 #include "mythread.h"
 
 #include"parsedata.h"
@@ -33,8 +34,20 @@ void MyThread::run()
         return;
     }
 
-    // process handshake
+    QFile certificateFile("../../secure/client.crt");
+
+    if (!certificateFile.open(QIODevice::ReadOnly))
+      return;
+        // throw std::exception("Error: certificate doesn't open");
+
+    QSslCertificate cert(certificateFile.readAll());
+
+    certificateFile.close();
+
+    m_sslClient->addCaCertificate(cert);
+
     m_sslClient->setLocalCertificate("../../secure/sslserver.pem");
+
     m_sslClient->setPrivateKey("../../secure/sslserver.key",QSsl::Rsa, QSsl::Pem,"password");
     m_sslClient->setProtocol(QSsl::TlsV1_2);
     m_sslClient->startServerEncryption();

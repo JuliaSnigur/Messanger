@@ -17,7 +17,8 @@ DBPresenter::DBPresenter()
 DBPresenter::~DBPresenter()
 {
     m_db.close();
-    delete m_query;
+   // if(m_query)
+     //   delete m_query;
 }
 
 

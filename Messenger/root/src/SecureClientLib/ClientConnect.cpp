@@ -23,7 +23,7 @@ ClientConnection::~ClientConnection()
 {
 }
 
-void ClientConnection::start(const QString& hostName,int port)
+void ClientConnection::slotConnection(const QString& hostName,int port)
 {
     m_client=new QSslSocket(this);
 
@@ -33,6 +33,12 @@ void ClientConnection::start(const QString& hostName,int port)
         return ;
     }
 // sertificate includes private key ecryption
+
+    qDebug()<<hostName+' '+QString::number(port);
+
+    m_client->setLocalCertificate("../../secure/client.crt");
+    m_client->setPrivateKey("../../secure/client.key",QSsl::Rsa,QSsl::Pem,"2048");
+
     m_client->addCaCertificates("../../secure/sslserver.pem");
     m_client->connectToHostEncrypted(hostName, port);
     m_client->setProtocol(QSsl::TlsV1_2);
@@ -89,7 +95,9 @@ void ClientConnection::slotEncrypted()
          case Connection:
 
             qDebug()<<message;
-            emit signalSendInfo();
+
+            emit signalSuccessful(Connection);
+
                  break;
 
          case Registration:
@@ -170,7 +178,7 @@ void ClientConnection::slotEncrypted()
 
  }
 
- void ClientConnection::registration(const QString& login,const QString& pass)
+ void ClientConnection::slotRegistration(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);
@@ -192,7 +200,7 @@ void ClientConnection::slotEncrypted()
 
 
 
- void ClientConnection::authorization(const QString& login,const QString& pass)
+ void ClientConnection::slotAuthorization(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);

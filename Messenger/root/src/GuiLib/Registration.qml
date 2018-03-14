@@ -15,7 +15,7 @@ Item {
     signal signalSignIn(string login,string password)   // Задаём сигнал
 
 
-    Column{
+    Rectangle{
         id: column
         width: 300
         height: 184
@@ -48,17 +48,18 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.top: login.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 20
             mytext:"Password:"
 
         }
-        Row{
+
+        Item{
             id:row3
             anchors.horizontalCenter: parent.horizontalCenter
 
 
             anchors.top: password.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 20
 
             MyButton {
                  id: butSignIn

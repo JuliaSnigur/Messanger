@@ -23,6 +23,8 @@
 #include<QRunnable>
 #include<QSslSocket>
 #include<QMutex>
+#include<QFile>
+#include<QSslCertificate>
 
 #include<QPointer>
 

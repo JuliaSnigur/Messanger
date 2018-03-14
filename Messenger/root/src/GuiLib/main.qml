@@ -1,117 +1,81 @@
 import QtQuick 2.10
 import QtQuick.Window 2.10
-import QtQuick.Controls 2.2
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.3
-
-import GuiLib 1.0
-
+import QtQuick.Dialogs 1.3
 
 Window {
     id: window
-    visible: true
     width: 300
     height: 200
-
+    visible:true
     title: qsTr("Messenger")
 
 
-    GuiLib{
-        id: model
-    }
+    Connection{
 
-
-    MyTest{
-        id: test
+        id:wConnect
         visible: true
 
-        onSignalExit:
-        {
-             model.connection();
-           // messageDialog.visible=true;
+        onSignalExit:{
+
+           gui.connection(ip,port)
+
+            if(gui.flag)
+            {
+                wConnect.visible=false
+                mAuthorization.visible=true
+            }
+            else
+            {
+
+            }
+
+          // client.slotHello()
+        }
+     }
+
+
+
+    Authorization{
+
+        id:mAuthorization
+        visible: false
+
+        onSignalRegistration: {
+
+            mAuthorization.visible=false
+            mRegistration.visible=true
+        }
+
+        onSignalSignIn: {
+
+            //client.slotAuthorization(login,password)
         }
     }
+
+
+    Registration{
+
+        id:mRegistration
+        visible:false
+        onSignalSignIn: {
+
+         // client.slotAuthorization(login,password)
+        }
+    }
+
 
 
     MessageDialog {
         id: messageDialog
-        title: "May I have your attention please"
+        title: "Error"
 
-        text: "It's so cool that you are using Qt Quick."
+        text: gui.m_error
+        visible: gui.m_flag
 
         onAccepted: {
-            console.log("And of course you could only agree.")
-
-        }
-        Component.onCompleted: visible = false
-    }
-
-
-  /*  FirstWindow
-    {
-        id:firstWindow
-        visible:true
-
-        onSignalExit:
-        {
-
-            model.m_ip=ip
-            model.m_port=port
-
-            model.connection();
-
-            firstWindow.visible=false
-            authorWindow.visible=true
+            messageDialog.visible=false
         }
     }
 
-    Authorization
-    {
-        id:authorWindow
-        visible: false
-
-        onSignalRegistration:
-        {
-
-            authorWindow.visible=false
-            registWindow.visible=true
-        }
-
-        onSignalSignIn:
-        {
-            model.m_login=login
-            model.m_password=password
-
-            authorWindow.visible=false
-            mainWindow.visible=true
-        }
-
-    }
-
-
-    Registration
-    {
-        id:registWindow
-        visible: false
-
-        onSignalSignIn:
-        {
-
-            model.m_login=login
-            model.m_password=password
-
-            authorWindow.visible=false
-            mainWindow.visible=true
-        }
-    }
-
-
-    MainWindow
-    {
-        id:mainWindow
-        visible:false
-
-    }
-*/
 
 }

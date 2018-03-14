@@ -4,32 +4,27 @@
 
 #include"client.h"
 
+#include"guiqml.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication  app(argc, argv);
+   // QCoreApplication  app(argc, argv);
 
     srand(time(NULL));
 
-  /*  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QGuiApplication app(argc, argv);
-
-    qmlRegisterType<GuiLib> ("GuiLib", 1, 0, "GuiLib");
+   QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
 
-    engine.load (QUrl (QStringLiteral ("../../src/GuiLib/main.qml") ) ) ;
-*/
-
     Client cl;
+    engine.rootContext()->setContextProperty("gui", &cl.getGui());
 
-    cl.startWork();
+    engine.load(QUrl(QStringLiteral("../../src/GuiLib/main.qml")));
 
 
-  //  ClientConnection client;
 
-   // client.start("127.0.0.1",27015);
 
     return app.exec();
 }

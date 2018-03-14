@@ -12,7 +12,8 @@
 
 #include <QCoreApplication>
 #include <QGuiApplication>
-#include<QtQml/QQmlApplicationEngine>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 #include <stdio.h>
 #include <tchar.h>

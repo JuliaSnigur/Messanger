@@ -1,6 +1,5 @@
 import QtQuick 2.10
 import QtQuick.Window 2.10
-import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
@@ -14,10 +13,10 @@ Item {
     signal signalSignIn(string login,string password)   // Задаём сигнал
     signal signalRegistration()
 
-    Column{
+    Rectangle{
         id: column
-        width: 300
-        height: 184
+        width: parent.width
+        height: parent.height
         anchors.top: parent.top
         anchors.topMargin: 10
 
@@ -47,14 +46,14 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.top: login.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 20
             mytext:"Password:"
 
         }
 
 
 
-        Row{
+        Item{
             id:buttons
             anchors.right: parent.right
             anchors.rightMargin: 20
@@ -63,7 +62,7 @@ Item {
 
 
             anchors.top: password.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 20
 
 
             MyButton{
@@ -95,8 +94,6 @@ Item {
 
                  onClicked:
                  {
-                     // проверка данных
-                     //...
                      wAuthorization.signalSignIn(login.editText,password.editText)
                  }
              }

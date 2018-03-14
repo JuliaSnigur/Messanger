@@ -20,17 +20,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        guilib.cpp \
-    guilib.cpp
+    guiqml.cpp
 
 HEADERS += \
-        guilib.h \
     stdafx.h \
+    guiqml.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+
+LIBS+=$${PARSEDATALIB_LIBRARY}
+INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
 
 ########################################
@@ -47,6 +50,5 @@ DISTFILES += \
     MyButton.qml \
     Registration.qml \
     MainWindow.qml \
-    FirstWindow.qml \
     MyRow.qml \
-    MyTest.qml
+    Connection.qml

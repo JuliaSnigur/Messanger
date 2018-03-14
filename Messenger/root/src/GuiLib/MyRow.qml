@@ -1,7 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.6
+import QtQuick.Controls 2.2
 
 Item {
     id: myRow
+
+    width: 250
+    height:30
 
     //Добавляем к кнопке свойство text,
     //в которое можно будет что-нибудь записать.
@@ -9,38 +13,24 @@ Item {
     property string mytext
     property string editText: edit.text
 
-    Row{
-        id: row
-
         Text{
             id: label
-            width: 70
+
+            height: myRow.height
+
             text:myRow.mytext
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.right: edit.left
+            anchors.rightMargin: 30
             font.pixelSize: 14
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            }
-
-        Rectangle
-        {
-            anchors.left: label.right
-            anchors.leftMargin: 20
-             border.width: 1
-
-            width:150
-            height:20
-
-             TextInput {
-                 id: edit
-                 clip: true
-                 anchors.fill:parent
-                 focus: true
-                 font.pixelSize: 14
-
-                 anchors.leftMargin: 5
-                 anchors.rightMargin: 5
-             }
         }
-         }
 
+             TextField{
+
+                 id: edit
+                 width:150
+                 height: myRow.height
+                 anchors.right: parent.right
+             }
 }
