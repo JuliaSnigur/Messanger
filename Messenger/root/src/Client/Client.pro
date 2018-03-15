@@ -1,6 +1,7 @@
 include( ../../common.pri )
 include( ../../app.pri )
 include(../../root.pri)
+include(../../lib.pri)
 
 QT       += core network qml sql
 

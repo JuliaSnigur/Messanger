@@ -23,12 +23,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     SslServer.cpp \
+    #ServerConnection.cpp \
     mythread.cpp
 
 HEADERS += \
     stable.h \
     stdafx.h \
     SslServer.h \
+    #ServerConnection.h \
     mythread.h
 
 
