@@ -84,7 +84,7 @@ void MyThread::slotReadyRead()
 
     if(m_sslClient==nullptr)
     {
-        qDebug()<<"Read: m_sslClient=nullptr";
+        qDebug()<<"Read: m_sslClient=nullptr";      
         return;
     }
 
@@ -119,7 +119,7 @@ void MyThread::slotReadyRead()
         authorization(mess);
     break;
 
-    case GetNewList:
+    case GetListOfFriends:
 
         qDebug()<<"GetNewList";
         sendList();
@@ -144,6 +144,7 @@ void MyThread::registration(QString& req)
 
     if(!m_db->insertUser(User(log,pass)))
       {
+        m_mutexDB.unlock();
         sendToClient(m_sslClient,QString::number(Error)+" The user's already existed with that login");
         return;
       }
@@ -188,6 +189,8 @@ void MyThread::authorization(QString& req)
             m_mutexHashTab.lock();
 
             qDebug()<<"ID: "<<id;
+
+            // вставить проверку, если пользователь уже зашел под таким ником в систему
             m_hash->insert(id,m_sslClient);
 
             m_mutexHashTab.unlock();
@@ -210,7 +213,8 @@ void MyThread::authorization(QString& req)
 
 void MyThread::sendList()
 {
-    QVector<int> vec;
+    QString login;
+    QHash<int,QString> hashClients;
     QHash<int,QSslSocket*>::iterator iter;
 
     if(m_hash->size()>1)
@@ -218,11 +222,18 @@ void MyThread::sendList()
       iter=m_hash->begin();
       while(iter!=m_hash->end())
       {
-          vec.push_back(iter.key());
+
+         login = m_db->searchLogin(iter.key());
+          if(login != "")
+          {
+              hashClients.insert(iter.key(),login);
+              qDebug()<<"id "<<iter.key()<<' '+login;
+          }
           ++iter;
       }
-      qDebug()<<"Vector: "+StringHandlNamespace::concatenationVec(vec);
-     sendToClient(m_sslClient,QString::number(GetNewList)+' '+StringHandlNamespace::concatenationVec(vec));
+
+     qDebug()<<"Vector: "+StringHandlNamespace::concatenationHash(hashClients);
+     sendToClient(m_sslClient,QString::number(GetListOfFriends)+' '+StringHandlNamespace::concatenationHash(hashClients));
     }
     else
       {

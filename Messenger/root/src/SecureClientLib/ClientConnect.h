@@ -37,7 +37,6 @@ public:
    // void slotRegistration(const QString& login,const QString& pass);
    // void slotAuthorization(const QString& login,const QString& pass);
     void sendMessage(const QString& mess);
-    void setIdFriend(int id);
     void sendFile(const QString& filename);
     void getFile();
     void showDialog();
@@ -52,19 +51,21 @@ public slots:
     void slotConnection(const QString& hostName,int port);
    void slotRegistration(const QString& login,const QString& pass);
    void slotAuthorization(const QString& login,const QString& pass);
+   void slotGetListFriend();
+   void slotChoiceFriend(const int& id);
 
 
 signals:
 
 
-   void signalSuccessful(int num);
+   void signalSendRespond(QString res);
+   void signalSendListClients(QString& res);
 
-    void signalGetListsClients(QVector<int>);
     void signalGetID(int);
     void signalSendMessage();
     void signalSendInfo();
 
-    void signalError(const QString&);
+
 
 };
 

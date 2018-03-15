@@ -32,6 +32,16 @@ Rectangle {
 
     MouseArea {
             anchors.fill: parent
-            onClicked: mybutton.clicked()
+
+            onPressed: {
+
+                colorChanged("blue")
+            }
+
+            onClicked:{
+
+                mybutton.focus=true
+                mybutton.clicked()
+            }
         }
 }

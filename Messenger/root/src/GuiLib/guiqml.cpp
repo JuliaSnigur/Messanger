@@ -3,37 +3,37 @@
 #include "guiqml.h"
 #include"parsedata.h"
 
+#include"element.h"
+
+#include<QDebug>
 
 
-
-GuiQML::GuiQML(QObject* parent)
-    :QObject(parent)
-    ,m_error("")
-    ,m_flag(false)
-{}
-
-GuiQML::~GuiQML(){}
-
-
-
-QString GuiQML::getLogin() const
+Gui::GuiQML::GuiQML(QObject* parent)
+    : QObject(parent)
 {
-    return this->m_login;
+    qDebug()<<"Hello";
+
+    qmlRegisterType<Element>("Element", 1, 0, "Element");
+
+}
+
+Gui::GuiQML::~GuiQML(){}
+
+
+
+QString Gui::GuiQML::getLogin() const
+{
+    return m_login;
 }
 
 
-QString GuiQML::getPassword() const
+QString Gui::GuiQML::getPassword() const
 {
-    return this->m_password;
-}
-
-QString GuiQML::getError() const
-{
-    return this->m_error;
+    return m_password;
 }
 
 
-void GuiQML::setLogin(const QString& str)
+void Gui::GuiQML::setLogin(const QString& str)
 {
     if (m_login == str)
             return;
@@ -43,18 +43,7 @@ void GuiQML::setLogin(const QString& str)
 
 }
 
-void GuiQML::setError(const QString& str)
-{
-    if (m_error == str)
-            return;
-
-    m_error = str;
-
-    emit errorChange(m_error);
-
-}
-
-void GuiQML::setPassword(const QString& str)
+void Gui::GuiQML::setPassword(const QString& str)
 {
     if (m_password == str)
             return;
@@ -64,11 +53,11 @@ void GuiQML::setPassword(const QString& str)
 }
 
 
-QString GuiQML::getPort() const {return m_port;}
-QString GuiQML::getIP() const{return m_ip;}
+QString Gui::GuiQML::getPort() const {return m_port;}
+QString Gui::GuiQML::getIP() const{return m_ip;}
 
 
-void GuiQML::setPort(const QString& str)
+void Gui::GuiQML::setPort(const QString& str)
 {
     if (m_port == str)
             return;
@@ -77,7 +66,7 @@ void GuiQML::setPort(const QString& str)
     emit portChange(m_port);
 }
 
-void GuiQML::setIP(const QString& str)
+void Gui::GuiQML::setIP(const QString& str)
 {
     if (m_ip == str)
        return;
@@ -86,53 +75,142 @@ void GuiQML::setIP(const QString& str)
     emit ipChange(m_ip);
 }
 
-void GuiQML::connection(const QString& ip, const QString& port)
+ QString Gui::GuiQML::getError() const
+ {
+     return m_error;
+ }
+
+///////////////////////////////////////////////////////
+
+void Gui::GuiQML::connection(const QString& ip, const QString& port)
 {
    // m_ip="127.0.0.1";
   //  m_port="27015";
     emit signalConnection(ip,port.toInt());
 }
 
- void GuiQML::registration(const QString& login, const QString& pass)
+
+ void Gui::GuiQML::registration(const QString& login, const QString& pass)
  {
     emit signalRegistration(login,pass);
  }
 
- void GuiQML::authirization(const QString& login, const QString& pass)
+ void Gui::GuiQML::authirization(const QString& login, const QString& pass)
  {
     emit signalAuthorisation(login,pass);
  }
 
 
+ void Gui::GuiQML::getListFriends()
+ {
+     emit  signalGetListFriends();
+ }
 
 
-void GuiQML::slotRespond(int respond)
+ void Gui::GuiQML::choiceFriend(const int& id)
+ {
+     emit signalChoiceFriend(id);
+ }
+
+
+
+//////////////////////////////////////////////////////
+
+
+void Gui::GuiQML::slotRespond( QString res)
 {
-    switch(respond)
+
+    switch((StringHandlNamespace::variable(res)).toInt())
     {
-        case Connection:
+    case Error:
+
+        m_error=res;
+        emit signalError();
+
+      break;
+
+    case Connection:
+        emit signalSuccessConect();
+        break;
+
+    case Registration:
+        emit signalSuccessRegistr();
+        break;
+
+    case Authorization:
+        emit signalSuccessAuthor();
+        break;
+
+    case GetListOfFriends:
+
+            qDebug()<<res;
+         QHash<int,QString> hash=StringHandlNamespace::separateHash(res);
+
+         QHash<int,QString>::const_iterator iter = hash.begin();
+
+
+
+         while(iter != hash.end())
+         {
+             Element* element = new Element(this);
+             element->setProperty("text", iter.value());
+             m_data << element;
+
+             emit dataChanged();
+
+             ++iter;
+         }
+
+
 
         break;
 
+
+
     }
+
 }
 
- void GuiQML::slotError(const QString& error)
- {
-     m_flag=true;
-    emit errorChange (error);
- }
+////////////////////////////////
 
-  bool GuiQML::getFlag()const
-  {
-      return this->m_flag;
-  }
 
-  void GuiQML::setFlag(const bool& str)
-  {
-      if (m_port == str)
-              return;
+QQmlListProperty<Element> Gui::GuiQML::data()
+{
+    return QQmlListProperty< Element >(static_cast<QObject *>(this),
+                                       static_cast<void *>(&m_data),
+                                       &GuiQML::appendData,
+                                       &GuiQML::countData,
+                                       &GuiQML::atData,
+                                       &GuiQML::clearData);
+}
 
-      m_flag = str;
-      emit flagChange(m_flag);
-  }
+
+
+void Gui::GuiQML::appendData(QQmlListProperty<Element> *list, Element *value)
+{
+    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
+    data->append(value);
+}
+
+int Gui::GuiQML::countData(QQmlListProperty<Element> *list)
+{
+    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
+    return data->size();
+}
+
+Element *Gui::GuiQML::atData(QQmlListProperty<Element> *list, int index)
+{
+    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
+    return data->at(index);
+}
+
+void Gui::GuiQML::clearData(QQmlListProperty<Element> *list)
+{
+    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
+    qDeleteAll(data->begin(), data->end());
+    data->clear();
+}
+
+
+
+
