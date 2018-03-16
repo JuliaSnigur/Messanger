@@ -14,22 +14,21 @@ protected:
 
 public:
     DBClientPresenter();
-    DBClientPresenter(const QString&);
+    DBClientPresenter(const QString& nameDB);
 
   virtual  ~DBClientPresenter();
 
 
-
-
      virtual bool insertUser(User);
-     bool insertDialog(int id1, int id2 );
+     bool insertDialog(const int& id );
 
      bool insertFile( QString filename,QByteArray file);
      QVariantList searchFile(const int& id);
 
 
-     int searchIdDialog(const int& id1,const int& id2);
-     bool insertMessage(const QString& mess,const int& idDialog);
+     int searchID(const QString& login);
+     int searchIdDialog(const int& id);
+     bool insertMessage(const int& idDialog,const QString& recipient, const QString& mess, const QString& time, const int& idFile=0);
 
      QQueue<QString> showDialog(const int& idDialog);
 

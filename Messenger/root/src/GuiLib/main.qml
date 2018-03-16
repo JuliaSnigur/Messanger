@@ -18,25 +18,30 @@ Window {
 
         onSignalSuccessConect:
         {
+
             wConnect.visible = false
             wAuth.visible = true
         }
 
         onSignalSuccessRegistr:
         {
+             wMain.myLogin=login
              window.hide()
              wMain.show()
+
         }
 
         onSignalSuccessAuthor:
         {
             wMain.show()
             window.hide()
+            wMain.myLogin=login
         }
 
         onSignalError:
         {
             messageDialog.visible=true
+            messageDialog.text=error
         }
 
     }
@@ -85,7 +90,7 @@ Window {
 
     MainWindow {
         id: wMain
-        visible:true
+        visible:false
 
     }
 
@@ -96,7 +101,7 @@ Window {
         id: messageDialog
         title: "Error"
 
-        text: gui.m_error
+
         visible: false
 
         onAccepted: {

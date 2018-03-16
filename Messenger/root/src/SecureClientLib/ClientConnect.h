@@ -21,6 +21,8 @@ class ClientConnection : public QObject
 private:
     QPointer<QSslSocket> m_client;
     DBClientPresenter m_db;
+    QHash<int,QString> m_hash;
+
     User m_user;
     int m_idFriend;
     int m_idDialog;
@@ -32,14 +34,10 @@ public:
     ClientConnection(QObject *parent = 0);
     virtual~ClientConnection();
 
-   // void start(const QString& hostName,int port);
 
-   // void slotRegistration(const QString& login,const QString& pass);
-   // void slotAuthorization(const QString& login,const QString& pass);
-    void sendMessage(const QString& mess);
     void sendFile(const QString& filename);
     void getFile();
-    void showDialog();
+
 
 public slots:
 
@@ -52,7 +50,8 @@ public slots:
    void slotRegistration(const QString& login,const QString& pass);
    void slotAuthorization(const QString& login,const QString& pass);
    void slotGetListFriend();
-   void slotChoiceFriend(const int& id);
+   void slotChoiceFriend(const QString& login);
+   void slotSendMessage(const QString& message);
 
 
 signals:
@@ -62,8 +61,9 @@ signals:
    void signalSendListClients(QString& res);
 
     void signalGetID(int);
-    void signalSendMessage();
+   // void signalSendMessage();
     void signalSendInfo();
+    void signalSendDialog(QQueue<QString> q);
 
 
 

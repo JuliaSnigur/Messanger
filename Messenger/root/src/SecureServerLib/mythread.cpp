@@ -4,11 +4,11 @@
 #include"parsedata.h"
 
 MyThread::MyThread(qintptr ID,DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
-    :QThread(parent)
-    ,m_mutexDB()
-    ,m_mutexHashTab()
-    ,m_db(db)
-    ,m_hash(hash)
+    : QThread(parent)
+    , m_mutexDB()
+    , m_mutexHashTab()
+    , m_db(db)
+    , m_hash(hash)
     , m_sslClient(nullptr)
 {
     this->m_socketDescriptor = ID;
@@ -172,7 +172,6 @@ void MyThread::registration(QString& req)
 
 void MyThread::authorization(QString& req)
 {
-    int id=0;
     QString log=StringHandlNamespace::variable(req), pass=StringHandlNamespace::variable(req);
 
     // search user into db
@@ -188,15 +187,15 @@ void MyThread::authorization(QString& req)
 
             m_mutexHashTab.lock();
 
-            qDebug()<<"ID: "<<id;
+            qDebug()<<"ID: "<<us.getID();
 
             // вставить проверку, если пользователь уже зашел под таким ником в систему
-            m_hash->insert(id,m_sslClient);
+            m_hash->insert(us.getID(),m_sslClient);
 
             m_mutexHashTab.unlock();
 
 
-             sendToClient(m_sslClient,QString::number(Authorization)+" "+QString::number(id));
+             sendToClient(m_sslClient,QString::number(Authorization)+" "+QString::number(us.getID()));
         }
         else
         {
@@ -256,10 +255,10 @@ void MyThread::message(QString& str)
 
     QString login=m_db->searchLogin(myID);
 
-    if(login!="")
-         sendToClient((*m_hash)[friendID],QString::number(Message)+' '+QString::number(myID)+' '+login+": "+str);
+    if(login != "")
+         sendToClient((*m_hash)[friendID], QString::number(Message) + ' ' + QString::number(myID) + ' ' +QString::number(0) + ' ' + str);
     else
-        sendToClient((*m_hash)[myID],QString::number(Error)+" The message doesn't send");
+        sendToClient((*m_hash)[myID], QString::number(Error) + " The message doesn't send");
 }
 
 
@@ -288,5 +287,5 @@ void MyThread::slotDisconnect()
      m_sslClient->disconnect();
      m_sslClient->deleteLater();
 
-         exit(0);
+     exit(0);
 }

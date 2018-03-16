@@ -22,8 +22,8 @@ SUBDIRS  = \
     #src/Client/Client/client.pro \
     #src/Server/Server/server.pro
 
-Client.depends =  SecureClientLib ParseDataLib
-Server.depends =  SecureServerLib DBLib ParseDataLib
+Client.depends =  SecureClientLib GuiLib
+Server.depends =  SecureServerLib DBLib
 
-SecureClientLib.depends=DBLib
-SecureServerLib.depends=DBLib
+SecureClientLib.depends = DBLib ParseDataLib
+SecureServerLib.depends = DBLib ParseDataLib

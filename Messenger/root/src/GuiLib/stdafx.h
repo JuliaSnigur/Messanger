@@ -5,6 +5,8 @@
 #include <QQmlApplicationEngine>
 
 #include<QList>
+#include<QDebug>
+#include<QQueue>
 
 #include <stdio.h>
 #include <tchar.h>

@@ -19,16 +19,13 @@ class GuiQML: public QObject
 private:
     Q_PROPERTY(QString m_login WRITE setLogin READ getLogin NOTIFY loginChange)
     Q_PROPERTY(QString m_password WRITE setPassword READ getPassword NOTIFY passwordChange)
-
     Q_PROPERTY(QString m_port WRITE setPort READ getPort NOTIFY portChange)
     Q_PROPERTY(QString m_ip WRITE setIP READ getIP NOTIFY ipChange)
+    Q_PROPERTY(QQmlListProperty<Element> dataClients READ dataClients NOTIFY dataClientsChanged)
+    Q_PROPERTY(QQmlListProperty<Element> dataDialog READ dataDialog NOTIFY dataDialogChanged)
 
-    Q_PROPERTY(QString m_error READ getError NOTIFY errorChange)
-
-
-    Q_PROPERTY(QQmlListProperty<Element> data READ data NOTIFY dataChanged)
-    Q_CLASSINFO("DefaultProperty", "data")
-
+    Q_CLASSINFO("DefaultProperty", "dataClients")
+    Q_CLASSINFO("DefaultProperty", "dataDialog")
 
 public:
     GuiQML(QObject* parent=0);
@@ -36,14 +33,12 @@ public:
 
     QString getLogin() const;
     QString getPassword() const;
-
     QString getPort() const;
     QString getIP() const;
 
-    QString getError() const;
 
-
-    QQmlListProperty<Element> data();
+    QQmlListProperty<Element> dataClients();
+    QQmlListProperty<Element> dataDialog();
 
 
 
@@ -51,7 +46,9 @@ public:
  Q_INVOKABLE void registration(const QString& login, const QString& pass);
  Q_INVOKABLE void authirization(const QString& login, const QString& pass);
  Q_INVOKABLE void getListFriends();
- Q_INVOKABLE void choiceFriend(const int& id);
+ Q_INVOKABLE void choiceFriend(const QString& login);
+ Q_INVOKABLE void sendMessage(const QString& mess);
+
 
 
 public slots:
@@ -63,6 +60,7 @@ public slots:
 
 
     void slotRespond( QString res);
+    void slotShowDialog(const QQueue<QString>& q);
 
 
 
@@ -71,21 +69,22 @@ signals:
     void passwordChange (const QString& pass);
     void portChange (const QString& port);
     void ipChange (const QString& ip);
-    void errorChange (const QString& error);
-    void dataChanged();
+    void dataClientsChanged();
+    void dataDialogChanged();
 
 
      void signalConnection(const QString& ip, int port);
      void signalAuthorisation( QString login, QString pass);
      void signalRegistration( QString login, QString pass);
      void  signalGetListFriends();
-     void signalChoiceFriend(const int& id);
+     void signalChoiceFriend(const QString& login);
+     void signalSendMessage(const QString&  message);
 
 
      void signalSuccessConect();
-     void signalSuccessRegistr();
-     void signalSuccessAuthor();
-     void signalError();
+     void signalSuccessRegistr(const QString& login);
+     void signalSuccessAuthor(const QString& login);
+     void signalError(const QString& error);
 
 
 private:
@@ -96,7 +95,9 @@ private:
     static Element *atData(QQmlListProperty<Element> *list, int index);
     static void clearData(QQmlListProperty<Element> *list);
 
-    QList<Element*> m_data;
+    QList<Element*> m_dataClients;
+    QList<Element*> m_dataDialog;
+
 
     QString m_login;
     QString m_password;
@@ -104,7 +105,6 @@ private:
     QString m_port;
     QString m_ip;
 
-    QString m_error;
 
 
 };

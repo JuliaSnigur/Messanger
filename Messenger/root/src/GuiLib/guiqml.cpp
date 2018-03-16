@@ -5,7 +5,7 @@
 
 #include"element.h"
 
-#include<QDebug>
+
 
 
 Gui::GuiQML::GuiQML(QObject* parent)
@@ -75,28 +75,27 @@ void Gui::GuiQML::setIP(const QString& str)
     emit ipChange(m_ip);
 }
 
- QString Gui::GuiQML::getError() const
- {
-     return m_error;
- }
 
 ///////////////////////////////////////////////////////
 
 void Gui::GuiQML::connection(const QString& ip, const QString& port)
 {
-   // m_ip="127.0.0.1";
-  //  m_port="27015";
+
     emit signalConnection(ip,port.toInt());
 }
 
 
  void Gui::GuiQML::registration(const QString& login, const QString& pass)
  {
+    m_login=login;
+    emit loginChange(login);
     emit signalRegistration(login,pass);
  }
 
  void Gui::GuiQML::authirization(const QString& login, const QString& pass)
  {
+    m_login=login;
+    emit loginChange(login);
     emit signalAuthorisation(login,pass);
  }
 
@@ -107,9 +106,17 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
  }
 
 
- void Gui::GuiQML::choiceFriend(const int& id)
+ void Gui::GuiQML::choiceFriend(const QString& login)
  {
-     emit signalChoiceFriend(id);
+     m_dataDialog.clear();
+     emit dataDialogChanged();
+
+     emit signalChoiceFriend(login);
+ }
+
+ void Gui::GuiQML::sendMessage(const QString& mess)
+ {
+     emit signalSendMessage(mess);
  }
 
 
@@ -119,13 +126,14 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
 void Gui::GuiQML::slotRespond( QString res)
 {
+     QHash<int,QString> hash;
+     QHash<int,QString>::const_iterator iter;
 
     switch((StringHandlNamespace::variable(res)).toInt())
     {
     case Error:
 
-        m_error=res;
-        emit signalError();
+        emit signalError(res);
 
       break;
 
@@ -134,56 +142,112 @@ void Gui::GuiQML::slotRespond( QString res)
         break;
 
     case Registration:
-        emit signalSuccessRegistr();
+        emit signalSuccessRegistr(m_login);
         break;
 
     case Authorization:
-        emit signalSuccessAuthor();
+        emit signalSuccessAuthor(m_login);
         break;
 
     case GetListOfFriends:
 
-            qDebug()<<res;
-         QHash<int,QString> hash=StringHandlNamespace::separateHash(res);
+        m_dataClients.clear();
+        emit dataClientsChanged();
 
-         QHash<int,QString>::const_iterator iter = hash.begin();
+        qDebug() << res;
 
+        hash = StringHandlNamespace::separateHash(res);
 
+        iter = hash.begin();
 
          while(iter != hash.end())
          {
              Element* element = new Element(this);
-             element->setProperty("text", iter.value());
-             m_data << element;
 
-             emit dataChanged();
+             qDebug() << iter.key() << ' ' << iter.value();
+
+             element->setProperty("login", iter.value());
+
+             m_dataClients << element;
+             emit dataClientsChanged();
+
 
              ++iter;
          }
 
-
-
         break;
 
+    case GetFriend:
+        break;
+
+    case Message:
 
 
+        Element* element = new Element(this);
+
+        // str = loginRecipeint, time, messange, idFile
+        element->setProperty("login", StringHandlNamespace::variable(res));
+        element->setProperty("time", StringHandlNamespace::variable(res));
+        element->setProperty("messange", StringHandlNamespace::variable(res));
+        element->setProperty("idFile", StringHandlNamespace::variable(res));
+
+        m_dataDialog << element;
+        emit dataDialogChanged();
+
+        break;
     }
 
 }
 
+
+void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
+{
+    QString str;
+
+    for(int i = 0; i<q.size(); i++)
+     {
+         Element* element = new Element(this);
+
+         str = q[i];
+
+         // str = loginRecipeint, time, messange, idFile
+         element->setProperty("login", StringHandlNamespace::variable(str));
+         element->setProperty("time", StringHandlNamespace::variable(str));
+         element->setProperty("messange", StringHandlNamespace::variable(str));
+         element->setProperty("idFile", StringHandlNamespace::variable(str));
+
+         m_dataClients << element;
+
+         emit dataClientsChanged();
+     }
+}
+
+
+
+
+
 ////////////////////////////////
 
 
-QQmlListProperty<Element> Gui::GuiQML::data()
+QQmlListProperty<Element> Gui::GuiQML::dataClients()
 {
     return QQmlListProperty< Element >(static_cast<QObject *>(this),
-                                       static_cast<void *>(&m_data),
+                                       static_cast<void *>(&m_dataClients),
                                        &GuiQML::appendData,
                                        &GuiQML::countData,
                                        &GuiQML::atData,
                                        &GuiQML::clearData);
 }
 
+QQmlListProperty<Element> Gui::GuiQML::dataDialog()
+{
+    return QQmlListProperty< Element >(static_cast<QObject *>(this),
+                                       static_cast<void *>(&m_dataDialog),
+                                       &GuiQML::appendData,
+                                       &GuiQML::countData,
+                                       &GuiQML::atData,
+                                       &GuiQML::clearData);
+}
 
 
 void Gui::GuiQML::appendData(QQmlListProperty<Element> *list, Element *value)

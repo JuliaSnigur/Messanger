@@ -41,4 +41,4 @@ LIBS+=$${SECURECLIENTLIB_LIBRARY}
 INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
 
 CONFIG += ordered
-Client.depends =  SecureClientLib
+Client.depends =  SecureClientLib GuiLib

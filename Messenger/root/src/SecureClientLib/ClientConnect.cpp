@@ -77,6 +77,8 @@ void ClientConnection::slotEncrypted()
  void  ClientConnection::slotReadyRead()
  {
      int idSender = -1;
+     int idFile = 0;
+     QString login;
 
      QString message = m_client->readAll();    // Read message
      qDebug()<<"Client got-> " << message;
@@ -135,29 +137,33 @@ void ClientConnection::slotEncrypted()
 
              qDebug()<<"My ID-> "<<m_user.getID();
 
-             // get lists of clients who are online
-             sendToServer(QString::number(GetListOfFriends));
-
              emit signalSendRespond(QString::number(Authorization));
 
                  break;
 
              case Message:
 
-             idSender = (StringHandlNamespace::variable(message)).toInt();
+             // key, time, idFriend, idFile, mess
+                 idSender = (StringHandlNamespace::variable(message)).toInt();
+                 idFile = (StringHandlNamespace::variable(message)).toInt();
 
-                qDebug() << message;
-                 m_idDialog = m_db.searchIdDialog(idSender,m_user.getID());
+
+                 qDebug() << message;
+                 m_idDialog = m_db.searchIdDialog(idSender);
 
                  if(m_idDialog < 0 )
                  {
                      qDebug() << "The dialog dosn't exist";
-                     m_db.insertDialog(idSender,m_user.getID());
+                     m_db.insertDialog(idSender);
                  }
                  else
-                    m_db.insertMessage(time+' '+message,m_idDialog);
+                 {
+                     login=m_hash[idSender];
+                     m_db.insertMessage(m_idDialog,login,message,time,idFile);
+                 }
 
-                 emit signalSendMessage();
+                  // str = loginRecipeint, time, messange, idFile
+                 emit signalSendRespond(QString::number(Message) + ' ' + login + ' ' + time + ' ' + message);
 
                  break;
 
@@ -170,8 +176,10 @@ void ClientConnection::slotEncrypted()
 
              emit signalSendRespond(QString::number(GetListOfFriends) + ' ' + message);
 
+             m_hash=StringHandlNamespace::separateHash(message);
 
              break;
+
     }
  }
 
@@ -187,6 +195,10 @@ void ClientConnection::slotEncrypted()
 
  }
 
+
+
+ //////////////////////////////////////////////////////
+
  void ClientConnection::slotRegistration(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
@@ -200,40 +212,44 @@ void ClientConnection::slotEncrypted()
  void ClientConnection::slotGetListFriend()
  {
      // get lists of clients who are online
-     sendToServer(QString::number(GetListOfFriends));
+    sendToServer(QString::number(GetListOfFriends));
  }
 
- void ClientConnection::slotChoiceFriend(const int& id)
+
+ void ClientConnection::slotChoiceFriend(const QString& login)
  {
-     m_idFriend = id;
+     m_idFriend = m_hash.key(login);
 
      qDebug()<<"My id-> " << m_user.getID() << "Friend id-> " << m_idFriend;
 
      // search dialog
-     int idDialog = m_db.searchIdDialog(m_user.getID(), m_idFriend);
+     int idDialog = m_db.searchIdDialog(m_idFriend);
 
      if(idDialog < 0)
      {
          qDebug() << "The dialog doesn't exist";
          // add dialog
-         m_db.insertDialog(m_user.getID(), m_idFriend);
+         m_db.insertDialog(m_idFriend);
 
      }
      else
+     {
          qDebug()<<"The dialog exists";
+
+         QQueue<QString> q = m_db.showDialog(idDialog);
+
+         for(int i = 0 ; i<q.size(); i++)
+         {
+              qDebug() << q[i];
+         }
+
+         emit signalSendDialog(q);
+
+
+     }
+     emit signalSendRespond(QString::number(GetFriend));
+
  }
-
-
-  void ClientConnection::showDialog()
-  {
-    QQueue<QString> q = m_db.showDialog(0);
-
-    for(int i = 0 ; i<q.size(); i++)
-    {
-        qDebug() << q[i];
-    }
-  }
-
 
 
  void ClientConnection::slotAuthorization(const QString& login,const QString& pass)
@@ -244,11 +260,15 @@ void ClientConnection::slotEncrypted()
     sendToServer(QString::number(Authorization) + ' ' + login + ' ' + pass);
  }
 
- void ClientConnection::sendMessage(const QString& mess)
- {
-    sendToServer(QString::number(Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + mess);
 
+ void ClientConnection::slotSendMessage(const QString& message)
+ {
+     sendToServer(QString::number(Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + message);
  }
+
+
+//////////////////////////////////////////////////////////////
+
 
 
 

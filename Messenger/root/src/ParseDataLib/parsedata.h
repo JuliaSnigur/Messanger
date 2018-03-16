@@ -5,7 +5,7 @@
 #include<QDebug>
 
 
-enum request{Error, Connection, Registration, Authorization, Message, File, GetListOfFriends,GetID};
+enum request{Error, Connection, Registration, Authorization, Message, File, GetListOfFriends,GetID, GetFriend};
 
 
 namespace StringHandlNamespace {
@@ -102,21 +102,15 @@ namespace StringHandlNamespace {
             while(i<str.size() && str[i] != ' ')
             {
                 resID += str[i];
-                i++;
-                qDebug()<<str[i];
+                ++i;
             }
-            qDebug()<<str[i];
-
+            ++i;
             resLogin="";
             while(i<str.size() && str[i] != ' ')
             {
                 resLogin += str[i];
-                i++;
-                qDebug()<<str[i];
+                ++i;
             }
-
-            qDebug()<< resID<<' '<<resLogin;
-
             hash.insert(resID.toInt(),resLogin);
         }
 

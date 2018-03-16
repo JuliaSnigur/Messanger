@@ -13,6 +13,7 @@ Window {
 
 
     property string inConversationWith
+    property string myLogin
 
     Connections{
 
@@ -50,19 +51,18 @@ Window {
             Layout.fillHeight: true
                     spacing: 20
                     // установить список друзей
-                    model: gui.data
+                    model: gui.dataClients
 
                     delegate: ItemDelegate
                     {
-
-                        text: modelData.text
+                        text: modelData.login
                         width: listView.width - listView.leftMargin - listView.rightMargin
                         height: 30
 
                          onClicked:
                          {
-                              gui.choiceFriend(modelData.id)
-                             inConversationWith = modelData.text
+                             gui.choiceFriend(modelData.login)
+                             inConversationWith = modelData.login
                              recDialog.visible=true
                          }
                     }
@@ -75,8 +75,6 @@ Window {
         Button {
 
             id:butGetList
-
-
 
             text: qsTr("List updates")
             anchors.right: parent.right
@@ -139,33 +137,44 @@ ColumnLayout {
 
                            verticalLayoutDirection: ListView.BottomToTop
                            spacing: 12
-                           // количество элементов
-                           model: 50
+                           model: gui.dataDialog
                            delegate:
 
-                            Row {
+                               Column {
+                                               anchors.right: sentByMe ? recDialog.right : undefined
+                                               spacing: 6
 
-                               readonly property bool sentByMe: index % 2 == 0
+                                               readonly property bool sentByMe: modelData.login !== myLogin
 
-                               anchors.right: sentByMe ? parent.right : undefined
-                               spacing: 6
-
-                               Rectangle {
-                                   width: 80
-                                   height: 40
-                                   color: sentByMe ? "lightgrey" : "steelblue"
-
-                                   Label {
-                                       anchors.centerIn: parent
-                                       text: index
-                                       color: sentByMe ? "black" : "white"
-                                   }
-                               }
-                           }
+                                               Row {
+                                                   id: messageRow
+                                                   spacing: 6
+                                                   anchors.right: sentByMe ? recDialog.right : undefined
 
 
+                                                   Rectangle {
+
+                                                       id:recMessange
+                                                       color: sentByMe ? "lightgrey" : "steelblue"
+
+                                                       Label {
+                                                           id: messageText
+                                                           text: modelData.message
+                                                           color: sentByMe ? "black" : "white"
+                                                           anchors.fill:recMessange
+                                                           anchors.margins: 12
+                                                       }
+                                                   }
+                                               }
+
+                                               Label {
+                                                   id: timestampText
+                                                   text: modelData.time
+                                                   color: "lightgrey"
+                                                   anchors.right: sentByMe ? recDialog.right : undefined
+                                               }
+                                           }
                        }
-
 
                Pane {
                           id: pane
@@ -192,13 +201,12 @@ ColumnLayout {
                               }
 
                               Button {
-                                  id: butSendMes
+                                  id: sendButton
                                   text: qsTr("Send")
                                   enabled: messageField.length > 0
-
-                                  onClicked:
-                                  {
-
+                                  onClicked: {
+                                    gui.sendMessage(messageField.text);
+                                    messageField.text = "";
                                   }
                               }
 
@@ -234,6 +242,17 @@ ColumnLayout {
                  recDialog.visible=false
             }
         }
+
+        Label {
+            width: 200
+            text: myLogin
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: 20
+                }
 
         ToolButton {
             width: 90
