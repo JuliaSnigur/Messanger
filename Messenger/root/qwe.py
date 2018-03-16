@@ -1,0 +1,15 @@
+import shutil
+shutil.copy2('src/include/release/Qt5Core.dll','bin/release')
+shutil.copy2('src/include/release/Qt5Gui.dll','bin/release')
+shutil.copy2('src/include/release/Qt5Network.dll','bin/release')
+shutil.copy2('src/include/release/Qt5Qml.dll','bin/release')
+shutil.copy2('src/include/release/Qt5Sql.dll','bin/release')
+shutil.copy2('src/include/release/Qt5WebSockets.dll','bin/release')
+shutil.copy2('src/include/release/Qt5Widgets.dll','bin/release')
+shutil.copy2('src/include/debug/Qt5Cored.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Guid.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Networkd.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Qmld.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Sqld.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Widgetsd.dll','bin/debug')
+

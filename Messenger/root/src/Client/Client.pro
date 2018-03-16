@@ -1,3 +1,4 @@
+
 include( ../../common.pri )
 include( ../../app.pri )
 include(../../root.pri)
@@ -27,6 +28,7 @@ HEADERS += \
     stable.h \
     client.h
 
+
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
 
@@ -42,3 +44,7 @@ INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
 
 CONFIG += ordered
 Client.depends =  SecureClientLib
+
+
+
+#message("[INFO] to $${BIN_PATH}")

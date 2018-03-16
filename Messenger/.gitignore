@@ -4,6 +4,7 @@
 *.autosave
 *.obj
 *.vc.pdb
+obj/
 lib.win32/
 .qmake.stash
 MakeFile
