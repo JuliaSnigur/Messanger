@@ -1,3 +1,9 @@
+TEMPLATE = aux
+system(qwe.py)
+#win32: PYTHON=python.exe
+#else:  PYTHON=python
+#system($$PYTHON qwe.py)
+
 DISTFILES += \
     root.pri\
     common.pri\
@@ -17,13 +23,17 @@ SUBDIRS  = \
     src/SecureServerLib \
     src/Client \
     src/Server
-    #src/Client/client.pro \
-    #src/Server/server.pro \
-    #src/Client/Client/client.pro \
-    #src/Server/Server/server.pro
+
 
 Client.depends =  SecureClientLib GuiLib
 Server.depends =  SecureServerLib DBLib
 
+<<<<<<< HEAD
 SecureClientLib.depends = DBLib ParseDataLib
 SecureServerLib.depends = DBLib ParseDataLib
+=======
+SecureClientLib.depends=DBLib
+SecureServerLib.depends=DBLib
+
+
+>>>>>>> 2a1633cb0aa92d78593e0a08d4745493b34af37b
