@@ -7,8 +7,6 @@
 
 #include<QIODevice>
 #include<QFile>
-#include<QSslConfiguration>
-#include<QSslKey>
 #include<QThreadPool>
 
 #include <QtSql>
@@ -21,10 +19,7 @@
 #include <QThread>
 
 #include<QRunnable>
-#include<QSslSocket>
 #include<QMutex>
-#include<QFile>
-#include<QSslCertificate>
 
 #include<QPointer>
 

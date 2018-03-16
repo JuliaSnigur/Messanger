@@ -77,7 +77,7 @@ Item {
                  {
                      // проверка данных
                      //...
-                     wRegistration.signalSignIn(login.edit,password.text)
+                     wRegistration.signalSignIn(login.editText,password.editText)
                  }
              }
         }

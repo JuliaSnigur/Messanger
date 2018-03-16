@@ -2,7 +2,7 @@ include( ../../common.pri )
 include( ../../lib.pri )
 include( ../../root.pri )
 
-QT+=qml
+QT+=qml sql
 
 TARGET = GuiLib$${LIB_SUFFIX}
 TEMPLATE = lib
@@ -20,11 +20,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    guiqml.cpp
+    guiqml.cpp \
+    element.cpp \
+   # listmodel.cpp \
+
 
 HEADERS += \
     stdafx.h \
-    guiqml.h
+    guiqml.h \
+    element.h \
+   # listmodel.h
 
 unix {
     target.path = /usr/lib

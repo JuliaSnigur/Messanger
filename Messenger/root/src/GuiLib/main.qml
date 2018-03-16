@@ -10,58 +10,85 @@ Window {
     title: qsTr("Messenger")
 
 
+    property string errorText
+
+    Connections{
+
+        target: gui
+
+        onSignalSuccessConect:
+        {
+            wConnect.visible = false
+            wAuth.visible = true
+        }
+
+        onSignalSuccessRegistr:
+        {
+             window.hide()
+             wMain.show()
+        }
+
+        onSignalSuccessAuthor:
+        {
+            wMain.show()
+            window.hide()
+        }
+
+        onSignalError:
+        {
+            messageDialog.visible=true
+        }
+
+    }
+
     Connection{
 
         id:wConnect
-        visible: true
+      //  visible: true
 
         onSignalExit:{
 
            gui.connection(ip,port)
 
-            if(gui.flag)
-            {
-                wConnect.visible=false
-                mAuthorization.visible=true
-            }
-            else
-            {
-
-            }
-
-          // client.slotHello()
         }
      }
 
-
-
     Authorization{
 
-        id:mAuthorization
+        id:wAuth
         visible: false
 
         onSignalRegistration: {
 
-            mAuthorization.visible=false
-            mRegistration.visible=true
+                wAuth.visible = false
+                wRegistr.visible = true
         }
 
         onSignalSignIn: {
 
-            //client.slotAuthorization(login,password)
+            gui.authirization(login,password)
         }
     }
 
 
     Registration{
 
-        id:mRegistration
+        id:wRegistr
         visible:false
+
         onSignalSignIn: {
 
-         // client.slotAuthorization(login,password)
+           gui.registration(login,password)
         }
     }
+
+
+    MainWindow {
+        id: wMain
+        visible:true
+
+    }
+
 
 
 
@@ -70,10 +97,10 @@ Window {
         title: "Error"
 
         text: gui.m_error
-        visible: gui.m_flag
+        visible: false
 
         onAccepted: {
-            messageDialog.visible=false
+            messageDialog.visible = false
         }
     }
 

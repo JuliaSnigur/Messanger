@@ -13,8 +13,7 @@ class Client: public QObject
 private:
 
     ClientConnection m_client;
-    QVector<int> m_vecClients;
-    GuiQML m_gui;
+    Gui::GuiQML m_gui;
 
 public:
     Client(QObject* obj=0);
@@ -24,9 +23,11 @@ public:
 
     void startWork();
 
-    GuiQML& getGui();
+    Gui::GuiQML& getGui();
 
 public slots:
+
+    /*
     void slotAuthorization(QString,QString);
     void slotConnection(QString,QString);
     void slotRegistration(QString,QString);
@@ -36,5 +37,6 @@ public slots:
     void slotGetListsClients(QVector<int>);
    void slotSendMessage();
    void slotSendInfo();
+   */
 };
 

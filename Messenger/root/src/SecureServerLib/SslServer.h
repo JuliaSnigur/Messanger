@@ -25,21 +25,7 @@ public:
     SslServer(QObject *parent = 0);
     virtual ~SslServer();
 
-    void start(int port);
-
-    const QSslCertificate &getSslLocalCertificate() const;
-    const QSslKey &getSslPrivateKey() const;
-    QSsl::SslProtocol getSslProtocol() const;
-
-
-    void setSslLocalCertificate(const QSslCertificate &certificate);
-    bool setSslLocalCertificate(const QString &path, QSsl::EncodingFormat format = QSsl::Pem);
-
-    void setSslPrivateKey(const QSslKey &key);
-    bool setSslPrivateKey(const QString &fileName, QSsl::KeyAlgorithm algorithm = QSsl::Rsa, QSsl::EncodingFormat format = QSsl::Pem, const QByteArray &passPhrase = QByteArray());
-
-    void setSslProtocol(QSsl::SslProtocol protocol);
-
+    void start(const int& port);
 
 signals:
     void signalStartThread();
@@ -53,9 +39,7 @@ protected:
 
 
 private:
-    QSslCertificate m_sslLocalCertificate;
-    QSslKey m_sslPrivateKey;
-    QSsl::SslProtocol m_sslProtocol;
+
     QSslSocket *sslSocket ;
 
     QHash<int,QSslSocket*>* m_hash;
