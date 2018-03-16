@@ -28,12 +28,11 @@ SUBDIRS  = \
 Client.depends =  SecureClientLib GuiLib
 Server.depends =  SecureServerLib DBLib
 
-<<<<<<< HEAD
+
 SecureClientLib.depends = DBLib ParseDataLib
 SecureServerLib.depends = DBLib ParseDataLib
-=======
+
 SecureClientLib.depends=DBLib
 SecureServerLib.depends=DBLib
 
 
->>>>>>> 2a1633cb0aa92d78593e0a08d4745493b34af37b
