@@ -7,6 +7,7 @@
 #include<QList>
 #include<QDebug>
 #include<QQueue>
+#include<QTime>
 
 #include <stdio.h>
 #include <tchar.h>

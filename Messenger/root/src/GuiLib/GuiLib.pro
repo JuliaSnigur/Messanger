@@ -57,3 +57,7 @@ DISTFILES += \
     MainWindow.qml \
     MyRow.qml \
     Connection.qml
+
+CONFIG += ordered
+
+GuiLib.depends =  ParseDataLib

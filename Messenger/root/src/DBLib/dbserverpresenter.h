@@ -1,28 +1,23 @@
 #pragma once
 
-
-
 class DBServerPresenter: public DBPresenter
 {
-private:
-
-protected:
-    virtual void createTables();
-
 public:
     DBServerPresenter();
 
     virtual ~DBServerPresenter();
 
 
-    virtual bool insertUser(User);
+    bool insertUser(User us);
 
-    User searchUser(const QString& login);
-    User searchUser(const int);
+    User* searchUser(const QString& login);
     int searchID(const QString& login);
     QString searchLogin(const int&);
 
+protected:
+    virtual void createTables();
 
-
+private:
+   QString m_tabUsers;
 };
 

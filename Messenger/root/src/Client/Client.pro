@@ -46,8 +46,6 @@ CONFIG += ordered
 
 Client.depends =  SecureClientLib GuiLib
 
-Client.depends =  SecureClientLib
-
 
 
 #message("[INFO] to $${BIN_PATH}")

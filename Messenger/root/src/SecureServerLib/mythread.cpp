@@ -1,6 +1,6 @@
 #include"stdafx.h"
-#include "mythread.h"
 
+#include "mythread.h"
 #include"parsedata.h"
 
 MyThread::MyThread(qintptr ID,DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
@@ -134,79 +134,80 @@ void MyThread::slotReadyRead()
 
 void MyThread::registration(QString& req)
 {
-    int id=0;
-    QString log=StringHandlNamespace::variable(req), pass=StringHandlNamespace::variable(req);
+    int id = 0;
+    QString log = StringHandlNamespace::variable(req);
+    QString pass = StringHandlNamespace::variable(req);
 
     // insert user into db
-    qDebug()<<"User: "<<log<<", "<<pass;
+    qDebug() << "User: " << log << ", " << pass;
 
     m_mutexDB.lock();
 
-    if(!m_db->insertUser(User(log,pass)))
+    if(!m_db->insertUser(User(log, pass)))
       {
         m_mutexDB.unlock();
-        sendToClient(m_sslClient,QString::number(Error)+" The user's already existed with that login");
+
+        sendToClient(m_sslClient, QString::number(Error) + " The user's already existed with that login");
         return;
       }
-     id=m_db->searchID(log);
-
 
      m_mutexDB.unlock();
 
-    if(id<0)
+     id = m_db->searchID(log);
+
+    if(id == 0)
     {
-        qDebug()<<"The id doesn't exist";
+        qDebug() << "The id doesn't exist";
     }
     else
     {
          m_mutexHashTab.lock();
 
-         qDebug()<<"ID: "<<id;
-         m_hash->insert(id,m_sslClient);
+         qDebug() << "ID: " << id;
+         m_hash->insert(id, m_sslClient);
 
          m_mutexHashTab.unlock();
 
-        sendToClient(m_sslClient,QString::number(Registration)+" "+QString::number(id));
+        sendToClient(m_sslClient, QString::number(Registration) + ' ' + QString::number(id));
     }
 }
 
 void MyThread::authorization(QString& req)
 {
-    QString log=StringHandlNamespace::variable(req), pass=StringHandlNamespace::variable(req);
+    QString log = StringHandlNamespace::variable(req);
+    QString pass = StringHandlNamespace::variable(req);
 
     // search user into db
-    qDebug()<<"User: "<<log<<", "<<pass;
+    qDebug() << "User: " << log << ", " << pass;
 
-    User us=m_db->searchUser(log);
+    User* us = m_db->searchUser(log);
 
-    if(us.getLogin()!="")
+    if(us==nullptr)
     {
-        // compare passwords
-        if(us.getPassword()==pass)
-        {
-
-            m_mutexHashTab.lock();
-
-            qDebug()<<"ID: "<<us.getID();
-
-            // вставить проверку, если пользователь уже зашел под таким ником в систему
-            m_hash->insert(us.getID(),m_sslClient);
-
-            m_mutexHashTab.unlock();
-
-
-             sendToClient(m_sslClient,QString::number(Authorization)+" "+QString::number(us.getID()));
-        }
-        else
-        {
-              sendToClient(m_sslClient,QString::number(Error)+" The wrong password");
-        }
-    }
-    else
-    {
-        sendToClient(m_sslClient,QString::number(Error)+" The user didn't exist with that login");
+        sendToClient(m_sslClient, QString::number(Error) + " The user didn't exist with that login");
+        return;
     }
 
+    if(us->getPassword() != pass)
+    {
+         sendToClient(m_sslClient, QString::number(Error) + " The wrong password");
+         return;
+    }
+
+    if(m_hash->contains(us->getID()))
+    {
+         sendToClient(m_sslClient,QString::number(Error) + " The account is already used");
+         return;
+    }
+
+    m_mutexHashTab.lock();
+
+    qDebug() << "ID: " << us->getID();
+    m_hash->insert(us->getID(), m_sslClient);
+
+    m_mutexHashTab.unlock();
+
+    sendToClient(m_sslClient, QString::number(Authorization) + " " + QString::number(us->getID()));
 }
 
 

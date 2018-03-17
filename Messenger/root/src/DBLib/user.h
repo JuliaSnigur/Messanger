@@ -1,31 +1,29 @@
 #pragma once
 
-#include<QString>
-
 class User
 {
 private:
     QString m_login;
     QString m_password;
-    bool m_status;
     int m_id;
 
 public:
 
     User();
-    User(const User&);
-    User(QString,QString,bool st=false);
+    virtual ~User();
 
+    User(const User& obj);
     User& operator=(const User& obj);
 
-    void setLogin(QString);
-    void setPassword(QString);
-    void setStatus(bool);
-    void setID(int);
+    User(const QString& login ,const QString& password);
+    User(const QString& login);
+
+    void setLogin(const QString& login);
+    void setPassword(const QString& password);
+    void setID(const int&);
 
     QString getLogin();
     QString getPassword();
-    bool getStatus();
     int getID();
 
 };

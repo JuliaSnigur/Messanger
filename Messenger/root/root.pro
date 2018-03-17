@@ -1,5 +1,5 @@
 TEMPLATE = aux
-system(qwe.py)
+
 #win32: PYTHON=python.exe
 #else:  PYTHON=python
 #system($$PYTHON qwe.py)

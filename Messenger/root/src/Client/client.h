@@ -1,10 +1,11 @@
 #pragma once
 
-#include<QObject>
+//#include<QObject>
 
 #include"guiqml.h"
 #include"ClientConnect.h"
 
+class QObject;
 
 class Client: public QObject
 {

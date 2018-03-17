@@ -6,15 +6,12 @@
 #include"dbpresenter.h"
 #include "dbclientpresenter.h"
 
-
-
 DBClientPresenter::DBClientPresenter()
 {
     this->m_nameDB = "Client_db.db";
 
-    m_tabUsers = "users";
     m_tabDialogs = "dialogs";
-    m_tabMessages = "messangers";
+    m_tabMessages = "messages";
     m_tabFiles = "files";
 }
 
@@ -38,9 +35,8 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
  {
      this->m_nameDB = nameDB;
 
-     m_tabUsers = "users";
      m_tabDialogs = "dialogs";
-     m_tabMessages = "messangers";
+     m_tabMessages = "messages";
      m_tabFiles = "files";
 
        try{
@@ -56,21 +52,10 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
 
   void DBClientPresenter::createTables()
   {
-      //table users
-      QString params = "id INTEGER PRIMARY KEY AUTOINCREMENT,login TEXT UNIQUE";
-      QString str = m_req.createTable(m_tabUsers,params);
-
-      if(!m_query->exec(str))
-      {
-             qDebug() << "DataBase: error of create " <<m_tabUsers;
-             qDebug() << m_query->lastError().text();
-      }
-      qDebug() << "The table " << m_tabUsers << " is creating";
-
       //table dialogs
 
-       params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idFriend INTEGER ";
-       str = m_req.createTable(m_tabDialogs, params);
+      QString params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idFriend INTEGER ";
+      QString str = m_req.createTable(m_tabDialogs, params);
 
       if(!m_query->exec(str))
       {
@@ -79,9 +64,9 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
       }
       qDebug() << "The table " << m_tabDialogs << " is creating";
 
-      //table messanges
+      //table messages
 
-       params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idDialog INTEGER, loginRecipient TEXT, time TEXT, messange TEXT, idFile INTEGER ";
+       params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idDialog INTEGER, loginRecipient TEXT, time TEXT, message TEXT, idFile INTEGER ";
        str=m_req.createTable(m_tabMessages,params);
 
       if(!m_query->exec(str))
@@ -106,26 +91,6 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
 
   }
 
-
-   bool DBClientPresenter::insertUser(User us)
-   {
-       QString params = "login";
-       QString values = "'%1'";
-
-       QString str_insert = m_req.insertData(m_tabUsers, params, values);
-       QString str = str_insert.arg(us.getLogin());
-
-       if (!m_query->exec(str))
-         {
-           qDebug() << "Unable to make insert operation";
-           return false;
-       }
-       else
-          {
-           qDebug() << "To make insert operation";
-           return true;
-}
-   }
 
 
    bool DBClientPresenter::insertDialog(const int& id)
@@ -154,7 +119,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
    {
        QQueue<QString> dialog;
 
-       QString params = "loginRecipient, time, messange, idFile";
+       QString params = "loginRecipient, time, message, idFile";
        QString values = "idDialog=" + QString::number(idDialog);
        QString str = m_req.searchData(m_tabMessages,params,values);
 
@@ -165,9 +130,9 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
           str = "";
 
           // str = loginRecipeint, time, messange, idFile
-          str += m_query->value(0).toString();
-          str += m_query->value(1).toString();
-          str += m_query->value(2).toString();
+          str += m_query->value(0).toString() + ' ';
+          str += m_query->value(1).toString() + ' ';
+          str += m_query->value(2).toString() + ' ';
           str += m_query->value(3).toString();
 
           dialog.push_back(str);
@@ -203,7 +168,7 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
 
    bool DBClientPresenter::insertMessage(const int& idDialog,const QString& recipient, const QString& mess, const QString& time, const int& idFile)
    {
-       QString params=" idDialog, loginRecipient, messange, time, idFile ";
+       QString params=" idDialog, loginRecipient, message, time, idFile ";
        QString values=" %1, '%2', '%3', '%4', %5 ";
 
        QString str_insert=m_req.insertData(m_tabMessages,params,values);
@@ -270,20 +235,3 @@ DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresenter()
    }
 
 
-   int DBClientPresenter::searchID(const QString& login)
-   {
-       QString params = "id";
-       QString values = "login = " + login;
-       QString str = m_req.searchData( m_tabUsers, params, values );
-
-         m_query->exec(str);
-         if(m_query->next())
-            {
-                qDebug() << "The data search";
-                return m_query->value(0).toInt();
-            }
-            else
-             qDebug() << "The data dosn't search";
-
-         return -1;
-   }

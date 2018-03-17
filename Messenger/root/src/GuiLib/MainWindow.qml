@@ -96,8 +96,8 @@ Window {
         id:recDialog
 
         height: parent.height-50
-        visible: false
-
+       // visible: false
+        visible: true
         color:"#EAFCFA"
         anchors.right: parent.right
         anchors.rightMargin: 0
@@ -106,27 +106,29 @@ Window {
         anchors.top: recMenu.bottom
         anchors.topMargin: 0
 
-ToolBar {
-    id: title
+        ToolBar {
+            id: title
 
-    width:recDialog.width
+            width:recDialog.width
 
-        Label {
-                    text: inConversationWith
-                    anchors.top: parent.top
-                    anchors.topMargin: 10
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.pixelSize: 20
-                }
-}
+                Label {
+                            text: inConversationWith
+                            anchors.top: parent.top
+                            anchors.topMargin: 10
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            font.pixelSize: 20
+                        }
+        }
 
 
 ColumnLayout {
+    anchors.rightMargin: 8
+    anchors.left: parent.left
+    anchors.leftMargin: 8
 
     anchors.top: title.bottom
     anchors.right: recDialog.right
     anchors.bottom: recDialog.bottom
-    anchors.left: recDialog.left
 
             ListView {
                 y: 60
@@ -135,26 +137,38 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                           verticalLayoutDirection: ListView.BottomToTop
+                           verticalLayoutDirection: ListView.TopToBottom
                            spacing: 12
                            model: gui.dataDialog
                            delegate:
 
                                Column {
-                                               anchors.right: sentByMe ? recDialog.right : undefined
+
+                                            readonly property bool sentByMe: modelData.login !== myLogin
+
+
+                                               anchors.right: sentByMe ? parent.right : undefined
                                                spacing: 6
 
-                                               readonly property bool sentByMe: modelData.login !== myLogin
 
                                                Row {
                                                    id: messageRow
                                                    spacing: 6
-                                                   anchors.right: sentByMe ? recDialog.right : undefined
+                                                   anchors.right: sentByMe ? parent.right : undefined
 
 
                                                    Rectangle {
 
                                                        id:recMessange
+
+                                                       width: Math.min(messageText.implicitWidth + 24,
+                                                              listView.width - (!sentByMe ? 50 + messageRow.spacing : 0))
+
+                                                       height: messageText.implicitHeight + 24
+
+
+
+                                                       //height: messageText.implicitHeight + 24
                                                        color: sentByMe ? "lightgrey" : "steelblue"
 
                                                        Label {
@@ -163,6 +177,7 @@ ColumnLayout {
                                                            color: sentByMe ? "black" : "white"
                                                            anchors.fill:recMessange
                                                            anchors.margins: 12
+                                                           wrapMode: Label.Wrap
                                                        }
                                                    }
                                                }
@@ -171,7 +186,14 @@ ColumnLayout {
                                                    id: timestampText
                                                    text: modelData.time
                                                    color: "lightgrey"
-                                                   anchors.right: sentByMe ? recDialog.right : undefined
+                                                   anchors.right: sentByMe ? parent.right : undefined
+                                               }
+
+                                               Label {
+                                                   id: stateMessText
+                                                   text: modelData.stateMess
+                                                   color: "red"
+                                                   anchors.right: sentByMe ? parent.right : undefined
                                                }
                                            }
                        }

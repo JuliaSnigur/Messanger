@@ -19,7 +19,6 @@ public:
   virtual  ~DBClientPresenter();
 
 
-     virtual bool insertUser(User);
      bool insertDialog(const int& id );
 
      bool insertFile( QString filename,QByteArray file);

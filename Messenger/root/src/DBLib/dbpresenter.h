@@ -19,7 +19,7 @@ protected:
 
     Request m_req;
 
-    QString m_tabUsers;
+
 
     virtual void createConnection();
     virtual void createTables()=0;
@@ -28,9 +28,6 @@ public:
     DBPresenter();
 
     virtual ~DBPresenter();
-
-
-     virtual bool insertUser(User)=0;
 
 };
 

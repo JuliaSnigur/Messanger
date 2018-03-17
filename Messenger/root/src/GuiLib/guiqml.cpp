@@ -117,6 +117,16 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
  void Gui::GuiQML::sendMessage(const QString& mess)
  {
      emit signalSendMessage(mess);
+
+     Element* element = new Element(this);
+
+     element->setProperty("login", m_login);
+     element->setProperty("time", QTime::currentTime());
+     element->setProperty("message", mess);
+     element->setProperty("idFile", 0);
+
+     m_dataDialog << element;
+     emit dataDialogChanged();
  }
 
 
@@ -182,13 +192,13 @@ void Gui::GuiQML::slotRespond( QString res)
 
     case Message:
 
-
         Element* element = new Element(this);
 
         // str = loginRecipeint, time, messange, idFile
+
         element->setProperty("login", StringHandlNamespace::variable(res));
         element->setProperty("time", StringHandlNamespace::variable(res));
-        element->setProperty("messange", StringHandlNamespace::variable(res));
+        element->setProperty("message", StringHandlNamespace::variable(res));
         element->setProperty("idFile", StringHandlNamespace::variable(res));
 
         m_dataDialog << element;
@@ -202,6 +212,11 @@ void Gui::GuiQML::slotRespond( QString res)
 
 void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 {
+
+    m_dataDialog.clear();
+    emit dataDialogChanged();
+
+
     QString str;
 
     for(int i = 0; i<q.size(); i++)
@@ -213,12 +228,12 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
          // str = loginRecipeint, time, messange, idFile
          element->setProperty("login", StringHandlNamespace::variable(str));
          element->setProperty("time", StringHandlNamespace::variable(str));
-         element->setProperty("messange", StringHandlNamespace::variable(str));
+         element->setProperty("message", StringHandlNamespace::variable(str));
          element->setProperty("idFile", StringHandlNamespace::variable(str));
 
-         m_dataClients << element;
+         m_dataDialog << element;
 
-         emit dataClientsChanged();
+         emit dataDialogChanged();
      }
 }
 

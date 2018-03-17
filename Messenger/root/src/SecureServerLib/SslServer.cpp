@@ -27,7 +27,6 @@ void SslServer::start(const int& port)
     else
         qDebug() << "ERROR: could not bind to:" << port;
 
-
 }
 
 

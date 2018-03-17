@@ -57,6 +57,12 @@ QString Element::message() const
     return m_message;
 }
 
+QString Element::stateMessage() const
+{
+    return m_stateMess;
+}
+
+
 void Element::setMessage(QString mess)
 {
     if (m_message == mess) {
@@ -88,4 +94,15 @@ void Element::setTime(QString time)
     m_time = time;
 
     emit timeChanged(m_time);
+}
+
+void Element::setStateMessage(QString state)
+{
+    if (m_stateMess == state) {
+        return;
+    }
+
+    m_stateMess = state;
+
+    emit stateMessageChanged(m_stateMess);
 }

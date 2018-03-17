@@ -22,6 +22,7 @@ Client::Client(QObject* obj)
 
 
     connect(&m_client, &ClientConnection::signalSendRespond, &m_gui, &Gui::GuiQML::slotRespond);
+    connect(&m_client, &ClientConnection::signalSendDialog, &m_gui, &Gui::GuiQML::slotShowDialog);
 
 }
 

@@ -112,9 +112,6 @@ void ClientConnection::slotEncrypted()
              // create db
              m_db.createDB("Client_"+m_user.getLogin()+".db");
 
-             // insert user into tables session
-             m_db.insertUser(m_user);
-
              m_user.setID(StringHandlNamespace::variable(message).toInt());
 
              qDebug()<<"My ID-> "<<m_user.getID();
@@ -130,8 +127,6 @@ void ClientConnection::slotEncrypted()
 
              // create db
              m_db.createDB("Client_"+m_user.getLogin()+".db");
-
-             m_db.insertUser(m_user);
 
              m_user.setID(StringHandlNamespace::variable(message).toInt());
 
@@ -218,6 +213,7 @@ void ClientConnection::slotEncrypted()
 
  void ClientConnection::slotChoiceFriend(const QString& login)
  {
+
      m_idFriend = m_hash.key(login);
 
      qDebug()<<"My id-> " << m_user.getID() << "Friend id-> " << m_idFriend;
@@ -248,6 +244,7 @@ void ClientConnection::slotEncrypted()
 
      }
      emit signalSendRespond(QString::number(GetFriend));
+
 
  }
 
