@@ -29,7 +29,6 @@ SOURCES += \
 
 
 HEADERS += \
-    ipresenter.h \
     stable.h \
     stdafx.h \
     request.h \

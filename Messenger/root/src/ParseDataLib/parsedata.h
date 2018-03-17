@@ -5,8 +5,9 @@
 #include<QDebug>
 
 
-enum request{Error, Connection, Registration, Authorization, Message, File, GetListOfFriends,GetID, GetFriend};
+enum request {Error, Connection, Registration, Authorization, Message, File, GetListOfFriends,GetID, GetFriend};
 
+enum stateMessage {Send, Get};
 
 namespace StringHandlNamespace {
 

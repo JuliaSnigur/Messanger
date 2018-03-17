@@ -5,10 +5,12 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include<QVariantList>
 
 #include <stdio.h>
 #include <tchar.h>
 
-#include<string.h>
+#include <string.h>
+#include <memory>
 
 

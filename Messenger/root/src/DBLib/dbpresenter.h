@@ -1,33 +1,35 @@
 #pragma once
 
+#include <memory>
+
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include"ipresenter.h"
 #include<DBLib/request.h>
 
-
-
-class DBPresenter:IPresenter
-{
-protected:
-    QString m_nameDB;
-
-    QSqlDatabase m_db; // база данных
-    QSqlQuery* m_query;
-
-    Request m_req;
+namespace DB {
 
 
 
-    virtual void createConnection();
-    virtual void createTables()=0;
+    class DBPresenter
+    {
 
-public:
-    DBPresenter();
+    public:
 
-    virtual ~DBPresenter();
+        DBPresenter();
+        virtual ~DBPresenter();
 
-};
+    protected:
 
+        QString m_nameDB;
+
+        QSqlDatabase m_db;
+
+        std::shared_ptr<QSqlQuery> m_query;
+
+        virtual void createConnection();
+        virtual void createTables()=0;
+    };
+
+}

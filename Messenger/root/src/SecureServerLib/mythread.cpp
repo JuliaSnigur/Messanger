@@ -3,7 +3,7 @@
 #include "mythread.h"
 #include"parsedata.h"
 
-MyThread::MyThread(qintptr ID,DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
+MyThread::MyThread(qintptr ID,DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
     : QThread(parent)
     , m_mutexDB()
     , m_mutexHashTab()

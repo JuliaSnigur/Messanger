@@ -3,7 +3,8 @@
 #include "guiqml.h"
 #include"parsedata.h"
 
-#include"element.h"
+#include"FriendElement.h"
+#include"dialogelement.h"
 
 
 
@@ -13,8 +14,8 @@ Gui::GuiQML::GuiQML(QObject* parent)
 {
     qDebug()<<"Hello";
 
-    qmlRegisterType<Element>("Element", 1, 0, "Element");
-
+    qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
+    qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
 }
 
 Gui::GuiQML::~GuiQML(){}
@@ -118,9 +119,10 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
  {
      emit signalSendMessage(mess);
 
-     Element* element = new Element(this);
+     DialogElement* element = new DialogElement(this);
 
-     element->setProperty("login", m_login);
+     // вместо логина состояние сообщения Send/ Get
+     element->setProperty("flag", Send);
      element->setProperty("time", QTime::currentTime());
      element->setProperty("message", mess);
      element->setProperty("idFile", 0);
@@ -172,7 +174,7 @@ void Gui::GuiQML::slotRespond( QString res)
 
          while(iter != hash.end())
          {
-             Element* element = new Element(this);
+             FriendElement* element = new FriendElement(this);
 
              qDebug() << iter.key() << ' ' << iter.value();
 
@@ -192,11 +194,11 @@ void Gui::GuiQML::slotRespond( QString res)
 
     case Message:
 
-        Element* element = new Element(this);
+        DialogElement* element = new DialogElement(this);
 
-        // str = loginRecipeint, time, messange, idFile
+        // str = flag, time, messange, idFile
 
-        element->setProperty("login", StringHandlNamespace::variable(res));
+        element->setProperty("flag", (StringHandlNamespace::variable(res)).toInt());
         element->setProperty("time", StringHandlNamespace::variable(res));
         element->setProperty("message", StringHandlNamespace::variable(res));
         element->setProperty("idFile", StringHandlNamespace::variable(res));
@@ -221,12 +223,12 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 
     for(int i = 0; i<q.size(); i++)
      {
-         Element* element = new Element(this);
+         DialogElement* element = new DialogElement(this);
 
          str = q[i];
 
-         // str = loginRecipeint, time, messange, idFile
-         element->setProperty("login", StringHandlNamespace::variable(str));
+         // str = flag, time, messange, idFile
+         element->setProperty("flag", (StringHandlNamespace::variable(str)).toInt());
          element->setProperty("time", StringHandlNamespace::variable(str));
          element->setProperty("message", StringHandlNamespace::variable(str));
          element->setProperty("idFile", StringHandlNamespace::variable(str));
@@ -244,51 +246,26 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 ////////////////////////////////
 
 
-QQmlListProperty<Element> Gui::GuiQML::dataClients()
+QQmlListProperty<Gui::FriendElement> Gui::GuiQML::dataClients()
 {
-    return QQmlListProperty< Element >(static_cast<QObject *>(this),
+    return QQmlListProperty< Gui::FriendElement >(static_cast<QObject *>(this),
                                        static_cast<void *>(&m_dataClients),
-                                       &GuiQML::appendData,
-                                       &GuiQML::countData,
-                                       &GuiQML::atData,
-                                       &GuiQML::clearData);
+                                       &FriendElement::appendData,
+                                       &FriendElement::countData,
+                                       &FriendElement::atData,
+                                       &FriendElement::clearData);
 }
 
-QQmlListProperty<Element> Gui::GuiQML::dataDialog()
+QQmlListProperty<Gui::DialogElement> Gui::GuiQML::dataDialog()
 {
-    return QQmlListProperty< Element >(static_cast<QObject *>(this),
+    return QQmlListProperty< Gui::DialogElement >(static_cast<QObject *>(this),
                                        static_cast<void *>(&m_dataDialog),
-                                       &GuiQML::appendData,
-                                       &GuiQML::countData,
-                                       &GuiQML::atData,
-                                       &GuiQML::clearData);
+                                       &DialogElement::appendData,
+                                       &DialogElement::countData,
+                                       &DialogElement::atData,
+                                       &DialogElement::clearData);
 }
 
-
-void Gui::GuiQML::appendData(QQmlListProperty<Element> *list, Element *value)
-{
-    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
-    data->append(value);
-}
-
-int Gui::GuiQML::countData(QQmlListProperty<Element> *list)
-{
-    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
-    return data->size();
-}
-
-Element *Gui::GuiQML::atData(QQmlListProperty<Element> *list, int index)
-{
-    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
-    return data->at(index);
-}
-
-void Gui::GuiQML::clearData(QQmlListProperty<Element> *list)
-{
-    QList<Element*> *data = static_cast<QList<Element*> *>(list->data);
-    qDeleteAll(data->begin(), data->end());
-    data->clear();
-}
 
 
 

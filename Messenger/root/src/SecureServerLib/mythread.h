@@ -7,9 +7,8 @@
 #include <QMutex>
 #include<QPointer>
 
-#include"request.h"
+
 #include"user.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 #include"dbserverpresenter.h"
 
@@ -20,7 +19,7 @@ class MyThread : public QThread
 {
     Q_OBJECT
 public:
-     MyThread(qintptr ID,DBServerPresenter* db,QHash<int,QSslSocket*>* hash,QObject *parent = 0);
+     MyThread(qintptr ID,DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash,QObject *parent = 0);
     virtual ~MyThread();
 
     void run();
@@ -44,7 +43,7 @@ private:
     qintptr m_socketDescriptor;
     QMutex m_mutexDB,m_mutexHashTab;
 
-    DBServerPresenter* m_db;
+    DB::DBServerPresenter* m_db;
     QHash<int,QSslSocket*>* m_hash;
 
 

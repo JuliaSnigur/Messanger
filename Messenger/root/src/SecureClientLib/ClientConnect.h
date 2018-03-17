@@ -6,9 +6,7 @@
 #include"stdafx.h"
 
 
-#include"request.h"
 #include"user.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 #include"dbclientpresenter.h"
 
@@ -20,7 +18,7 @@ class ClientConnection : public QObject
     Q_OBJECT
 private:
     QPointer<QSslSocket> m_client;
-    DBClientPresenter m_db;
+    DB::DBClientPresenter m_db;
     QHash<int,QString> m_hash;
 
     User m_user;

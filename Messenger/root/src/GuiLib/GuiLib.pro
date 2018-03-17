@@ -21,14 +21,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     guiqml.cpp \
-    element.cpp \
    # listmodel.cpp \
+    FriendElement.cpp \
+    dialogelement.cpp
 
 
 HEADERS += \
     stdafx.h \
     guiqml.h \
-    element.h \
+    FriendElement.h \
+    dialogelement.h
    # listmodel.h
 
 unix {

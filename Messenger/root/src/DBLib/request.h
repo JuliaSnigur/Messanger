@@ -1,15 +1,11 @@
 #pragma once
 
-class Request
-{
-public:
-    Request();
+namespace Request {
 
-    virtual~Request();
+    QString createTable(const QString& nameTable, const QString& params);
+    QString insertData(const QString& nameTable, const QString& params, const QString& values);
+    QString searchData(const QString& nameTable, const QString& params, const QString& values);
+    QString updateData(const QString& nameTable, const QString& params, const QString values);
 
-    QString createTable(QString& nameTable,QString& params);
-    QString insertData(QString& nameTable,QString& params,QString& values);
-    QString searchData(QString& nameTable,QString& params,QString& values);
-    QString updateData(QString& nameTable, QString& params, QString values);
-};
+}
 

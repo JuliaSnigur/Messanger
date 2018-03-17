@@ -9,9 +9,8 @@
 #include<QPointer>
 
 
-#include"request.h"
+
 #include"user.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 #include"dbserverpresenter.h"
 
@@ -43,7 +42,7 @@ private:
     QSslSocket *sslSocket ;
 
     QHash<int,QSslSocket*>* m_hash;
-    DBServerPresenter* m_db;
+    DB::DBServerPresenter* m_db;
 
     int m_countThread;
     int m_maxCountThreads;

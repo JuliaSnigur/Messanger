@@ -4,7 +4,8 @@
 #include <QObject>
 #include<QQmlListProperty>
 
-#include"element.h"
+#include "FriendElement.h"
+#include "dialogelement.h"
 
 namespace Gui {
 
@@ -21,8 +22,8 @@ private:
     Q_PROPERTY(QString m_password WRITE setPassword READ getPassword NOTIFY passwordChange)
     Q_PROPERTY(QString m_port WRITE setPort READ getPort NOTIFY portChange)
     Q_PROPERTY(QString m_ip WRITE setIP READ getIP NOTIFY ipChange)
-    Q_PROPERTY(QQmlListProperty<Element> dataClients READ dataClients NOTIFY dataClientsChanged)
-    Q_PROPERTY(QQmlListProperty<Element> dataDialog READ dataDialog NOTIFY dataDialogChanged)
+    Q_PROPERTY(QQmlListProperty<Gui::FriendElement> dataClients READ dataClients NOTIFY dataClientsChanged)
+    Q_PROPERTY(QQmlListProperty<Gui::DialogElement> dataDialog READ dataDialog NOTIFY dataDialogChanged)
 
     Q_CLASSINFO("DefaultProperty", "dataClients")
     Q_CLASSINFO("DefaultProperty", "dataDialog")
@@ -37,8 +38,8 @@ public:
     QString getIP() const;
 
 
-    QQmlListProperty<Element> dataClients();
-    QQmlListProperty<Element> dataDialog();
+    QQmlListProperty<Gui::FriendElement> dataClients();
+    QQmlListProperty<Gui::DialogElement> dataDialog();
 
 
 
@@ -89,14 +90,8 @@ signals:
 
 private:
 
-
-    static void appendData(QQmlListProperty<Element> *list, Element *value);
-    static int countData(QQmlListProperty<Element> *list);
-    static Element *atData(QQmlListProperty<Element> *list, int index);
-    static void clearData(QQmlListProperty<Element> *list);
-
-    QList<Element*> m_dataClients;
-    QList<Element*> m_dataDialog;
+    QList<FriendElement*> m_dataClients;
+    QList<DialogElement*> m_dataDialog;
 
 
     QString m_login;

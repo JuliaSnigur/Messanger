@@ -2,13 +2,12 @@
 
 #include"request.h"
 #include"user.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 
 #include "dbserverpresenter.h"
 
 
-DBServerPresenter::DBServerPresenter()
+DB::DBServerPresenter::DBServerPresenter()
 {
     m_nameDB = "Server_db.db";
     m_tabUsers = "users";
@@ -23,14 +22,14 @@ DBServerPresenter::DBServerPresenter()
     }
 }
 
-DBServerPresenter::~DBServerPresenter(){}
+DB::DBServerPresenter::~DBServerPresenter(){}
 
 
- void DBServerPresenter::createTables()
+ void DB::DBServerPresenter::createTables()
  {
      // users
      QString params="id INTEGER PRIMARY KEY AUTOINCREMENT,login TEXT UNIQUE,password TEXT";
-     QString str=m_req.createTable(m_tabUsers,params);
+     QString str=Request::createTable(m_tabUsers,params);
 
      if(m_query->exec(str))
      {
@@ -45,12 +44,12 @@ DBServerPresenter::~DBServerPresenter(){}
  }
 
 
- bool DBServerPresenter::insertUser( User us)
+ bool DB::DBServerPresenter::insertUser( User us)
  {
      QString params = "login, password";
      QString values = "'%1','%2'";
 
-     QString str_insert = m_req.insertData(m_tabUsers,params,values);
+     QString str_insert = Request::insertData(m_tabUsers,params,values);
      QString str = str_insert.arg(us.getLogin()).arg(us.getPassword());
 
      if (m_query->exec(str))
@@ -66,12 +65,12 @@ DBServerPresenter::~DBServerPresenter(){}
  }
 
 
- User* DBServerPresenter::searchUser(const QString& log)
+ User* DB::DBServerPresenter::searchUser(const QString& log)
  {
-     User* us;
+     User* us = nullptr;
      QString params = '*';
      QString values = "login = '" + log + "'";
-     QString str = m_req.searchData(m_tabUsers,params,values);
+     QString str = Request::searchData(m_tabUsers,params,values);
 
        m_query->exec(str);
        if(m_query->next())
@@ -89,11 +88,11 @@ DBServerPresenter::~DBServerPresenter(){}
        return nullptr;
  }
 
- int DBServerPresenter::searchID(const QString& log)
+ int DB::DBServerPresenter::searchID(const QString& log)
  {
      QString params = "id";
      QString values = "login = '" + log + "'";
-     QString str = m_req.searchData(m_tabUsers, params, values);
+     QString str = Request::searchData(m_tabUsers, params, values);
 
        m_query->exec(str);
        if(m_query->next())
@@ -107,12 +106,12 @@ DBServerPresenter::~DBServerPresenter(){}
        return 0;
  }
 
- QString DBServerPresenter::searchLogin(const int& id)
+ QString DB::DBServerPresenter::searchLogin(const int& id)
  {
 
      QString params = "login";
      QString values = "id=" + QString::number(id);
-     QString str = m_req.searchData(m_tabUsers, params, values);
+     QString str = Request::searchData(m_tabUsers, params, values);
 
        m_query->exec(str);
        if(m_query->next())

@@ -2,9 +2,8 @@
 #include "ClientConnect.h"
 #include"parsedata.h"
 
-#include"request.h"
+
 #include"user.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 #include"dbclientpresenter.h"
 
@@ -138,7 +137,8 @@ void ClientConnection::slotEncrypted()
 
              case Message:
 
-             // key, time, idFriend, idFile, mess
+             // time, key, idFriend, idFile, mess
+
                  idSender = (StringHandlNamespace::variable(message)).toInt();
                  idFile = (StringHandlNamespace::variable(message)).toInt();
 
@@ -154,7 +154,7 @@ void ClientConnection::slotEncrypted()
                  else
                  {
                      login=m_hash[idSender];
-                     m_db.insertMessage(m_idDialog,login,message,time,idFile);
+                     m_db.insertMessage(m_idDialog,Get,message,time,idFile);
                  }
 
                   // str = loginRecipeint, time, messange, idFile
@@ -262,12 +262,6 @@ void ClientConnection::slotEncrypted()
  {
      sendToServer(QString::number(Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + message);
  }
-
-
-//////////////////////////////////////////////////////////////
-
-
-
 
 
  void ClientConnection::sendFile(const QString& filename)

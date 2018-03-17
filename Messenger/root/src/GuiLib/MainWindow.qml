@@ -144,7 +144,7 @@ ColumnLayout {
 
                                Column {
 
-                                            readonly property bool sentByMe: modelData.login !== myLogin
+                                            readonly property bool sentByMe: modelData.state !== 1
 
 
                                                anchors.right: sentByMe ? parent.right : undefined

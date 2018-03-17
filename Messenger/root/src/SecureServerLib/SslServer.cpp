@@ -5,17 +5,15 @@
 
 SslServer::SslServer(QObject *parent)
     : QTcpServer(parent)
-    , m_db(new DBServerPresenter())
+    , m_db(new DB::DBServerPresenter())
     , m_hash(new QHash<int,QSslSocket*>())
     , m_countThread(0)
     , m_maxCountThreads(20)
-{
-}
+{}
 
 
 SslServer::~SslServer()
-{
-}
+{}
 
 void SslServer::start(const int& port)
 {
