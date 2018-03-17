@@ -13,7 +13,7 @@ Item {
 
 
     signal signalSignIn(string login,string password)   // Задаём сигнал
-
+    signal signalBack()
 
     Rectangle{
         id: column
@@ -23,7 +23,8 @@ Item {
         anchors.topMargin: 10
 
 
-        Text{
+        Text
+        {
             id:title
             x:parent.height/2
             anchors.topMargin: 20
@@ -40,10 +41,11 @@ Item {
             anchors.topMargin: 20
             mytext:"Login:"
             focus:true
-          }
+        }
 
 
-        MyRow{
+        MyRow
+        {
             id: password
             anchors.left: parent.left
             anchors.leftMargin: 20
@@ -53,36 +55,61 @@ Item {
 
         }
 
-        Item{
+        Item
+        {
             id:row3
-            anchors.horizontalCenter: parent.horizontalCenter
+            height: 30
+            anchors.right: parent.right
+            anchors.rightMargin: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 20
 
 
             anchors.top: password.bottom
             anchors.topMargin: 20
 
-            MyButton {
-                 id: butSignIn
-                 width: 100
+            Button
+            {
+                id: butBack
+                width: 100
+                text: qsTr("Back")
+                font.pointSize: 12
+                anchors.top: parent.top
+                anchors.topMargin: 0
 
-                 Layout.fillHeight: true
-                 Layout.fillWidth: true
+                height: 30
 
+                clip: true
+                visible: true
 
-                 text:"Sign in"
-                 anchors.top: parent.top
-                 anchors.topMargin: 0
-                 anchors.horizontalCenter: parent.horizontalCenter
-                 onClicked:
-                 {
-                     // проверка данных
-                     //...
+                onClicked:
+                {
+                     wRegistration.signalBack
+                }
+            }
+
+            Button
+            {
+                id: butSignIn
+                x: 157
+                text: qsTr("Sign in")
+                font.pointSize: 12
+                anchors.top: parent.top
+                anchors.topMargin: 0
+
+                width: 100
+                height: 30
+
+                clip: true
+                visible: true
+
+                onClicked:
+                {
                      wRegistration.signalSignIn(login.editText,password.editText)
-                 }
-             }
+                }
+
+            }
         }
     }
-
-
 
 }

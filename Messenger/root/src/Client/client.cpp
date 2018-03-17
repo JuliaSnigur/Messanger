@@ -26,10 +26,6 @@ Client::Client(QObject* obj)
 
 }
 
-Client::~Client()
-{
-}
-
 
 
   Gui::GuiQML& Client::getGui()

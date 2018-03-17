@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.2
 
 
 
@@ -25,25 +26,26 @@ Item {
         mytext:"Servers port:"
     }
 
-    MyButton {
+    Button {
         id: but
+        text: qsTr("Go")
+        font.pointSize: 12
+        anchors.top: port.bottom
+        anchors.topMargin: 30
+        anchors.horizontalCenter: parent.horizontalCenter
+
         width: 100
         height: 30
 
-        Layout.fillHeight: true
-         Layout.fillWidth: true
+        clip: true
+        visible: true
 
-         text:"Go"
-         anchors.horizontalCenter: parent.horizontalCenter
-         opacity: 1
-         clip: false
-         visible: true
-         anchors.top: port.bottom
-         anchors.topMargin: 20
+        onClicked:
+        {
+            wConncetion.signalExit(ipServer.editText,port.editText) // Вызываем сигнал
+        }
 
-         onClicked:
-         {
-             wConncetion.signalExit(ipServer.editText,port.editText) // Вызываем сигнал
-         }
     }
+
+
 }

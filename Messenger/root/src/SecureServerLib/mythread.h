@@ -5,25 +5,22 @@
 #include <QDebug>
 
 #include <QMutex>
-#include<QPointer>
+#include <QPointer>
 
 
-#include"user.h"
-#include"dbpresenter.h"
-#include"dbserverpresenter.h"
-
-
+#include "user.h"
+#include "dbpresenter.h"
+#include "dbserverpresenter.h"
 
 
 class MyThread : public QThread
 {
     Q_OBJECT
 public:
-     MyThread(qintptr ID,DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash,QObject *parent = 0);
-    virtual ~MyThread();
+     MyThread(qintptr id, DB::DBServerPresenter* db, QHash<int,QSslSocket*>* hash, QObject *parent = 0);
 
     void run();
-    void sendToClient(QSslSocket* m_sslClient,const QString& str);
+    bool sendToClient(QSslSocket* m_sslClient, const QString& str);
 
     void registration(QString& str);
     void authorization(QString& str);
@@ -39,11 +36,11 @@ signals:
 
 
 private:
-    QSslSocket* m_sslClient;
+    std::shared_ptr<QSslSocket> m_sslClient;
     qintptr m_socketDescriptor;
     QMutex m_mutexDB,m_mutexHashTab;
 
-    DB::DBServerPresenter* m_db;
+    std::shared_ptr<DB::DBServerPresenter> m_db;
     QHash<int,QSslSocket*>* m_hash;
 
 

@@ -54,7 +54,6 @@ DISTFILES += \
     functions.js \
     Authorization.qml \
     main.qml \
-    MyButton.qml \
     Registration.qml \
     MainWindow.qml \
     MyRow.qml \

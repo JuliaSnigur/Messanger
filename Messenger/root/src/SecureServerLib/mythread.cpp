@@ -1,9 +1,9 @@
-#include"stdafx.h"
+#include "stdafx.h"
 
 #include "mythread.h"
-#include"parsedata.h"
+#include "data.h"
 
-MyThread::MyThread(qintptr ID,DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
+MyThread::MyThread(qintptr ID, DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
     : QThread(parent)
     , m_mutexDB()
     , m_mutexHashTab()
@@ -14,17 +14,13 @@ MyThread::MyThread(qintptr ID,DB::DBServerPresenter* db,QHash<int,QSslSocket*>* 
     this->m_socketDescriptor = ID;
 }
 
-MyThread::~MyThread()
-{
-}
-
 
 void MyThread::run()
 {
     // thread starts here
     qDebug() << " Thread started";
 
-    m_sslClient = new QSslSocket();
+    m_sslClient = std::shared_ptr<QSslSocket>(new QSslSocket());
 
     // set the ID
     if(!m_sslClient->setSocketDescriptor(this->m_socketDescriptor))
@@ -56,26 +52,28 @@ void MyThread::run()
     // note - Qt::DirectConnection is used because it's multithreaded
     //        This makes the slot to be invoked immediately, when the signal is emitted.
 
-    connect(m_sslClient, &QSslSocket::readyRead, this, &MyThread::slotReadyRead, Qt::DirectConnection);
-    connect(m_sslClient, &QSslSocket::disconnected, this, &MyThread::slotDisconnect);
+    connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead, Qt::DirectConnection);
+    connect(m_sslClient.get(), &QSslSocket::disconnected, this, &MyThread::slotDisconnect);
   //  connect( m_sslClient, SIGNAL(sslErrors(QList<QSslError>)), SLOT(slotSslError(QList<QSslError>)),Qt::DirectConnection);
 
-    sendToClient(m_sslClient,QString::number(Connection)+" Hello Client");
+    sendToClient(m_sslClient.get(),QString::number(Connection)+" Hello Client");
 
     exec();
 }
 
 
-void MyThread::sendToClient(QSslSocket* pSocket,const QString& message)
+bool MyThread::sendToClient(QSslSocket* pSocket,const QString& message)
 {
     if (pSocket != nullptr)
     {
-        qDebug()<<"Server sent-> "<< QTime::currentTime().toString()+' '+message;
-        pSocket->write( (QTime::currentTime().toString()+' '+message).toLocal8Bit());
+        qDebug()<<"Server sent-> "<< message;
+        pSocket->write(message.toLocal8Bit());
+        return true;
     }
     else
     {
         qDebug() << "Invalid socket ptr";
+        return false;
     }
 }
 
@@ -91,10 +89,7 @@ void MyThread::slotReadyRead()
     QString mess = m_sslClient->readAll();    // Read message
     qDebug() << "Client has sent -" << mess;
 
-    QString time=StringHandlNamespace::variable(mess);
-    qDebug()<<"Time: "<<time;
-
-    switch ((StringHandlNamespace::variable(mess)).toInt())
+    switch ((Data::variable(mess)).toInt())
     {
 
     case Error:
@@ -135,8 +130,8 @@ void MyThread::slotReadyRead()
 void MyThread::registration(QString& req)
 {
     int id = 0;
-    QString log = StringHandlNamespace::variable(req);
-    QString pass = StringHandlNamespace::variable(req);
+    QString log = Data::variable(req);
+    QString pass = Data::variable(req);
 
     // insert user into db
     qDebug() << "User: " << log << ", " << pass;
@@ -147,7 +142,7 @@ void MyThread::registration(QString& req)
       {
         m_mutexDB.unlock();
 
-        sendToClient(m_sslClient, QString::number(Error) + " The user's already existed with that login");
+        sendToClient(m_sslClient.get(), QString::number(Error) + " The user's already existed with that login");
         return;
       }
 
@@ -164,18 +159,18 @@ void MyThread::registration(QString& req)
          m_mutexHashTab.lock();
 
          qDebug() << "ID: " << id;
-         m_hash->insert(id, m_sslClient);
+         m_hash->insert(id, m_sslClient.get());
 
          m_mutexHashTab.unlock();
 
-        sendToClient(m_sslClient, QString::number(Registration) + ' ' + QString::number(id));
+        sendToClient(m_sslClient.get(), QString::number(Registration) + ' ' + QString::number(id));
     }
 }
 
 void MyThread::authorization(QString& req)
 {
-    QString log = StringHandlNamespace::variable(req);
-    QString pass = StringHandlNamespace::variable(req);
+    QString log = Data::variable(req);
+    QString pass = Data::variable(req);
 
     // search user into db
     qDebug() << "User: " << log << ", " << pass;
@@ -184,30 +179,30 @@ void MyThread::authorization(QString& req)
 
     if(us==nullptr)
     {
-        sendToClient(m_sslClient, QString::number(Error) + " The user didn't exist with that login");
+        sendToClient(m_sslClient.get(), QString::number(Error) + " The user didn't exist with that login");
         return;
     }
 
     if(us->getPassword() != pass)
     {
-         sendToClient(m_sslClient, QString::number(Error) + " The wrong password");
+         sendToClient(m_sslClient.get(), QString::number(Error) + " The wrong password");
          return;
     }
 
     if(m_hash->contains(us->getID()))
     {
-         sendToClient(m_sslClient,QString::number(Error) + " The account is already used");
+         sendToClient(m_sslClient.get(),QString::number(Error) + " The account is already used");
          return;
     }
 
     m_mutexHashTab.lock();
 
     qDebug() << "ID: " << us->getID();
-    m_hash->insert(us->getID(), m_sslClient);
+    m_hash->insert(us->getID(), m_sslClient.get());
 
     m_mutexHashTab.unlock();
 
-    sendToClient(m_sslClient, QString::number(Authorization) + " " + QString::number(us->getID()));
+    sendToClient(m_sslClient.get(), QString::number(Authorization) + " " + QString::number(us->getID()));
 }
 
 
@@ -217,8 +212,6 @@ void MyThread::sendList()
     QHash<int,QString> hashClients;
     QHash<int,QSslSocket*>::iterator iter;
 
-    if(m_hash->size()>1)
-   {
       iter=m_hash->begin();
       while(iter!=m_hash->end())
       {
@@ -232,36 +225,26 @@ void MyThread::sendList()
           ++iter;
       }
 
-     qDebug()<<"Vector: "+StringHandlNamespace::concatenationHash(hashClients);
-     sendToClient(m_sslClient,QString::number(GetListOfFriends)+' '+StringHandlNamespace::concatenationHash(hashClients));
-    }
-    else
-      {
-          qDebug()<<m_hash->size()<< " client";
-          sendToClient(m_sslClient,QString::number(Error)+" Just 1 connection");
-      }
-
-
+     qDebug()<<"Vector: "+Data::concatenationHash(hashClients);
+     sendToClient(m_sslClient.get(),QString::number(GetListOfFriends)+' '+Data::concatenationHash(hashClients));
 }
-
 
 void MyThread::message(QString& str)
 {
-    // id friend
-    int myID=StringHandlNamespace::variable(str).toInt();
-    int friendID=StringHandlNamespace::variable(str).toInt();
+    int myID = Data::variable(str).toInt();
+    int friendID = Data::variable(str).toInt();
+    bool flag;
 
     qDebug()<<"myID="<<myID<<" friendID"<<friendID;
 
+    flag = sendToClient((*m_hash)[friendID], QString::number(Message) + ' ' + QString::number(myID) + ' ' +QString::number(0) + ' ' + str);
 
-    QString login=m_db->searchLogin(myID);
-
-    if(login != "")
-         sendToClient((*m_hash)[friendID], QString::number(Message) + ' ' + QString::number(myID) + ' ' +QString::number(0) + ' ' + str);
-    else
+    if(!flag)
+    {
         sendToClient((*m_hash)[myID], QString::number(Error) + " The message doesn't send");
-}
+    }
 
+}
 
 void MyThread::slotDisconnect()
 {
@@ -271,7 +254,7 @@ void MyThread::slotDisconnect()
     qDebug()<<"Disconnect: size of hash="<<m_hash->size();
         while(iter!=m_hash->end())
         {
-            if(iter.value()==m_sslClient)
+            if(iter.value()==m_sslClient.get())
             {
                 qDebug()<<"Dissconect: id="<<iter.key();
 

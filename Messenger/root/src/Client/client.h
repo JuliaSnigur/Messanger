@@ -15,9 +15,7 @@ private:
     Gui::GuiQML m_gui;
 
 public:
-    Client(QObject* obj=0);
-
-   virtual ~Client();
+    Client(QObject* obj = 0);
 
     void startWork();
     Gui::GuiQML& getGui();

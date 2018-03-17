@@ -17,6 +17,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include<QTextCodec>
 
 
 #include <stdio.h>

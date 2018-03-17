@@ -29,15 +29,19 @@ Window {
         height: parent.height-50
 
         color: "#FAFDFD"
+        border.color: "#00000000"
         anchors.top: recMenu.bottom
         anchors.topMargin: 0
-        border.color: "#95a4f7"
         border.width: 2
 
         StackView {
                id: stackView
                width:recList.width
                height: recList.height
+               font.letterSpacing: 0
+               font.family: "Times New Roman"
+               font.italic: true
+               font.pointSize: 16
 
                anchors.top: parent.top
                anchors.topMargin: 0
@@ -77,6 +81,7 @@ Window {
             id:butGetList
 
             text: qsTr("List updates")
+            font.pointSize: 12
             anchors.right: parent.right
             anchors.rightMargin: 0
             anchors.left: parent.left
@@ -112,7 +117,10 @@ Window {
             width:recDialog.width
 
                 Label {
-                            text: inConversationWith
+                    text: inConversationWith
+                    font.family: "Arial"
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
                             anchors.top: parent.top
                             anchors.topMargin: 10
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -144,7 +152,7 @@ ColumnLayout {
 
                                Column {
 
-                                            readonly property bool sentByMe: modelData.state !== 1
+                                            readonly property bool sentByMe: modelData.flag !== true
 
 
                                                anchors.right: sentByMe ? parent.right : undefined
@@ -207,6 +215,8 @@ ColumnLayout {
 
                               TextArea {
                                   id: messageField
+                                  font.pointSize: 12
+                                  horizontalAlignment: Text.AlignLeft
                                   Layout.fillWidth: true
                                   placeholderText: qsTr("Compose message")
                                   wrapMode: TextArea.Wrap
@@ -216,6 +226,7 @@ ColumnLayout {
                               Button {
                                   id: butOpenFile
                                   text: qsTr("Browser...")
+                                  font.pointSize: 12
                                   onClicked: {
 
                                   }
@@ -225,6 +236,7 @@ ColumnLayout {
                               Button {
                                   id: sendButton
                                   text: qsTr("Send")
+                                  font.pointSize: 12
                                   enabled: messageField.length > 0
                                   onClicked: {
                                     gui.sendMessage(messageField.text);
@@ -246,7 +258,7 @@ ColumnLayout {
 
         width: parent.width
         height:50
-        color: "#0d86a8"
+        color: "#798a8f"
         border.color: "#d4e9ef"
 
         x:0
@@ -258,6 +270,7 @@ ColumnLayout {
             width: 90
             height: 50
             text: qsTr("Back")
+            font.pointSize: 12
             anchors.left: parent.left
             anchors.leftMargin: 1
             onClicked:{
@@ -268,18 +281,24 @@ ColumnLayout {
         Label {
             width: 200
             text: myLogin
+            styleColor: "#f3baba"
+            font.bold: true
+            renderType: Text.QtRendering
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
             anchors.top: parent.top
             anchors.topMargin: 0
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 20
-                }
+            font.pixelSize: 25
+        }
 
         ToolButton {
             width: 90
             height: 50
             text: qsTr("Exit")
+            font.pointSize: 12
             anchors.right: parent.right
             anchors.rightMargin: 0
             onClicked: Qt.quit()

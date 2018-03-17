@@ -1,6 +1,5 @@
 import QtQuick 2.10
-import QtQuick.Window 2.10
-import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 Item {
@@ -55,6 +54,7 @@ Item {
 
         Item{
             id:buttons
+            height: 30
             anchors.right: parent.right
             anchors.rightMargin: 20
             anchors.left: parent.left
@@ -65,38 +65,48 @@ Item {
             anchors.topMargin: 20
 
 
-            MyButton{
+            Button
+            {
                 id: butReg
+                height: 30
+                text: qsTr("Register")
+                font.pointSize: 12
 
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                text:"Registration"
 
+                clip: true
+                visible: true
 
-               onClicked:
-               {
-                 wAuthorization.signalRegistration()
-
-               }
+                onClicked:
+                {
+                     wAuthorization.signalRegistration()
+                }
             }
 
-            MyButton {
-                 id: butSignIn
+            Button
+            {
+                id: butSignIn
+                height: 30
+                text: qsTr("Sign in")
+                font.pointSize: 12
+                anchors.right: parent.right
+                anchors.rightMargin: 2
 
-                 Layout.fillHeight: true
-                 Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
-                 anchors.right: parent.right
 
-                 text:"Sign in"
-                 anchors.rightMargin: 0
+                clip: true
+                visible: true
 
-                 onClicked:
-                 {
-                     wAuthorization.signalSignIn(login.editText,password.editText)
-                 }
-             }
+                onClicked:
+                {
+                    wAuthorization.signalSignIn(login.editText,password.editText)
+                }
+            }
+
         }
     }
 

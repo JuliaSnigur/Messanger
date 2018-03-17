@@ -3,7 +3,6 @@
 #include <QObject>
 #include<QSslSocket>
 
-#include"stdafx.h"
 
 
 #include"user.h"
@@ -17,7 +16,7 @@ class ClientConnection : public QObject
 {
     Q_OBJECT
 private:
-    QPointer<QSslSocket> m_client;
+    std::shared_ptr<QSslSocket> m_client;
     DB::DBClientPresenter m_db;
     QHash<int,QString> m_hash;
 
@@ -30,8 +29,6 @@ void sendToServer(const QString& message);
 
 public:
     ClientConnection(QObject *parent = 0);
-    virtual~ClientConnection();
-
 
     void sendFile(const QString& filename);
     void getFile();
@@ -55,11 +52,10 @@ public slots:
 signals:
 
 
-   void signalSendRespond(QString res);
-   void signalSendListClients(QString& res);
+   void signalSendRespond(const QString& res);
+   void signalSendListClients(const QString& res);
 
     void signalGetID(int);
-   // void signalSendMessage();
     void signalSendInfo();
     void signalSendDialog(QQueue<QString> q);
 

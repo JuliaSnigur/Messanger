@@ -1,10 +1,10 @@
-#include"stdafx.h"
+#include "stdafx.h"
 
 #include "guiqml.h"
-#include"parsedata.h"
+#include "data.h"
 
-#include"FriendElement.h"
-#include"dialogelement.h"
+#include "FriendElement.h"
+#include "dialogelement.h"
 
 
 
@@ -12,10 +12,9 @@
 Gui::GuiQML::GuiQML(QObject* parent)
     : QObject(parent)
 {
-    qDebug()<<"Hello";
-
     qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
     qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
 
 Gui::GuiQML::~GuiQML(){}
@@ -33,49 +32,54 @@ QString Gui::GuiQML::getPassword() const
     return m_password;
 }
 
+QString Gui::GuiQML::getPort() const
+{
+    return m_port;
+}
+
+QString Gui::GuiQML::getIP() const
+{
+    return m_ip;
+}
 
 void Gui::GuiQML::setLogin(const QString& str)
 {
-    if (m_login == str)
-            return;
-
-    m_login = str;
-    emit loginChange(m_login);
+    if (m_login != str)
+    {
+        m_login = str;
+        emit loginChange(m_login);
+    }
 
 }
 
 void Gui::GuiQML::setPassword(const QString& str)
 {
-    if (m_password == str)
-            return;
+    if (m_password != str)
+    {
+        m_password = str;
+        emit loginChange(m_password);
+    }
 
-    m_password = str;
-    emit loginChange(m_password);
+
 }
-
-
-QString Gui::GuiQML::getPort() const {return m_port;}
-QString Gui::GuiQML::getIP() const{return m_ip;}
-
 
 void Gui::GuiQML::setPort(const QString& str)
 {
-    if (m_port == str)
-            return;
-
-    m_port = str;
-    emit portChange(m_port);
+    if (m_port != str)
+    {
+        m_port = str;
+        emit portChange(m_port);
+    }
 }
 
 void Gui::GuiQML::setIP(const QString& str)
 {
-    if (m_ip == str)
-       return;
-
-    m_ip = str;
-    emit ipChange(m_ip);
+    if (m_ip != str)
+    {
+        m_ip = str;
+        emit ipChange(m_ip);
+    }
 }
-
 
 ///////////////////////////////////////////////////////
 
@@ -100,12 +104,10 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
     emit signalAuthorisation(login,pass);
  }
 
-
  void Gui::GuiQML::getListFriends()
  {
      emit  signalGetListFriends();
  }
-
 
  void Gui::GuiQML::choiceFriend(const QString& login)
  {
@@ -117,13 +119,15 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
  void Gui::GuiQML::sendMessage(const QString& mess)
  {
-     emit signalSendMessage(mess);
+
+     QString time=QTime::currentTime().toString();
+
+     emit signalSendMessage(time + ' ' + mess);
 
      DialogElement* element = new DialogElement(this);
 
-     // вместо логина состояние сообщения Send/ Get
      element->setProperty("flag", Send);
-     element->setProperty("time", QTime::currentTime());
+     element->setProperty("time", time);
      element->setProperty("message", mess);
      element->setProperty("idFile", 0);
 
@@ -131,17 +135,14 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
      emit dataDialogChanged();
  }
 
-
-
 //////////////////////////////////////////////////////
-
 
 void Gui::GuiQML::slotRespond( QString res)
 {
      QHash<int,QString> hash;
      QHash<int,QString>::const_iterator iter;
 
-    switch((StringHandlNamespace::variable(res)).toInt())
+    switch((Data::variable(res)).toInt())
     {
     case Error:
 
@@ -168,7 +169,7 @@ void Gui::GuiQML::slotRespond( QString res)
 
         qDebug() << res;
 
-        hash = StringHandlNamespace::separateHash(res);
+        hash = Data::separateHash(res);
 
         iter = hash.begin();
 
@@ -190,18 +191,18 @@ void Gui::GuiQML::slotRespond( QString res)
         break;
 
     case GetFriend:
+        // отображение диалога
         break;
 
     case Message:
 
         DialogElement* element = new DialogElement(this);
 
-        // str = flag, time, messange, idFile
+        // str =  time, messange
 
-        element->setProperty("flag", (StringHandlNamespace::variable(res)).toInt());
-        element->setProperty("time", StringHandlNamespace::variable(res));
-        element->setProperty("message", StringHandlNamespace::variable(res));
-        element->setProperty("idFile", StringHandlNamespace::variable(res));
+        element->setProperty("flag", Get);
+        element->setProperty("time", Data::variable(res));
+        element->setProperty("message", res);
 
         m_dataDialog << element;
         emit dataDialogChanged();
@@ -228,10 +229,9 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
          str = q[i];
 
          // str = flag, time, messange, idFile
-         element->setProperty("flag", (StringHandlNamespace::variable(str)).toInt());
-         element->setProperty("time", StringHandlNamespace::variable(str));
-         element->setProperty("message", StringHandlNamespace::variable(str));
-         element->setProperty("idFile", StringHandlNamespace::variable(str));
+         element->setProperty("flag", (Data::variable(str)).toInt());
+         element->setProperty("time", Data::variable(str));
+         element->setProperty("message", str);
 
          m_dataDialog << element;
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SslServer.h"
-#include"mythread.h"
+#include "mythread.h"
 
 SslServer::SslServer(QObject *parent)
     : QTcpServer(parent)
@@ -9,7 +9,9 @@ SslServer::SslServer(QObject *parent)
     , m_hash(new QHash<int,QSslSocket*>())
     , m_countThread(0)
     , m_maxCountThreads(20)
-{}
+{
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+}
 
 
 SslServer::~SslServer()

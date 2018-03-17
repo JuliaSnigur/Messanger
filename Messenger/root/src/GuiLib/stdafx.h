@@ -9,6 +9,8 @@
 #include<QQueue>
 #include<QTime>
 
+#include<QTextCodec>
+
 #include <stdio.h>
 #include <tchar.h>
 

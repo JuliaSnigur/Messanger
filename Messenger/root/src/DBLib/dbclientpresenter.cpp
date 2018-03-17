@@ -128,11 +128,10 @@ DB::DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresente
        {
           str = "";
 
-          // str = state, time, messange, idFile
+          // str = state, time, messange
           str += m_query->value(0).toString() + ' ';
           str += m_query->value(1).toString() + ' ';
-          str += m_query->value(2).toString() + ' ';
-          str += m_query->value(3).toString();
+          str += m_query->value(2).toString();
 
           dialog.push_back(str);
         }

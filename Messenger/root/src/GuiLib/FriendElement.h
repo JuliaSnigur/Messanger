@@ -5,8 +5,6 @@
 
 namespace Gui {
 
-
-
     class FriendElement : public QObject
     {
         Q_OBJECT
