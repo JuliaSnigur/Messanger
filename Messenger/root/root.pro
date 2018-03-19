@@ -16,13 +16,13 @@ CONFIG += ordered
 SUBDIRS  = \
     src/DBLib \
     src/ParseDataLib \
-    #src/ServerLib \
-    #src/ClientLib \
     src/GuiLib \
     src/SecureClientLib \
     src/SecureServerLib \
     src/Client \
-    src/Server
+    src/Server \
+    src/GoogleTestsLib \
+    src/GoogleTests
 
 
 Client.depends =  SecureClientLib GuiLib

@@ -49,7 +49,7 @@ public:
  Q_INVOKABLE void getListFriends();
  Q_INVOKABLE void choiceFriend(const QString& login);
  Q_INVOKABLE void sendMessage(const QString& mess);
-
+ Q_INVOKABLE void sendFile(const QUrl& mess);
 
 
 public slots:
@@ -80,6 +80,7 @@ signals:
      void  signalGetListFriends();
      void signalChoiceFriend(const QString& login);
      void signalSendMessage(const QString&  message);
+     void signalSendFile(const QString&  file);
 
 
      void signalSuccessConect();

@@ -14,6 +14,7 @@ ClientConnection::ClientConnection(QObject *parent)
   , m_db()
   , m_idDialog(0)
   , m_idFriend(0)
+  , m_file()
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
@@ -25,7 +26,8 @@ void ClientConnection::slotConnection(const QString& hostName,int port)
     if(m_client == nullptr)
     {
         qDebug() << "Start client: m_client=nullptr";
-        return ;
+        emit signalSendRespond( "Don't connect to server" );
+        return;
     }
 
     qDebug() << hostName + ' ' + QString::number(port);
@@ -269,6 +271,30 @@ void ClientConnection::slotEncrypted()
      if(m_idFriend != m_user.getID())
      {
          sendToServer(QString::number(Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + message);
+     }
+ }
+
+
+ void ClientConnection::slotSendFile(const QString& fileName)
+ {
+     m_file.setFileName(fileName);
+
+     if(m_file.open(QFile::ReadOnly))
+     {
+         qDebug()<<m_file.size();
+        if(m_client)
+        {
+            m_client->write((QString::number(File) + ' ' + fileName + ' ' + QString::number(m_file.size())).toLatin1());
+        }
+        else
+        {
+            qDebug()<<"Error with sending file: m_client=nullptr";
+        }
+     }
+     else
+     {
+       qDebug()<<"File not can open for read";
+       return;
      }
  }
 

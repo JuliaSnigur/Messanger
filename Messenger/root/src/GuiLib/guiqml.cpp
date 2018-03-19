@@ -240,7 +240,10 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 }
 
 
+void Gui::GuiQML::sendFile(const QUrl& mess)
+{
 
+}
 
 
 ////////////////////////////////

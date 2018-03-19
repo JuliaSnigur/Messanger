@@ -19,6 +19,7 @@ Client::Client(QObject* obj)
     connect(&m_gui, &Gui::GuiQML::signalGetListFriends, &m_client, &ClientConnection::slotGetListFriend);
     connect(&m_gui, &Gui::GuiQML::signalSendMessage, &m_client, &ClientConnection::slotSendMessage);
     connect(&m_gui, &Gui::GuiQML::signalChoiceFriend, &m_client, &ClientConnection::slotChoiceFriend);
+    connect(&m_gui, &Gui::GuiQML::signalSendFile, &m_client, &ClientConnection::slotSendFile);
 
 
     connect(&m_client, &ClientConnection::signalSendRespond, &m_gui, &Gui::GuiQML::slotRespond);

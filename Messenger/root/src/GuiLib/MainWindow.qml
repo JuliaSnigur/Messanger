@@ -206,7 +206,8 @@ ColumnLayout {
                                            }
                        }
 
-               Pane {
+               Pane
+               {
                           id: pane
                           Layout.fillWidth: true
 
@@ -223,12 +224,14 @@ ColumnLayout {
                               }
 
                                 // open file
-                              Button {
+                              Button
+                              {
                                   id: butOpenFile
                                   text: qsTr("Browser...")
                                   font.pointSize: 12
-                                  onClicked: {
-
+                                  onClicked:
+                                  {
+                                      fileDialog.visible = true
                                   }
 
                               }
@@ -258,7 +261,7 @@ ColumnLayout {
 
         width: parent.width
         height:50
-        color: "#798a8f"
+        color: "#1cc1f5"
         border.color: "#d4e9ef"
 
         x:0
@@ -304,6 +307,24 @@ ColumnLayout {
             onClicked: Qt.quit()
         }
 
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        folder: shortcuts.home
+        visible: false
+        onAccepted:
+        {
+            console.log("You chose: " + fileDialog.fileUrls)
+            gui.sendFile(fileDialog.fileUrls)
+            Qt.quit()
+        }
+        onRejected:
+        {
+            console.log("Canceled")
+            Qt.quit()
+        }
     }
 
 

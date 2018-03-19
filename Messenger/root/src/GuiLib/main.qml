@@ -90,7 +90,7 @@ Window {
 
     MainWindow {
         id: wMain
-        visible:false
+        visible:true
 
     }
 
@@ -100,8 +100,6 @@ Window {
     MessageDialog {
         id: messageDialog
         title: "Error"
-
-
         visible: false
 
         onAccepted: {

@@ -7,7 +7,6 @@ class QTcpSocket;
 
 #include"DBLib/user.h"
 #include"DBLib/request.h"
-#include"DBLib/ipresenter.h"
 #include"DBLib/dbpresenter.h"
 #include "DBLib/dbserverpresenter.h"
 

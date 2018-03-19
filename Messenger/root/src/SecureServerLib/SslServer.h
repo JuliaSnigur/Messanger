@@ -39,10 +39,8 @@ protected:
 
 private:
 
-    QSslSocket *sslSocket ;
-
-    QHash<int,QSslSocket*>* m_hash;
-    DB::DBServerPresenter* m_db;
+    std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
+    std::shared_ptr<DB::DBServerPresenter> m_db;
 
     int m_countThread;
     int m_maxCountThreads;

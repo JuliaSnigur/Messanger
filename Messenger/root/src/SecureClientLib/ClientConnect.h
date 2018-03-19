@@ -1,7 +1,8 @@
 #pragma once
 
 #include <QObject>
-#include<QSslSocket>
+#include <QSslSocket>
+#include <QFile>
 
 
 
@@ -20,6 +21,7 @@ private:
     DB::DBClientPresenter m_db;
     QHash<int,QString> m_hash;
 
+    QFile m_file;
     User m_user;
     int m_idFriend;
     int m_idDialog;
@@ -47,6 +49,7 @@ public slots:
    void slotGetListFriend();
    void slotChoiceFriend(const QString& login);
    void slotSendMessage(const QString& message);
+   void slotSendFile(const QString& filename);
 
 
 signals:

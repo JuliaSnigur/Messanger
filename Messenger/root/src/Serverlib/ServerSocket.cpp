@@ -3,11 +3,10 @@
 
 #include"user.h"
 #include"request.h"
-#include"ipresenter.h"
 #include"dbpresenter.h"
 #include "dbserverpresenter.h"
 
-#include"parsedata.h"
+#include"data.h"
 
 #include"ServerSocket.h"
 

@@ -3,26 +3,27 @@
 #include "mythread.h"
 #include "data.h"
 
-MyThread::MyThread(qintptr ID, DB::DBServerPresenter* db,QHash<int,QSslSocket*>* hash, QObject *parent)
+MyThread::MyThread(qintptr ID, std::shared_ptr<DB::DBServerPresenter> db,std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent)
     : QThread(parent)
     , m_mutexDB()
     , m_mutexHashTab()
-    , m_db(db)
-    , m_hash(hash)
     , m_sslClient(nullptr)
+    , m_file()
+    , m_sizeReceiveFile(0)
 {
     this->m_socketDescriptor = ID;
+    m_db = db;
+    m_hash = hash;
 }
 
+MyThread::~MyThread(){}
 
 void MyThread::run()
 {
-    // thread starts here
     qDebug() << " Thread started";
 
     m_sslClient = std::shared_ptr<QSslSocket>(new QSslSocket());
 
-    // set the ID
     if(!m_sslClient->setSocketDescriptor(this->m_socketDescriptor))
     {
         qDebug()<<"Error with descriptor";
@@ -31,38 +32,30 @@ void MyThread::run()
     }
 
     QFile certificateFile("../../secure/client.crt");
-
     if (!certificateFile.open(QIODevice::ReadOnly))
-      return;
-        // throw std::exception("Error: certificate doesn't open");
-
+    {
+        qDebug()<<"Error: certificate doesn't open";
+        return;
+    }
     QSslCertificate cert(certificateFile.readAll());
-
     certificateFile.close();
 
     m_sslClient->addCaCertificate(cert);
-
     m_sslClient->setLocalCertificate("../../secure/sslserver.pem");
-
-    m_sslClient->setPrivateKey("../../secure/sslserver.key",QSsl::Rsa, QSsl::Pem,"password");
+    m_sslClient->setPrivateKey("../../secure/sslserver.key", QSsl::Rsa, QSsl::Pem, "password");
     m_sslClient->setProtocol(QSsl::TlsV1_2);
     m_sslClient->startServerEncryption();
 
-    // connect socket and signal
-    // note - Qt::DirectConnection is used because it's multithreaded
-    //        This makes the slot to be invoked immediately, when the signal is emitted.
-
     connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead, Qt::DirectConnection);
     connect(m_sslClient.get(), &QSslSocket::disconnected, this, &MyThread::slotDisconnect);
-  //  connect( m_sslClient, SIGNAL(sslErrors(QList<QSslError>)), SLOT(slotSslError(QList<QSslError>)),Qt::DirectConnection);
 
-    sendToClient(m_sslClient.get(),QString::number(Connection)+" Hello Client");
+    sendToClient(m_sslClient.get(), QString::number(Connection) + " Hello Client");
 
     exec();
 }
 
 
-bool MyThread::sendToClient(QSslSocket* pSocket,const QString& message)
+bool MyThread::sendToClient(QSslSocket* pSocket, const QString& message)
 {
     if (pSocket != nullptr)
     {
@@ -79,6 +72,7 @@ bool MyThread::sendToClient(QSslSocket* pSocket,const QString& message)
 
 void MyThread::slotReadyRead()
 {
+    QString fileName;
 
     if(m_sslClient==nullptr)
     {
@@ -95,29 +89,32 @@ void MyThread::slotReadyRead()
     case Error:
         qDebug()<<"Upss..";
         break;
+
     case Message:
-
         qDebug()<<"MESSAGE\n";
-
         message(mess);
-    break;
+        break;
 
     case Registration:
         qDebug()<<"Registration\n";
-
         registration(mess);
-
-    break;
+        break;
 
     case Authorization:
         qDebug()<<"Authorization\n";
         authorization(mess);
-    break;
+        break;
 
     case GetListOfFriends:
-
         qDebug()<<"GetNewList";
         sendList();
+        break;
+
+    case File:
+        qDebug()<<"SendFile";
+        fileName = Data::variable(mess);
+        m_sizeReceiveFile = Data::variable(mess).toULong();
+        receiveFile(fileName);
         break;
 
     default:
@@ -246,15 +243,50 @@ void MyThread::message(QString& str)
 
 }
 
+void MyThread::receiveFile(const QString& fileName)
+{
+    // путь сохранения файла
+    m_file.setFileName(fileName);
+    m_file.open(QIODevice::WriteOnly|QIODevice::Append);
+
+    sendToClient(m_sslClient.get(), QString::number(File));
+
+    disconnect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead);
+    connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReceiveFile);
+}
+
+void MyThread::slotReceiveFile()
+{
+    static ulong sizeReceivedData;
+
+    QByteArray buff = m_sslClient->readAll();
+    quint64 size =  m_file.write(buff);
+    qDebug()<<"Write: "<<size;
+    sizeReceivedData += size;
+
+    if(sizeReceivedData == m_sizeReceiveFile)
+    {
+      m_file.close();
+
+      m_sizeReceiveFile = 0;
+      sizeReceivedData = 0;
+      qDebug() << "Finished";
+
+      disconnect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReceiveFile);
+      connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead);
+    }
+}
+
+
 void MyThread::slotDisconnect()
 {
     m_mutexHashTab.lock();
     QHash<int,QSslSocket*>::iterator iter=m_hash->begin();
 
     qDebug()<<"Disconnect: size of hash="<<m_hash->size();
-        while(iter!=m_hash->end())
+        while(iter != m_hash->end())
         {
-            if(iter.value()==m_sslClient.get())
+            if(iter.value() == m_sslClient.get())
             {
                 qDebug()<<"Dissconect: id="<<iter.key();
 
