@@ -1,6 +1,6 @@
 include( ../../common.pri )
-include( ../../lib.pri )
-include( ../../root.pri )
+#include( ../../lib.pri )
+#include( ../../root.pri )
 
 QT+=qml sql
 

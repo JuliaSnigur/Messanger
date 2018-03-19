@@ -1,7 +1,7 @@
 #pragma once
 
-#include"guiqml.h"
-#include"ClientConnect.h"
+#include "guiqml.h"
+#include "ClientConnect.h"
 
 class QObject;
 

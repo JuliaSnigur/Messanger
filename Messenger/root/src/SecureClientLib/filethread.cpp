@@ -1,7 +1,7 @@
 #include "filethread.h"
 
 FileThread::FileThread(std::shared_ptr<QSslSocket> client,const QString& fileName,  QObject *parent)
-            : QObject(parent)
+            : QThread(parent)
             , m_fileName(fileName)
             , m_file()
             , m_client(client)
@@ -20,7 +20,7 @@ FileThread::~FileThread(){}
     if(!m_file.open(QIODevice::ReadOnly))
     {
         qDebug()<<"Error reading file for sending";
-        return;ss
+        return;
     }
 
      while(!m_file.atEnd())

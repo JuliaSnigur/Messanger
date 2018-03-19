@@ -21,8 +21,8 @@ SUBDIRS  = \
     src/SecureServerLib \
     src/Client \
     src/Server \
-    src/GoogleTestsLib \
-    src/GoogleTests
+   # src/GoogleTestsLib \
+   # src/GoogleTests
 
 
 Client.depends =  SecureClientLib GuiLib

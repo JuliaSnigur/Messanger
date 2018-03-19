@@ -1,7 +1,7 @@
 
 include( ../../common.pri )
-include( ../../app.pri )
-include(../../root.pri)
+#include( ../../app.pri )
+#include(../../root.pri)
 
 QT       += core network qml sql
 
@@ -44,8 +44,4 @@ INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
 CONFIG += ordered
 
 Client.depends =  SecureClientLib GuiLib
-
-
-
-#message("[INFO] to $${BIN_PATH}")
 

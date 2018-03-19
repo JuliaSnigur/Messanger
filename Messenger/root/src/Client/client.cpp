@@ -2,6 +2,7 @@
 
 
 #include"guiqml.h"
+#include "ClientConnect.h"
 
 #include"client.h"
 
