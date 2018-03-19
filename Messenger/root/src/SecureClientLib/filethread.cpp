@@ -20,7 +20,7 @@ FileThread::~FileThread(){}
     if(!m_file.open(QIODevice::ReadOnly))
     {
         qDebug()<<"Error reading file for sending";
-        return;s
+        return;ss
     }
 
      while(!m_file.atEnd())

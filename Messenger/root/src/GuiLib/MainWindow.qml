@@ -101,8 +101,8 @@ Window {
         id:recDialog
 
         height: parent.height-50
-       // visible: false
-        visible: true
+        visible: false
+        // visible: true
         color:"#EAFCFA"
         anchors.right: parent.right
         anchors.rightMargin: 0

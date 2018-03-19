@@ -8,7 +8,7 @@ Window {
     height: 200
     visible:true
     title: qsTr("Messenger")
-
+    Scale:Scale { origin.x: 0; origin.y: 0; xScale: scaleX; yScale: scaleY }
 
     property string errorText
 
@@ -90,7 +90,7 @@ Window {
 
     MainWindow {
         id: wMain
-        visible:true
+        visible:false
 
     }
 

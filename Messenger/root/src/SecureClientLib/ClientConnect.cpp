@@ -14,7 +14,7 @@ ClientConnection::ClientConnection(QObject *parent)
   , m_db()
   , m_idDialog(0)
   , m_idFriend(0)
-  , m_file()
+  , m_fileName("")
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
@@ -83,90 +83,61 @@ void ClientConnection::slotEncrypted()
          {
 
          case Error:
-
              qDebug() << "Error... " << message;
-
              emit signalSendRespond(QString::number(Error) + ' ' + message);
-
              break;
 
          case Connection:
-
             qDebug() << message;
-
             emit signalSendRespond(QString::number(Connection));
-
-                 break;
+            break;
 
          case Registration:
-
              qDebug()<<"Success registration";
-
-             // create db
              m_db.createDB("Client_" + m_user.getLogin() + ".db");
-
              m_user.setID(Data::variable(message).toInt());
-
              qDebug()<<"My ID-> "<<m_user.getID();
-
              emit signalSendRespond(QString::number(Registration));
+             break;
 
-
-                 break;
-
-             case Authorization:
-
+         case Authorization:
              qDebug()<<"Success authorization";
-
-             // create db
              m_db.createDB("Client_" + m_user.getLogin() + ".db");
-
              m_user.setID(Data::variable(message).toInt());
-
              qDebug()<<"My ID-> "<<m_user.getID();
-
              emit signalSendRespond(QString::number(Authorization));
+             break;
 
-                 break;
+         case Message:
+            //  key, idFriend, idFile, time, mess
+            idSender = (Data::variable(message)).toInt();
+            idFile = (Data::variable(message)).toInt();
+            time = Data::variable(message);
 
-             case Message:
+            qDebug() << message;
+            m_idDialog = m_db.searchIdDialog(idSender);
 
-             //  key, idFriend, idFile, time, mess
+            if(m_idDialog < 0 )
+            {
+                qDebug() << "The dialog dosn't exist";
+                m_db.insertDialog(idSender);
+            }
+            else
+            {
+                m_db.insertMessage(m_idDialog,Get,message,time);
+            }
+            // str = loginRecipeint, time, messange, idFile
+            emit signalSendRespond(QString::number(Message) + ' ' + time + ' ' + message);
+            break;
 
-                 idSender = (Data::variable(message)).toInt();
-                 idFile = (Data::variable(message)).toInt();
-                 time = Data::variable(message);
+         case File:
 
-
-                 qDebug() << message;
-                 m_idDialog = m_db.searchIdDialog(idSender);
-
-                 if(m_idDialog < 0 )
-                 {
-                     qDebug() << "The dialog dosn't exist";
-                     m_db.insertDialog(idSender);
-                 }
-                 else
-                 {
-                     m_db.insertMessage(m_idDialog,Get,message,time);
-                 }
-
-                  // str = loginRecipeint, time, messange, idFile
-                 emit signalSendRespond(QString::number(Message) + ' ' + time + ' ' + message);
-
-                 break;
-
-             case File:
-                 break;
+             break;
 
          case GetListOfFriends:
-
              qDebug() << "GetNewList";
-
              emit signalSendRespond(QString::number(GetListOfFriends) + ' ' + message);
-
              m_hash=Data::separateHash(message);
-
              break;
 
     }
@@ -277,14 +248,16 @@ void ClientConnection::slotEncrypted()
 
  void ClientConnection::slotSendFile(const QString& fileName)
  {
-     m_file.setFileName(fileName);
 
-     if(m_file.open(QFile::ReadOnly))
+     /*m_fileName = fileName;
+     QFile file = QFile(fileName);
+
+     if(file.open(QFile::ReadOnly))
      {
-         qDebug()<<m_file.size();
+         qDebug()<<file.size();
         if(m_client)
         {
-            m_client->write((QString::number(File) + ' ' + fileName + ' ' + QString::number(m_file.size())).toLatin1());
+            m_client->write((QString::number(File) + ' ' + fileName + ' ' + QString::number(file.size())).toLatin1());
         }
         else
         {
@@ -296,6 +269,7 @@ void ClientConnection::slotEncrypted()
        qDebug()<<"File not can open for read";
        return;
      }
+     */
  }
 
 

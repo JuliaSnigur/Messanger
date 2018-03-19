@@ -1,19 +1,23 @@
-include( ../../common.pri )
-include( ../../app.pri )
+#include( ../../common.pri )
+#include( ../../app.pri )
 include(../../root.pri)
 
-include(gtest_dependency.pri)
+#include(gtest_dependency.pri)
 
 TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
-CONFIG += thread
+#CONFIG += thread
 CONFIG -= qt
 
-HEADERS +=     tst_dbtestscreate.h
+#HEADERS +=     tst_dbtestscreate.h
 
-SOURCES +=     main.cpp
+SOURCES +=     main.cpp \
+    test.cpp
 
 
 LIBS +=  $${GOOGLETESTSLIB_LIBRARY}
-INCLUDEPATH+= $${GOOGLETESTSLIB_INCLUDEPATH}
+
+LIBS += "D:\Project\SecureMessanger\Messenger\root\lib.win32\debug"
+
+INCLUDEPATH+= "D:\Project\SecureMessanger\Messenger\root\src\GoogleTestsLib" #$${GOOGLETESTSLIB_INCLUDEPATH}

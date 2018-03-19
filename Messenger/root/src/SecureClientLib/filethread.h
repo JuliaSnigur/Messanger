@@ -1,11 +1,23 @@
-#ifndef FILETHREAD_H
-#define FILETHREAD_H
+#pragma once
 
+#include <QThread>
+#include <QFile>
+#include <QSslSocket>
 
-class FileThread
+class FileThread: public QThread
 {
 public:
-    FileThread();
+    FileThread( std::shared_ptr<QSslSocket> client, const QString& fileName, QObject *parent = 0);
+    virtual ~FileThread();
+
+    void run();
+
+
+private:
+    QFile m_file;
+    QString m_fileName;
+    std::shared_ptr<QSslSocket> m_client;
+
+
 };
 
-#endif // FILETHREAD_H

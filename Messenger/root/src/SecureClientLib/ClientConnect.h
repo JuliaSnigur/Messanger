@@ -21,7 +21,7 @@ private:
     DB::DBClientPresenter m_db;
     QHash<int,QString> m_hash;
 
-    QFile m_file;
+    QString m_fileName;
     User m_user;
     int m_idFriend;
     int m_idDialog;
