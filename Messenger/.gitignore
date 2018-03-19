@@ -1,10 +1,10 @@
 *.user
 *.md
-/obj/debug
 *.autosave
 *.obj
 *.vc.pdb
 obj/
+bin/
 lib.win32/
 .qmake.stash
 MakeFile
@@ -17,4 +17,5 @@ MakeFile.Release
 .qmake.stash
 *.db
 1/
-/openssl
+ClientLib/
+ServerLib/
