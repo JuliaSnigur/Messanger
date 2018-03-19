@@ -3,7 +3,7 @@ include( ../../lib.pri )
 include( ../../root.pri )
 
 QT       -= gui
-QT += network
+QT += network sql
 
 TARGET = ClientLib$${LIB_SUFFIX}
 TEMPLATE = lib
@@ -21,12 +21,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        clientlib.cpp
+    ClientSocket.cpp
 
 HEADERS += \
-        clientlib.h \
-        stdafx.h\
-        structuser.h
+        stable.h \
+        stdafx.h \
+    ClientSocket.h
 
 
 unix {
@@ -38,6 +38,14 @@ unix {
 ########################################
 
 CONFIG -= precompile_header
-PRECOMPILED_HEADER =
+PRECOMPILED_HEADER = stable.h
+
+
+LIBS+=$${PARSEDATALIB_LIBRARY}
+INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
+
+LIBS +=  $${DBLIB_LIBRARY}
+INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
+
 
 ########################################

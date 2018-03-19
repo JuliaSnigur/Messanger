@@ -15,18 +15,21 @@ CONFIG(debug, debug|release) {
     BUILD_FLAG = release
 }
 
-LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/
+LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/$${BUILD_FLAG}/
+
+
+
 INC_PATH = $${PROJECT_ROOT_PATH}/src
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/
 
-
+OPENSSL_PATH=$${PROJECT_ROOT_PATH}/../openssl/$${BUILD_FLAG}/
 
 
 #Ниже стоит блок, который задает пути сборки для файлов ресурсов rcc,
 #файлов графического интерфейса ui,
 #МОК-файлов moc и объектных файлов obj
-BUILD_PATH = $${PROJECT_ROOT_PATH}/build/$${BUILD_FLAG}/$${TARGET}/
+BUILD_PATH = $${PROJECT_ROOT_PATH}/obj/$${BUILD_FLAG}/$${TARGET}/
 RCC_DIR = $${BUILD_PATH}/rcc/
 UI_DIR = $${BUILD_PATH}/ui/
 MOC_DIR = $${BUILD_PATH}/moc/
@@ -34,6 +37,7 @@ OBJECTS_DIR = $${BUILD_PATH}/obj/
 
 
 LIBS += -L$${LIBS_PATH}/
+LIBS+=-L$${OPENSSL_PATH}/
 
 INCLUDEPATH += $${INC_PATH}/
 

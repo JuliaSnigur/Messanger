@@ -1,5 +1,5 @@
 #pragma once
-#include"stdafx.h"
+
 class Presenter: public QObject
 {
     Q_OBJECT

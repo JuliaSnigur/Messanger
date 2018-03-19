@@ -1,188 +1,108 @@
 import QtQuick 2.10
 import QtQuick.Window 2.10
-import QtQuick.Controls 2.2
-
-
-//import Presenter 1.0
-
-//import "../GuiLib/functions.js" as funcJS
+import QtQuick.Dialogs 1.3
 
 Window {
     id: window
-    visible: true
     width: 300
     height: 200
-    property alias butSignIn: butSignIn
-    property alias editLogin: editLogin
+    visible:true
     title: qsTr("Messenger")
 
 
-  /*  SignIn{
-        id: model
+    property string errorText
+
+    Connections{
+
+        target: gui
+
+        onSignalSuccessConect:
+        {
+            wConnect.visible = false
+            wAuth.visible = true
+        }
+
+        onSignalSuccessRegistr:
+        {
+             window.hide()
+             wMain.show()
+        }
+
+        onSignalSuccessAuthor:
+        {
+            wMain.show()
+            window.hide()
+        }
+
+        onSignalError:
+        {
+            messageDialog.visible=true
+        }
+
     }
-*/
 
+    Connection{
 
-    Column{
-        id: column
-        width: 300
-        height: 200
-        anchors.top: parent.top
-        anchors.topMargin: 0
+        id:wConnect
+      //  visible: true
 
+        onSignalExit:{
 
-        Text{
-            id:title
-            x:parent.height/2
-            anchors.topMargin: 20
-            text:"Messenger"
-            font.pixelSize: 24
-        }
-
-        Row{
-            id: row1
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: title.bottom
-            anchors.topMargin: 20
-
-
-            Text{
-                id: labelLog
-                width: 70
-                text:"Login"
-                font.pixelSize: 14
-                anchors.leftMargin: 5
-                anchors.rightMargin: 5
-                }
-
-            Rectangle
-            {
-                anchors.left: labelLog.right
-                anchors.leftMargin: 20
-                 border.width: 1
-
-                width:150
-                height:20
-
-                 TextInput {
-                     id: editLogin
-                     clip: true
-                     anchors.fill:parent
-                     focus: true
-                     font.pixelSize: 14
-
-                     anchors.leftMargin: 5
-                     anchors.rightMargin: 5
-
-                     wrapMode: TextEdit.Wrap
-                    // onCursorRectangleChanged: funcJS.ensureVisible(cursorPosition)
-
-                 }
-            }
-             }
-
-
-        Row{
-            id: row2
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: row1.bottom
-            anchors.topMargin: 50
-            Text{
-                id:labelPass
-                width: 70
-                text:"Password"
-                font.pixelSize: 14
-                }
-
-            Rectangle
-            {
-                anchors.left: labelPass.right
-                anchors.leftMargin: 20
-                border.width: 1
-
-                width:150
-                height:20
-                clip: false
-
-                 TextInput {
-                     id: editPassword
-                     clip: true
-                     focus: true
-                     anchors.fill:parent
-                     font.pixelSize: 14
-
-                     anchors.leftMargin: 5
-                     anchors.rightMargin: 5
-
-                     wrapMode: TextEdit.Wrap
-                   //  onCursorRectangleChanged: funcJS.ensureVisible(cursorRectangle)
-                      //onCursorRectangleChanged: model.ensureVisible(cursorRectangle)
-                 }
-             }
+           gui.connection(ip,port)
 
         }
+     }
 
-        Row{
-            id:row3
-            anchors.right: parent.right
-            anchors.rightMargin: 20
+    Authorization{
 
+        id:wAuth
+        visible: false
 
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: row2.bottom
-            anchors.topMargin: 50
+        onSignalRegistration: {
 
-
-            Button{
-                id: butSignIn
-
-                width:100
-                height: 30
-
-                font.pixelSize: 14
-                text:"Registration"
-               anchors.left: row3.left
-
-
-
-            }
-            Button{
-            id: butReg
-            width:100
-            height: 30
-            font.pixelSize: 14
-            text:"Sign in"
-            anchors.right: row3.right
-
-         //   onClicked: model.sendInfoOnServer(editLogin.text,editPassword.text)
-
-            }
+                wAuth.visible = false
+                wRegistr.visible = true
         }
 
+        onSignalSignIn: {
+
+            gui.authirization(login,password)
+        }
+    }
 
 
-//import "functions.js"
-
- Authorization{
-
-        id:windowAuthorization
-
-/*
     Registration{
-        id:windowRegistration
 
+        id:wRegistr
+        visible:false
+
+        onSignalSignIn: {
+
+           gui.registration(login,password)
+        }
+    }
+
+
+    MainWindow {
+        id: wMain
+        visible:true
 
     }
 
-*/
 
 
 
+    MessageDialog {
+        id: messageDialog
+        title: "Error"
+
+        text: gui.m_error
+        visible: false
+
+        onAccepted: {
+            messageDialog.visible = false
+        }
     }
 
 
-}
 }

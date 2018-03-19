@@ -1,8 +1,10 @@
+
 include( ../../common.pri )
 include( ../../app.pri )
 include(../../root.pri)
+include(../../lib.pri)
 
-QT       += core network
+QT       += core network qml sql
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -18,22 +20,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    client.cpp
 
 HEADERS += \
     stdafx.h \
-    stable.h
+    stable.h \
+    client.h
+
 
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
 
 
-LIBS +=  $${CLIENTLIB_LIBRARY}
-message($${CLIENTLIB_LIBRARY})
-INCLUDEPATH+= $${CLIENTLIB_INCLUDEPATH}
+LIBS +=  $${GUILIB_LIBRARY}
+INCLUDEPATH+= $${GUILIB_INCLUDEPATH}
+
+LIBS +=  $${DBLIB_LIBRARY}
+INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
+
+LIBS+=$${SECURECLIENTLIB_LIBRARY}
+INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
+
+CONFIG += ordered
+Client.depends =  SecureClientLib
 
 
-#LIBS +=  $${GUILIB_LIBRARY}
-#INCLUDEPATH+= $${GUILIB_INCLUDEPATH}
 
 
+#message("[INFO] to $${BIN_PATH}")

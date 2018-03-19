@@ -1,19 +1,13 @@
 #pragma once
 
 #include<QObject>
+#include <QSqlTableModel>
+#include <QQmlApplicationEngine>
 
-#ifdef __cplusplus
-// add C++ includes here
+#include<QList>
 
 #include <stdio.h>
 #include <tchar.h>
 
-#include <iostream>
-#include <string>
 #include<string.h>
-
-
-
-
-#endif // __cplusplus
 

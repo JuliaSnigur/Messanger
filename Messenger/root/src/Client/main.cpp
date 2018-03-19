@@ -1,29 +1,30 @@
 #include"stdafx.h"
 
-#include <QCoreApplication>
-//#include <QGuiApplication>
-//#include<QtQml/QQmlApplicationEngine>
+#include"ClientConnect.h"
 
-#include "clientlib.h"
-//#include"presenter.h"
+#include"client.h"
+
+#include"guiqml.h"
 
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication  app(argc, argv);
 
-    MyClient client();
+    srand(time(NULL));
 
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-  /*  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    QGuiApplication app(argc, argv);
-
-    qmlRegisterType<Presenter> ("Presenter", 1, 0, "Presenter");
+   QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
 
-    engine.load (QUrl (QStringLiteral ("../../src/GuiLib/Authorization.qml") ) ) ;
-*/
+    Client cl;
+
+    engine.rootContext()->setContextProperty("gui", &cl.getGui());
+
+
+    engine.load(QUrl(QStringLiteral("../../src/GuiLib/main.qml")));
+
+
     return app.exec();
 }

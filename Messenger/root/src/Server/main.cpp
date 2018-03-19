@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "MyServer.h"
-//#include "SSLServerLib.h"
+
+#include "SslServer.h"
+
 
 
 // ----------------------------------------------------------------------
@@ -8,8 +9,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    MyServer     server(27015);
-    server.show();
+    SslServer server;
+    server.start(27015);
 
     return app.exec();
 }

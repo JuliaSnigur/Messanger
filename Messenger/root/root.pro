@@ -1,55 +1,81 @@
-#QT +=   quick  gui  qml  sql
 
-CONFIG += c++11
+#win32: PYTHON_EXE=\src\Python27\python.exe
+#else:  PYTHON_EXE=\src\Python27\python
+#system(qwe.py)
 
-PRECOMPILED_HEADER = stable.h
-CONFIG -= precompile_header
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which as been marked deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+CONFIG(debug, debug|release) {
+    BUILD_FLAG = debug
+    LIB_SUFFIX = d
+} else {
+    BUILD_FLAG = release
+}
+win32{
+    CONFIG(debug, debug|release){
+        QMAKE_POST_LINK = \"$${PYTHON_EXE}\" \"$${SRC}/PreBuild.py\" \"$${SRC}\" \"$${EXTERNALS}\" \"debug\"
+    }
+    else{
+        QMAKE_POST_LINK = \"$${PYTHON_EXE}\" \"src/include/$${BUILD_FLAG}/qwe.py\" \"$${SRC}\" \"$${EXTERNALS}\"
+    }
+}
+# вариант 1
+#QMAKE_POST_LINK += $$quote(src\Python27\python.exe src/include/$${BUILD_FLAG}/qwe.py)
+# вариант 2
+QMAKE_POST_LINK += execfile('src/include/$${BUILD_FLAG}/qwe.py')
+#CONFIG  += no_link target_predeps
 
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+#TEMPLATE = aux
+#system(src\Python27\python.exe src/include/$${BUILD_FLAG}/qwe.py)
+#TARGET   =
+#system(src\Python27\python.exe src/include/$${BUILD_FLAG}/qwe.py)
 
-TEMPLATE += app
+#QMAKE_POST_LINK  += qwe.py
+#QMAKE_CLEAN     += batch_output.obj
+#CONFIG(python.exe qwe.py)
+#QMAKE_POST_LINK += system(src\Python27\python.exe(qwe.py)
+#$$QMAKE_COPY
 
-
-# Default rules for deployment.
-#qnx: target.path = /tmp/$${TARGET}/bin
-#else: unix:!android: target.path = /opt/$${TARGET}/bin
-#!isEmpty(target.path): INSTALLS += target
+#win32 {
+#    PWD_WIN = $${PWD}
+#   PWD_WIN ~= s,/,\\,g
 #
+#    QMAKE_POST_LINK += $$quote(mkdir DestFolder)
+#    QMAKE_POST_LINK += $$quote(xcopy $${PWD_WIN}\\TestData $${OUT_PWD_WIN}\\TestData /E)
+#    QMAKE_CLEAN += /s /f /q TestData && rd /s /q TestData
+#}#
+#
+#unix {
+#    QMAKE_POST_LINK += $$quote(cp -rf $${PWD}/TestData $${OUT_PWD})
+#    QMAKE_CLEAN += -r TestData
+#}
 
 DISTFILES += \
-    rootserv.pri\
     root.pri\
     common.pri\
     app.pri\
     lib.pri
 
 
-##################################
+
+
 TEMPLATE = subdirs
+CONFIG += ordered
 
-SUBDIRS += \
-    #src/DBLib\
-    #src/GuiLib\
-    src/SSLServerLib\
-    src/SSLClientLib\
-    src/ServerLib\
-    src/Server\
-    #src/ClientLib\
-    #src/Client
+SUBDIRS  = \
+    src/DBLib \
+    src/ParseDataLib \
+    #src/ServerLib \
+    #src/ClientLib \
+    src/GuiLib \
+    src/SecureClientLib \
+    src/SecureServerLib \
+    src/Client \
+    src/Server \
+    #src/Include
 
-    #src/test111 \
-    #src/testLib
+Client.depends =  SecureClientLib ParseDataLib
+Server.depends =  SecureServerLib DBLib ParseDataLib
 
-Client.depends = ClientLib
-Server.depends = ServerLib
-Server.depends = SSLServerLib
+SecureClientLib.depends=DBLib
+SecureServerLib.depends=DBLib
 
-##################################
+

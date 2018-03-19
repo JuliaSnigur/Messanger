@@ -1,0 +1,17 @@
+import shutil
+shutil.copy2('src/include/debug/Qt5Cored.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Guid.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Networkd.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Qmld.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Sqld.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Widgetsd.dll','bin/debug')
+shutil.copy2('src/include/debug/libcrypto-1_1.dll','bin/debug')
+shutil.copy2('src/include/debug/libeay32.dll','bin/debug')
+shutil.copy2('src/include/debug/libssl-1_1.dll','bin/debug')
+shutil.copy2('src/include/debug/ssleay32.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5Quickd.dll','bin/debug')
+shutil.copy2('src/include/debug/qtquickcontrols2plugind.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5QuickControls2d.dll','bin/debug')
+shutil.copy2('src/include/debug/Qt5QuickTemplates2d.dll','bin/debug')
+
+#shutil.copy2('src/include/debug/Qt5Widgetsd.dll','../../../bin/debug')

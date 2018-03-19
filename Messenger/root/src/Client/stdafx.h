@@ -3,16 +3,26 @@
 #include<QObject>
 
 #include<QTcpSocket>
-
 #include<QTcpServer>
+
+#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+
+#include <QCoreApplication>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 #include <stdio.h>
 #include <tchar.h>
+#include <dos.h>
 
 #include<iostream>
 #include<string>
-
-using namespace std;
+#include<queue>
+#include<ctime>
 
 
 #include<QObject>
@@ -23,3 +33,4 @@ using namespace std;
 
 #include<QTime>
 #include<QString>
+

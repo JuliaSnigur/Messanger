@@ -5,21 +5,21 @@
 
 #include<QTcpSocket>
 #include<QDataStream>
+#include<QFile>
+#include<QDir>
 
 #include<QTime>
 #include<QString>
-
-
-#ifdef __cplusplus
-
 
 #include <stdio.h>
 #include <tchar.h>
 
 #include<iostream>
 #include<string>
+#include<queue>
+
+#include <cstdarg>
+#include "stdarg.h"
 
 
-#include"structuser.h"
 
-#endif
