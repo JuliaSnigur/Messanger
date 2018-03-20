@@ -8,6 +8,7 @@ Window {
     height: 200
     visible:true
     title: qsTr("Messenger")
+
     property string errorText
 
     Connections{

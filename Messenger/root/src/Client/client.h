@@ -5,17 +5,17 @@
 
 class QObject;
 
-class Client: public QObject
+class MainClient: public QObject
 {
 
   Q_OBJECT
 private:
 
-    ClientConnection m_client;
+    Client::ClientConnection m_client;
     Gui::GuiQML m_gui;
 
 public:
-    Client(QObject* obj = 0);
+    MainClient(QObject* obj = 0);
 
     void startWork();
     Gui::GuiQML& getGui();

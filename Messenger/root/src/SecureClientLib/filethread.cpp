@@ -1,6 +1,6 @@
 #include "filethread.h"
 
-FileThread::FileThread(std::shared_ptr<QSslSocket> client,const QString& fileName,  QObject *parent)
+Client::FileThread::FileThread(std::shared_ptr<QSslSocket> client,const QString& fileName,  QObject *parent)
             : QThread(parent)
             , m_fileName(fileName)
             , m_file()
@@ -8,10 +8,10 @@ FileThread::FileThread(std::shared_ptr<QSslSocket> client,const QString& fileNam
 {
 }
 
-FileThread::~FileThread(){}
+Client::FileThread::~FileThread(){}
 
 
- void FileThread::run()
+ void Client::FileThread::run()
  {
      m_file.setFileName(m_fileName);
      char block[1024];

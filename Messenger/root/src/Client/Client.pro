@@ -1,7 +1,4 @@
-
 include( ../../common.pri )
-#include( ../../app.pri )
-#include(../../root.pri)
 
 QT       += core network qml sql
 

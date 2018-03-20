@@ -1,7 +1,4 @@
 include( ../../common.pri )
-#include( ../../app.pri )
-#include(../../root.pri)
-#include(../../lib.pri)
 
 QT       += core network widgets sql
 CONFIG += c++11 console

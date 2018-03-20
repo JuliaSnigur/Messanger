@@ -7,7 +7,7 @@
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
 
-ClientConnection::ClientConnection(QObject *parent)
+Client::ClientConnection::ClientConnection(QObject *parent)
   : QObject(parent)
   , m_client(nullptr)
   , m_user()
@@ -19,7 +19,7 @@ ClientConnection::ClientConnection(QObject *parent)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
 
-void ClientConnection::slotConnection(const QString& hostName,int port)
+void Client::ClientConnection::slotConnection(const QString& hostName,int port)
 {
     m_client = std::shared_ptr<QSslSocket>(new QSslSocket(this));
 
@@ -46,7 +46,7 @@ void ClientConnection::slotConnection(const QString& hostName,int port)
 
 }
 
- void ClientConnection::sslError( QList<QSslError> errors )
+ void Client::ClientConnection::sslError( QList<QSslError> errors )
  {
      QString erroStr = "";
      foreach (const QSslError &e, errors)
@@ -57,20 +57,20 @@ void ClientConnection::slotConnection(const QString& hostName,int port)
      m_client->ignoreSslErrors();
  }
 
-void ClientConnection::slotDisconnect()
+void Client::ClientConnection::slotDisconnect()
 {
     m_client->disconnectFromHost();
 }
 
 
-void ClientConnection::slotEncrypted()
+void Client::ClientConnection::slotEncrypted()
 {
     qDebug() << "Mode is encryped";
 }
 
 
 
- void  ClientConnection::slotReadyRead()
+ void  Client::ClientConnection::slotReadyRead()
  {
      int idSender = -1;
      int idFile = 0;
@@ -143,7 +143,7 @@ void ClientConnection::slotEncrypted()
     }
  }
 
- void ClientConnection::sendToServer(const QString& message)
+ void Client::ClientConnection::sendToServer(const QString& message)
  {
      if(m_client != nullptr)
      {
@@ -159,7 +159,7 @@ void ClientConnection::slotEncrypted()
 
  //////////////////////////////////////////////////////
 
- void ClientConnection::slotRegistration(const QString& login,const QString& pass)
+ void Client::ClientConnection::slotRegistration(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);
@@ -169,14 +169,14 @@ void ClientConnection::slotEncrypted()
 
  }
 
- void ClientConnection::slotGetListFriend()
+ void Client::ClientConnection::slotGetListFriend()
  {
      // get lists of clients who are online
     sendToServer(QString::number(GetListOfFriends));
  }
 
 
- void ClientConnection::slotChoiceFriend(const QString& login)
+ void Client::ClientConnection::slotChoiceFriend(const QString& login)
  {
 
      m_idFriend = m_hash.key(login);
@@ -214,7 +214,7 @@ void ClientConnection::slotEncrypted()
  }
 
 
- void ClientConnection::slotAuthorization(const QString& login,const QString& pass)
+ void Client::ClientConnection::slotAuthorization(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);
@@ -224,7 +224,7 @@ void ClientConnection::slotEncrypted()
 
 
  // format: time, message
- void ClientConnection::slotSendMessage(const QString& message)
+ void Client::ClientConnection::slotSendMessage(const QString& message)
  {
      QString mess = message;
      QString time = Data::variable(mess);
@@ -246,7 +246,7 @@ void ClientConnection::slotEncrypted()
  }
 
 
- void ClientConnection::slotSendFile(const QString& fileName)
+ void Client::ClientConnection::slotSendFile(const QString& fileName)
  {
 
      /*m_fileName = fileName;
@@ -273,7 +273,7 @@ void ClientConnection::slotEncrypted()
  }
 
 
- void ClientConnection::sendFile(const QString& filename)
+ void Client::ClientConnection::sendFile(const QString& filename)
  {
 
      QFile file(filename);
@@ -296,7 +296,7 @@ void ClientConnection::slotEncrypted()
  }
 
 
-void ClientConnection::getFile()
+void Client::ClientConnection::getFile()
 {
     int i=1;
     QFile file;

@@ -15,36 +15,38 @@
 #include "dbserverpresenter.h"
 
 
+namespace Server {
 
-class SslServer : public QTcpServer
-{
-    Q_OBJECT
+    class SslServer : public QTcpServer
+    {
+        Q_OBJECT
 
-public:
-    SslServer(QObject *parent = 0);
-    virtual ~SslServer();
+    public:
+        SslServer(QObject *parent = 0);
+        virtual ~SslServer();
 
-    void start(const int& port);
+        void start(const int& port);
 
-signals:
-    void signalStartThread();
+    signals:
+        void signalStartThread();
 
-public slots:
-     void slotSslError(const QAbstractSocket::SocketError& errors);
-     void slotFinished();
+    public slots:
+         void slotSslError(const QAbstractSocket::SocketError& errors);
+         void slotFinished();
 
-protected:
-    void incomingConnection(qintptr socketDescriptor) override final;
+    protected:
+        void incomingConnection(qintptr socketDescriptor) override final;
 
 
-private:
+    private:
 
-    std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
-    std::shared_ptr<DB::DBServerPresenter> m_db;
+        std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
+        std::shared_ptr<DB::DBServerPresenter> m_db;
 
-    int m_countThread;
-    int m_maxCountThreads;
+        int m_countThread;
+        int m_maxCountThreads;
 
-    qintptr m_socketDescriptor;
-};
+        qintptr m_socketDescriptor;
+    };
 
+}

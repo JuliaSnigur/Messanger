@@ -5,10 +5,16 @@ TEMPLATE = aux
 #system($$PYTHON qwe.py)
 
 DISTFILES += \
-    root.pri\
     common.pri\
-    app.pri\
-    lib.pri
+
+RESOURCES += \
+    secure/client.crt \
+    secure/client.key \
+    secure/sslserver.pem \
+    secure/sslserver.key
+
+
+
 
 TEMPLATE = subdirs
 CONFIG += ordered
@@ -25,14 +31,12 @@ SUBDIRS  = \
    # src/GoogleTests
 
 
-Client.depends =  SecureClientLib GuiLib
-Server.depends =  SecureServerLib DBLib
+Client.depends =  SecureClientLib GuiLib ParseDataLib
+Server.depends =  SecureServerLib DBLib ParseDataLib
 
 
 SecureClientLib.depends = DBLib ParseDataLib
 SecureServerLib.depends = DBLib ParseDataLib
 
-SecureClientLib.depends=DBLib
-SecureServerLib.depends=DBLib
 
 

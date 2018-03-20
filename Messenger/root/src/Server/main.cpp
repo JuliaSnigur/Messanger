@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    SslServer server;
+    Server::SslServer server;
     server.start(27015);
 
     return app.exec();

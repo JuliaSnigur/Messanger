@@ -3,7 +3,7 @@
 #include "mythread.h"
 #include "data.h"
 
-MyThread::MyThread(qintptr ID, std::shared_ptr<DB::DBServerPresenter> db,std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent)
+Server::MyThread::MyThread(qintptr ID, std::shared_ptr<DB::DBServerPresenter> db,std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent)
     : QThread(parent)
     , m_mutexDB()
     , m_mutexHashTab()
@@ -16,9 +16,9 @@ MyThread::MyThread(qintptr ID, std::shared_ptr<DB::DBServerPresenter> db,std::sh
     m_hash = hash;
 }
 
-MyThread::~MyThread(){}
+Server::MyThread::~MyThread(){}
 
-void MyThread::run()
+void Server::MyThread::run()
 {
     qDebug() << " Thread started";
 
@@ -55,7 +55,7 @@ void MyThread::run()
 }
 
 
-bool MyThread::sendToClient(QSslSocket* pSocket, const QString& message)
+bool Server::MyThread::sendToClient(QSslSocket* pSocket, const QString& message)
 {
     if (pSocket != nullptr)
     {
@@ -70,7 +70,7 @@ bool MyThread::sendToClient(QSslSocket* pSocket, const QString& message)
     }
 }
 
-void MyThread::slotReadyRead()
+void Server::MyThread::slotReadyRead()
 {
     QString fileName;
 
@@ -124,7 +124,7 @@ void MyThread::slotReadyRead()
 }
 
 
-void MyThread::registration(QString& req)
+void Server::MyThread::registration(QString& req)
 {
     int id = 0;
     QString log = Data::variable(req);
@@ -164,7 +164,7 @@ void MyThread::registration(QString& req)
     }
 }
 
-void MyThread::authorization(QString& req)
+void Server::MyThread::authorization(QString& req)
 {
     QString log = Data::variable(req);
     QString pass = Data::variable(req);
@@ -203,7 +203,7 @@ void MyThread::authorization(QString& req)
 }
 
 
-void MyThread::sendList()
+void Server::MyThread::sendList()
 {
     QString login;
     QHash<int,QString> hashClients;
@@ -226,7 +226,7 @@ void MyThread::sendList()
      sendToClient(m_sslClient.get(),QString::number(GetListOfFriends)+' '+Data::concatenationHash(hashClients));
 }
 
-void MyThread::message(QString& str)
+void Server::MyThread::message(QString& str)
 {
     int myID = Data::variable(str).toInt();
     int friendID = Data::variable(str).toInt();
@@ -243,7 +243,7 @@ void MyThread::message(QString& str)
 
 }
 
-void MyThread::receiveFile(const QString& fileName)
+void Server::MyThread::receiveFile(const QString& fileName)
 {
     // путь сохранения файла
     m_file.setFileName(fileName);
@@ -255,7 +255,7 @@ void MyThread::receiveFile(const QString& fileName)
     connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReceiveFile);
 }
 
-void MyThread::slotReceiveFile()
+void Server::MyThread::slotReceiveFile()
 {
     static ulong sizeReceivedData;
 
@@ -278,7 +278,7 @@ void MyThread::slotReceiveFile()
 }
 
 
-void MyThread::slotDisconnect()
+void Server::MyThread::slotDisconnect()
 {
     m_mutexHashTab.lock();
     QHash<int,QSslSocket*>::iterator iter=m_hash->begin();

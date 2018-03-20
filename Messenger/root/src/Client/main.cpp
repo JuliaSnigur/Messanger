@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    Client cl;
+    MainClient cl;
     engine.rootContext()->setContextProperty("gui", &cl.getGui());
     engine.load(QUrl(QStringLiteral("../../src/GuiLib/main.qml")));
 

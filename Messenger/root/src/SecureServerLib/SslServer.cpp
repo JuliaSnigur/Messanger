@@ -3,7 +3,7 @@
 #include "SslServer.h"
 #include "mythread.h"
 
-SslServer::SslServer(QObject *parent)
+Server::SslServer::SslServer(QObject *parent)
     : QTcpServer(parent)
     , m_db(new DB::DBServerPresenter())
     , m_hash(new QHash<int,QSslSocket*>())
@@ -14,10 +14,10 @@ SslServer::SslServer(QObject *parent)
 }
 
 
-SslServer::~SslServer()
+Server::SslServer::~SslServer()
 {}
 
-void SslServer::start(const int& port)
+void Server::SslServer::start(const int& port)
 {
     //start listening
     if (listen(QHostAddress::Any, port))
@@ -30,7 +30,7 @@ void SslServer::start(const int& port)
 }
 
 
-void SslServer::incomingConnection(qintptr socketDescriptor)
+void Server::SslServer::incomingConnection(qintptr socketDescriptor)
 {
     m_socketDescriptor=socketDescriptor;
     while(true)
@@ -57,12 +57,12 @@ void SslServer::incomingConnection(qintptr socketDescriptor)
     }
 }
 
-void SslServer::slotSslError(const QAbstractSocket::SocketError& errors)
+void Server::SslServer::slotSslError(const QAbstractSocket::SocketError& errors)
 {
       qDebug()<<errors;
 }
 
-void SslServer::slotFinished()
+void Server::SslServer::slotFinished()
 {
     --m_countThread;
 }

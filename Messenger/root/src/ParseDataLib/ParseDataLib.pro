@@ -1,6 +1,5 @@
 include( ../../common.pri )
-#include( ../../lib.pri )
-#include( ../../root.pri )
+
 
 QT       -= gui
 
