@@ -20,7 +20,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     guiqml.cpp \
-   # listmodel.cpp \
     FriendElement.cpp \
     dialogelement.cpp
 

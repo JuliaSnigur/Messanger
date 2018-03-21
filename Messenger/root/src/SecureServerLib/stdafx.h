@@ -4,10 +4,10 @@
 
 #include <QSslSocket>
 #include<QTcpServer>
+#include<QSslKey>
 
 #include<QIODevice>
 #include<QFile>
-#include<QThreadPool>
 
 #include <QtSql>
 #include <QSqlDatabase>
@@ -22,6 +22,7 @@
 #include<QMutex>
 
 #include<QPointer>
+#include<QCryptographicHash>
 
 #include <stdio.h>
 #include <tchar.h>

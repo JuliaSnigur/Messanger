@@ -22,8 +22,9 @@ SOURCES += \
     request.cpp \
     dbserverpresenter.cpp \
     dbclientpresenter.cpp \
-    dbpresenter.cpp \
-    user.cpp
+    user.cpp \
+    dbpresenterbase.cpp \
+    idbpresenter.cpp
 
 
 HEADERS += \
@@ -32,8 +33,9 @@ HEADERS += \
     request.h \
     dbserverpresenter.h \
     dbclientpresenter.h \
-    dbpresenter.h \
-    user.h
+    user.h \
+    dbpresenterbase.h \
+    idbpresenter.h
 
 unix {
     target.path = /usr/lib

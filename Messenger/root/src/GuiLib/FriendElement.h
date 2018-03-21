@@ -11,7 +11,7 @@ namespace Gui {
         Q_PROPERTY(QString login READ login WRITE setLogin NOTIFY loginChanged)
 
     public:
-        explicit FriendElement(QObject *parent = 0);
+        explicit FriendElement(QObject *parent);
 
         QString login() const;
         void setLogin(const QString& login);

@@ -12,8 +12,8 @@
 Gui::GuiQML::GuiQML(QObject* parent)
     : QObject(parent)
 {
-    qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
-    qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
+    //qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
+    //qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
 

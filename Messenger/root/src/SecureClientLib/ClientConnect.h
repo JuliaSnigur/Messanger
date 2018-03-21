@@ -6,8 +6,8 @@
 
 
 
-#include"user.h"
-#include"dbpresenter.h"
+#include "user.h"
+#include"idbpresenter.h"
 #include"dbclientpresenter.h"
 
 
@@ -18,16 +18,6 @@ namespace Client {
     class ClientConnection : public QObject
     {
         Q_OBJECT
-    private:
-        std::shared_ptr<QSslSocket> m_client;
-        DB::DBClientPresenter m_db;
-        QHash<int,QString> m_hash;
-
-        QString m_fileName;
-        User m_user;
-        int m_idFriend;
-        int m_idDialog;
-
 
     void sendToServer(const QString& message);
 
@@ -64,7 +54,19 @@ namespace Client {
         void signalSendInfo();
         void signalSendDialog(QQueue<QString> q);
 
+    private:
+        std::shared_ptr<QSslSocket> m_client;
+        DB::DBClientPresenter m_db;
+        QHash<int,QString> m_hash;
 
+        User m_user;
+        int m_idFriend;
+        int m_idDialog;
+
+        QString m_fileName;
+        QString m_clientKey;
+        QString m_certServer;
+        QString m_certClient;
 
     };
 

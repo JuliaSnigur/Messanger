@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <QThread>
 #include <QSslSocket>
 #include <QDebug>
@@ -10,50 +11,60 @@
 
 
 #include "user.h"
-#include "dbpresenter.h"
+#include "idbpresenter.h"
 #include "dbserverpresenter.h"
+
 
 
 namespace Server {
 
-    class MyThread : public QThread
-    {
-        Q_OBJECT
-    public:
-         MyThread(qintptr id, std::shared_ptr<DB::DBServerPresenter> db, std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent = 0);
-
-         virtual ~MyThread();
-
-        void run();
-        bool sendToClient(QSslSocket* m_sslClient, const QString& str);
-
-        void registration(QString& str);
-        void authorization(QString& str);
-        void sendList();
-        void message(QString& str);
-        void receiveFile(const QString& fileName);
-
-    public slots:
-        void slotReadyRead();
-        void slotDisconnect();
-        void slotReceiveFile();
 
 
-    signals:
-        void error(const QAbstractSocket::SocketError& errors);
+class MyThread : public QThread
+{
+    Q_OBJECT
+public:
+     MyThread(qintptr id,  std::shared_ptr<DB::DBServerPresenter> db,   std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent = 0);
 
 
-    private:
-        std::shared_ptr<QSslSocket> m_sslClient;
-        qintptr m_socketDescriptor;
-        QMutex m_mutexDB,m_mutexHashTab;
-        QFile m_file;
-        ulong    m_sizeReceiveFile;
+    void run();
+    bool sendToClient(QSslSocket* m_sslClient, const QString& str);
 
-        std::shared_ptr<DB::DBServerPresenter> m_db;
-        std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
+    void registration(QString& str);
+    void authorization(QString& str);
+    void sendList();
+    void message(QString& str);
+    void receiveFile(const QString& fileName);
+
+public slots:
+    void slotReadyRead();
+    void slotDisconnect();
+    void slotReceiveFile();
 
 
-    };
+signals:
+    void error(const QAbstractSocket::SocketError& errors);
+
+
+private:
+
+    QFile m_file;
+
+    ulong m_sizeReceiveFile;
+    qintptr m_socketDescriptor;
+
+    QMutex m_mutexDB;
+    QMutex m_mutexHashTab;
+
+    std::shared_ptr<QSslSocket> m_sslClient;
+    std::shared_ptr<DB::DBServerPresenter> m_db;
+    std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
+
+    QString m_serverKey;
+    QString m_certServer;
+    QString m_certClient;
+
+
+};
 
 }

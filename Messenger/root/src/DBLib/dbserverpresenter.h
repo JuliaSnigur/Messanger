@@ -1,5 +1,7 @@
 #pragma once
 
+#include<QQueue>
+
 namespace DB {
 
     class DBServerPresenter: public DBPresenter
@@ -14,6 +16,7 @@ namespace DB {
         User* searchUser(const QString& login);
         int searchID(const QString& login);
         QString searchLogin(const int&);
+        QHash<int, QString> getListOfUser();
 
     protected:
         virtual void createTables();

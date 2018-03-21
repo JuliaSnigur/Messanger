@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <QTcpServer>
 #include <QString>
 #include <QSsl>
@@ -8,45 +9,37 @@
 #include<QSslSocket>
 #include<QPointer>
 
-
-
 #include "user.h"
-#include "dbpresenter.h"
+#include "idbpresenter.h"
 #include "dbserverpresenter.h"
+
+#include "mythread.h"
 
 
 namespace Server {
 
-    class SslServer : public QTcpServer
-    {
-        Q_OBJECT
-
-    public:
-        SslServer(QObject *parent = 0);
-        virtual ~SslServer();
-
-        void start(const int& port);
-
-    signals:
-        void signalStartThread();
-
-    public slots:
-         void slotSslError(const QAbstractSocket::SocketError& errors);
-         void slotFinished();
-
-    protected:
-        void incomingConnection(qintptr socketDescriptor) override final;
 
 
-    private:
+class SslServer : public QTcpServer
+{
+    Q_OBJECT
 
-        std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
-        std::shared_ptr<DB::DBServerPresenter> m_db;
+public:
+    SslServer(QObject *parent = 0);
 
-        int m_countThread;
-        int m_maxCountThreads;
+    void start(const int& port);
 
-        qintptr m_socketDescriptor;
-    };
+public slots:
+     void slotSslError(const QAbstractSocket::SocketError& errors);
+
+protected:
+    void incomingConnection(qintptr socketDescriptor) override final;
+
+private:
+     std::shared_ptr<QHash<int, QSslSocket*>> m_hash;
+     std::shared_ptr<DB::DBServerPresenter> m_db;
+
+     QPointer<MyThread> thread;
+};
 
 }

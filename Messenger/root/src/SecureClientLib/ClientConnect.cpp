@@ -4,7 +4,7 @@
 #include "data.h"
 
 #include "user.h"
-#include "dbpresenter.h"
+#include "idbpresenter.h"
 #include "dbclientpresenter.h"
 
 Client::ClientConnection::ClientConnection(QObject *parent)
@@ -17,6 +17,77 @@ Client::ClientConnection::ClientConnection(QObject *parent)
   , m_fileName("")
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
+     m_clientKey = "-----BEGIN RSA PRIVATE KEY-----"
+             "MIIEpQIBAAKCAQEA4LkPwh5YJDpEJjwGoszq1rTKkULBT1BVJng5hHw0W9blAhfg"
+             "HtMwyPVN1eLwaXuODCOlKDGmlLy6/0QMn6o5l1emmRQRRBRGpweJ5aNrlE5p3nCx"
+             "CmNyK4yCSdzQjJPnCyioCMtXISoJMSDMFRGnVOhpqpNUPtsamdFS5Tbbup/7BeDa"
+             "V7ImKyMqoOW113MZJj5APXR78KBjp6MO6Y/CMoMCI4Cug2j1sMcoarOsn4sJVfHs"
+             "YSKJJ6qr9DJRzixpXo40gm6hEzrcazfls+ck9uLd67LgUlGwA+bFdgTybe8eGtGO"
+             "1ZjBQN73MEkUCif/IKCbrJd/A8W1QfMYjHKkLwIDAQABAoIBAQDUrVBEnwM8BgjJ"
+             "RrXhDZ6TZLbxkwPwVE7CAbYttH65DD/gI0hw496f0cjAS+7LZauhwXpk99h3m8Y+"
+             "H+Dymt+2Y7W/2kYc8DONkIzpUChYS33Wj0B+XG+I14nW7axR3wgif2/IIulq8aWR"
+             "YUDED9kVen/Gd3ibpDEgsgKJ+8kobMltw2ogbMEXw33HQ9RVrQFVy2LA706GNXMy"
+             "mjbWwWG+cx779alezNGmTYQck3EW5sge7BfpgKYYuAoCBveJGBM3d/Tg19NkhYkG"
+             "lCKaI5PlWvy468v0jOHwndFpP0n4AqKtKOJEF6mISu2OMtK8KK22uvhed61hg27W"
+             "RKSBpV1BAoGBAPqgpTOd0MJUaWnd1KhX3VrTxjt5iQVAsZ2HwejBuSBH2OP1zhxS"
+             "p+DW5ZZUmYKmfKo8vc2p3Gqr1bcTVxsLapYs+3HAlGzxYAPjKYiEZdap2Pt1WAuc"
+             "6bp8zUYHUahaX3Q3gNYzI4/X+L9s/2PkjC0q+HeuzhRK92WdgVhE4t/zAoGBAOWK"
+             "Qsiv8jlCDZEJlu6Ni/DUlD99N3GUWFTVoR5LANROGV7/4V7kjYDP2L6WhExWI3mW"
+             "7KM7pYwJZOCQFi4kdp8wmkVx7QHb0RUKCFEKoT5qKpktDKdWowEP1ZF/eKqg1SAh"
+             "rKZastEw8iWQgJh55K+4iPDfC6NYay9oiFukqzXVAoGBAKE4ocy4Ykf/4OeXKWs5"
+             "Sk1ZGZW8sqXMXfVGFTjTFXFshlruDi4uBYwe8QVpWm6vBlbESBx6fi2oaAwixs/A"
+             "4knEmeMszM3f37HgeSE2egRCsi/f5kliIQAztCCuKJsxt2GdKqWfs+qeNYd+aDMs"
+             "G/gaQkdLDYoER2z4ivHrLj59AoGBAKcB4LNpqKBWWc6UHpe0rwPrd212Kpfd6iLX"
+             "SCHlSlYt+LGxFQXY3sfA8h9BHkL4TVlTIRtm830e/KGS1ECAUTpjv2sVh+7ZQ5e+"
+             "M+zbAhSKZDIMn+9Eztaf8bCqAV6MJGT7e0WSKhagOR5xs868qVHcvu4aKrqPQ3U7"
+             "5jJfbh59AoGAA3FhwpIFJpR8ZCwXkR+3MFghE1Sxuf5RoZT0IFk4/IB+Jkftd8xs"
+             "NlHb1ZNBnmCj9ZH3qCn/PeD/jpnP56p6FuugiyosL/4EQMzWm4aZdHdEqvg5FtMl"
+             "U/Xiz7aDDpst412OcWSHWEL4zUYqWEEbKY7GBlNGrOe1ysI1KhCaxX8="
+             "-----END RSA PRIVATE KEY-----";
+
+     m_certServer = "-----BEGIN CERTIFICATE-----"
+             "MIID2zCCAsOgAwIBAgIJALw0xDUVwv68MA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD"
+             "VQQGEwJGUjEPMA0GA1UECAwGRnJhbmNlMQ8wDQYDVQQKDAZHdWlUZUsxHTAbBgNV"
+             "BAsMFFF0LVNzbFNlcnZlci1FeGFtcGxlMRIwEAYDVQQDDAkxMjcuMC4wLjExHzAd"
+             "BgkqhkiG9w0BCQEWEGFkbWluQGd1aXRlay5uZXQwHhcNMTQwODE2MTY1MjU1WhcN"
+             "MjQwODEzMTY1MjU1WjCBgzELMAkGA1UEBhMCRlIxDzANBgNVBAgMBkZyYW5jZTEP"
+             "MA0GA1UECgwGR3VpVGVLMR0wGwYDVQQLDBRRdC1Tc2xTZXJ2ZXItRXhhbXBsZTES"
+             "MBAGA1UEAwwJMTI3LjAuMC4xMR8wHQYJKoZIhvcNAQkBFhBhZG1pbkBndWl0ZWsu"
+             "bmV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtZ1MV1GwNcL+c6zz"
+             "8n/kII9sZZGUPXo3zj20wDd9SK51vWDhgXK9QTsKF7FSZIV4C2AMVb7za5GEn/c5"
+             "ZWOvEavUR5AovHgFau2E/J3UOg/ys/fa4vWeOQWwCZvkjV3ikpYjFzS7lXoMxqj2"
+             "/GkPV+x0zqBJdElJ7dVnI5FQWurVDofYrY/SDzC7x5DTpdeNf9nwxUGL7l7Zqzum"
+             "cVQpxlOHHjXwVXcHOyt0ifrkFq6Ghmhz6hok+pxBnQ8Np+91ZqD9ePFh+aDeONjx"
+             "776srmVAZEXq7737yxjwIbOnvDKhAe/isQ6uLO93XbLfMSqCQB8e6FotZW2vcDWH"
+             "HCF7cQIDAQABo1AwTjAdBgNVHQ4EFgQU1UpcmMVlTsRSXkjPOvxdSdJ6P8EwHwYD"
+             "VR0jBBgwFoAU1UpcmMVlTsRSXkjPOvxdSdJ6P8EwDAYDVR0TBAUwAwEB/zANBgkq"
+             "hkiG9w0BAQUFAAOCAQEABXl/seUVFqrVIo8o4aIC19SnQVgEwKaRLetxBVyFY1Jg"
+             "GOadUayRf4mK3lAQFKghGQYNeI33SWM8lNnAILJiJTGRKrodXQuEFbjFD4CF/vTg"
+             "WtjS7BQR3KscLjlDwgK5tw+jvYmCVcBJwV6uM+NyeZOdz8QEi7h7vD9dqpp53xB7"
+             "PNyHHBLEyUGCTiKV/TbeoQFrdQWQ+LXczNaBUX2imtPDixikaqr4mHRX7YTpH2WB"
+             "VQNvID9efhMtDnTotI3puNwqRLXK8LEB6mbj27lPik1Mx7r81zvDAkkd+D/9oNF2"
+             "7BppFrbxPgUCg6RV2MXinG1Njt6z25dV2AQUZro9vA=="
+             "-----END CERTIFICATE-----";
+
+     m_certClient = "-----BEGIN CERTIFICATE REQUEST-----"
+             "MIICojCCAYoCAQAwXTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx"
+             "ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEWMBQGA1UEAwwNMTky"
+             "LjE2OC4wLjEwMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOC5D8Ie"
+             "WCQ6RCY8BqLM6ta0ypFCwU9QVSZ4OYR8NFvW5QIX4B7TMMj1TdXi8Gl7jgwjpSgx"
+             "ppS8uv9EDJ+qOZdXppkUEUQURqcHieWja5ROad5wsQpjciuMgknc0IyT5wsoqAjL"
+             "VyEqCTEgzBURp1ToaaqTVD7bGpnRUuU227qf+wXg2leyJisjKqDltddzGSY+QD10"
+             "e/CgY6ejDumPwjKDAiOAroNo9bDHKGqzrJ+LCVXx7GEiiSeqq/QyUc4saV6ONIJu"
+             "oRM63Gs35bPnJPbi3euy4FJRsAPmxXYE8m3vHhrRjtWYwUDe9zBJFAon/yCgm6yX"
+             "fwPFtUHzGIxypC8CAwEAAaAAMA0GCSqGSIb3DQEBCwUAA4IBAQCy1cc10LUFFc9o"
+             "Py3wr2b+nT5GWVVZrYnikqoF7gbijzj7lxqNbnGjEvyZwdpwPV7g7I9ipBVvBHxu"
+             "fzdqLdFNA455l43upEAWXjGU0muXsyFT+iypTm2Qy7eN/GUfthDSQsJiKPzrIc6h"
+             "y3jZp/geRzWkoimstUxW2tJZDC0sdQPNKRnddDlsE5xqCEdIX1iyBOlv2a6gB+MV"
+             "Q7Cfh/pZftID562OGbmnRRdoXCkvCtmqqiIZomm6jNpDiZ7JLBsx5Of2b97jEtRp"
+             "+Xw+3l71J0cMXBsgYKPV/TdHWanS6TSjYbPwQ+m+3K4+bKnmHtibO5XtzppCBkFA"
+             "gJ0gRAns"
+             "-----END CERTIFICATE REQUEST-----";
+
 }
 
 void Client::ClientConnection::slotConnection(const QString& hostName,int port)
@@ -32,9 +103,14 @@ void Client::ClientConnection::slotConnection(const QString& hostName,int port)
 
     qDebug() << hostName + ' ' + QString::number(port);
 
-    m_client->setLocalCertificate("../../secure/client.crt");
-    m_client->setPrivateKey("../../secure/client.key",QSsl::Rsa,QSsl::Pem,"2048");
-    m_client->addCaCertificates("../../secure/sslserver.pem");
+    QSslCertificate certSever(m_certServer.toLocal8Bit());
+    QSslCertificate certClient(m_certClient.toLatin1());
+    QSslKey key(m_clientKey.toLatin1() ,QSsl::Rsa, QSsl::Pem);
+
+
+    m_client->setLocalCertificate(certClient);
+    m_client->setPrivateKey(key);
+    m_client->addCaCertificate(certSever);
     m_client->connectToHostEncrypted(hostName, port);
     m_client->setProtocol(QSsl::TlsV1_2);
 

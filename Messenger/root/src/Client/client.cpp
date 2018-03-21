@@ -10,8 +10,8 @@
 
 MainClient::MainClient(QObject* obj)
     : QObject(obj)
-     , m_gui()
-     , m_client()
+     , m_gui(this)
+     , m_client(this)
 {
 
     connect(&m_gui, &Gui::GuiQML::signalConnection, &m_client, &Client::ClientConnection::slotConnection);

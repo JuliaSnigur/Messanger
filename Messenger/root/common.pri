@@ -16,14 +16,9 @@ CONFIG(debug, debug|release) {
 }
 
 LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/$${BUILD_FLAG}/
-
-
-
 INC_PATH = $${PROJECT_ROOT_PATH}/src
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/
-
-OPENSSL_PATH=$${PROJECT_ROOT_PATH}/../openssl/$${BUILD_FLAG}/
 
 
 #Ниже стоит блок, который задает пути сборки для файлов ресурсов rcc,
@@ -35,12 +30,9 @@ UI_DIR = $${BUILD_PATH}/ui/
 MOC_DIR = $${BUILD_PATH}/moc/
 OBJECTS_DIR = $${BUILD_PATH}/obj/
 
-
 LIBS += -L$${LIBS_PATH}/
-LIBS+=-L$${OPENSSL_PATH}/
 
 INCLUDEPATH += $${INC_PATH}/
-
 INCLUDEPATH += $${IMPORT_PATH}/
 
 linux-g++: QMAKE_CXXFLAGS += -std=c++11
@@ -54,6 +46,10 @@ win32: DLLDESTDIR = $${BIN_PATH}/
 #VERSION = 1.0.0
 QMAKE_TARGET_COPYRIGHT = (c) My Company Name
 ###################################################
+
+
+###################################################
+
 CLIENTLIB_INCLUDEPATH= $${INC_PATH}/ClientLib
 CLIENTLIB_LIBRARY = -lClientLib$${LIB_SUFFIX}
 
@@ -66,10 +62,8 @@ DBLIB_LIBRARY = -lDBLib$${LIB_SUFFIX}
 SERVERLIB_INCLUDEPATH= $${INC_PATH}/ServerLib
 SERVERLIB_LIBRARY = -lServerLib$${LIB_SUFFIX}
 
-
 PARSEDATALIB_INCLUDEPATH= $${INC_PATH}/ParseDataLib
 PARSEDATALIB_LIBRARY = -lParseDataLib$${LIB_SUFFIX}
-
 
 SECURESERVERLIB_LIBRARY=-lSecureServerLib$${LIB_SUFFIX}
 SECURESERVERLIB_INCLUDEPATH=$${INC_PATH}/SecureServerLib
@@ -78,9 +72,12 @@ SECURESERVERLIB_INCLUDEPATH=$${INC_PATH}/SecureServerLib
 SECURECLIENTLIB_LIBRARY=-lSecureClientLib$${LIB_SUFFIX}
 SECURECLIENTLIB_INCLUDEPATH=$${INC_PATH}/SecureClientLib
 
-GOOGLETESTSLIB_LIBRARY=-lGoogleTestsLib$${LIB_SUFFIX}
-GOOGLETESTSLIB_INCLUDEPATH=$${INC_PATH}/GoogleTestsLib
+GOOGLETESTSLIB_LIBRARY=-lGTLib$${LIB_SUFFIX}
+GOOGLETESTSLIB_INCLUDEPATH=$${INC_PATH}/GTLib
 
+
+#CONFIG += precompile_header
+#PRECOMPILED_HEADER = stable.h
 
 
 

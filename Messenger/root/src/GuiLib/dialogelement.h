@@ -18,7 +18,7 @@ namespace Gui {
         Q_PROPERTY(bool flag READ flag WRITE setFlag NOTIFY flagChanged)
 
     public:
-        explicit DialogElement(QObject *parent = 0);
+        explicit DialogElement(QObject *parent );
 
 
         QString time() const;

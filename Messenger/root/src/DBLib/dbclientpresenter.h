@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QVariantList>
 
 namespace DB {
 
@@ -28,7 +29,9 @@ namespace DB {
          virtual void createTables();
 
     private:
-        QString m_tabDialogs,m_tabMessages,m_tabFiles;
+        QString m_tabDialogs;
+        QString m_tabMessages;
+        QString m_tabFiles;
 
 
     };

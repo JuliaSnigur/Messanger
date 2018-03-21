@@ -26,4 +26,4 @@ INCLUDEPATH+= $${SECURESERVERLIB_INCLUDEPATH}
 
 
 CONFIG += ordered
-Server.depends = SecureServerLib
+Server.depends = SecureServerLib DBLib

@@ -13,9 +13,6 @@ RESOURCES += \
     secure/sslserver.pem \
     secure/sslserver.key
 
-
-
-
 TEMPLATE = subdirs
 CONFIG += ordered
 
@@ -27,13 +24,12 @@ SUBDIRS  = \
     src/SecureServerLib \
     src/Client \
     src/Server \
-   # src/GoogleTestsLib \
-   # src/GoogleTests
+    src/GTLib \
+    src/GTests
 
 
 Client.depends =  SecureClientLib GuiLib ParseDataLib
 Server.depends =  SecureServerLib DBLib ParseDataLib
-
 
 SecureClientLib.depends = DBLib ParseDataLib
 SecureServerLib.depends = DBLib ParseDataLib

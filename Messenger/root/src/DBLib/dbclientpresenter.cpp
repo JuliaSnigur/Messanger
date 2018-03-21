@@ -2,7 +2,7 @@
 
 #include"request.h"
 #include"user.h"
-#include"dbpresenter.h"
+#include"idbpresenter.h"
 #include "dbclientpresenter.h"
 
 DB::DBClientPresenter::DBClientPresenter()
@@ -52,8 +52,7 @@ DB::DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresente
   void DB::DBClientPresenter::createTables()
   {
       //table dialogs
-
-      QString params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idFriend INTEGER ";
+      QString params = "id INTEGER PRIMARY KEY AUTOINCREMENT,idFriend  INTEGER UNIQUE";
       QString str = Request::createTable(m_tabDialogs, params);
 
       if(!m_query->exec(str))
@@ -142,7 +141,7 @@ DB::DBClientPresenter::DBClientPresenter(const QString& nameDB):DBClientPresente
 
    int DB::DBClientPresenter::searchIdDialog(const int& id)
    {
-       int idDialog = -1;
+       int idDialog = 0;
 
        QString params = "id";
        QString values = "idFriend = " + QString::number(id);

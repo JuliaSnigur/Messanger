@@ -2,7 +2,7 @@
 
 #include"request.h"
 #include"user.h"
-#include"dbpresenter.h"
+#include"idbpresenter.h"
 
 #include "dbserverpresenter.h"
 
@@ -126,3 +126,18 @@ DB::DBServerPresenter::~DBServerPresenter(){}
  }
 
 
+QHash<int, QString> DB::DBServerPresenter::getListOfUser()
+{
+    QHash<int, QString> hash;
+    QString params = '*';
+    QString values = '*';
+    QString str = Request::searchData(m_tabUsers, params, values);
+
+      m_query->exec(str);
+
+      while(m_query->next())
+      {
+         hash.insert(m_query->value(0).toInt(),m_query->value(1).toString());
+      }
+      return hash;
+}
