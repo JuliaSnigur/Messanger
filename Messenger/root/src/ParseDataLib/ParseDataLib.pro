@@ -30,5 +30,12 @@ unix {
     INSTALLS += target
 }
 
+LIBS +=  $${DBLIB_LIBRARY}
+INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
+
+
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
+
+
+

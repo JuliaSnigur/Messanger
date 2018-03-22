@@ -26,17 +26,10 @@ void  Server::SslServer::start(const int& port)
 
 void  Server::SslServer::incomingConnection(qintptr socketDescriptor)
 {
-            // Every new connection will be run in a newly created thread
-            thread = new MyThread(socketDescriptor, m_db, m_hash, this);
-
-            connect(thread,&MyThread::error,this,&SslServer::slotSslError);
-
-            // once a thread is not needed, it will be beleted later
-            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-            connect(thread, &QThread::destroyed, this, &QThread::destroyed);
-
-
-            thread->start();
+    thread = new MyThread(socketDescriptor, m_db, m_hash, this);
+    connect(thread,&MyThread::error,this,&SslServer::slotSslError);
+    //connect(thread, &QThread::destroyed, this, &QThread::destroyed);
+    thread->start();
 }
 
 void  Server::SslServer::slotSslError(const QAbstractSocket::SocketError& errors)

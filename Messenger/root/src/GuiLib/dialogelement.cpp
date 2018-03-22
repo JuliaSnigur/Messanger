@@ -9,6 +9,14 @@ Gui::DialogElement::DialogElement(QObject* parent)
     , m_idFile(0)
 {}
 
+Gui::DialogElement::DialogElement()
+    : m_message("")
+    , m_stateMess("")
+    , m_flag()
+    , m_time("")
+    , m_idFile(0)
+{}
+
 
   int Gui::DialogElement::idFile() const
   {

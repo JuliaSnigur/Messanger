@@ -21,3 +21,9 @@ QString Request::insertData(const QString& name_tb, const QString& params,const 
  {
       return "UPDATE  "+nameTable+" SET "+params+" WHERE "+values+";";
  }
+
+ QString Request::searchAllData(const QString& nameTable, const QString& params)
+ {
+      return "SELECT "+params+" FROM "+nameTable;
+ }
+

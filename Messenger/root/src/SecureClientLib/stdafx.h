@@ -9,6 +9,7 @@
 #include<QFile>
 #include<QSslConfiguration>
 #include<QSslCertificate>
+#include<QSslKey>
 
 #include <QString>
 #include <QThread>

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "data.h"
+#include "user.h"
 
 /*
 
@@ -70,4 +71,56 @@ QHash<int,QString> Data::separateHash(QString& str)
     return hash;
 }
 
+*/
+
+/*
+
+QString Data::concatinationVecUser(const QVector<User>& vec)
+{
+    QString str;
+
+    for(int i = 0; i<vec.size();i++)
+    {
+         str += QString::number(vec[i].getID()) + ' ' + vec[i].getLogin() + ' ' + ' ' + vec[i].getStatus();
+    }
+
+    return str;
+}
+
+
+QVector<User> Data::separateVecUser(const QString &res)
+{
+    QString str = res;
+    QVector<User> vec;
+    QString resID;
+    QString resLogin;
+    QString resStatus;
+    int i = 0;
+
+      for(; i<str.size(); i++)
+      {
+          resID="";
+          while(i<str.size() && str[i] != ' ')
+          {
+              resID += str[i];
+              ++i;
+          }
+          ++i;
+          resLogin="";
+          while(i<str.size() && str[i] != ' ')
+          {
+              resLogin += str[i];
+              ++i;
+          }
+          ++i;
+          resStatus="";
+          while(i<str.size() && str[i] != ' ')
+          {
+              resStatus += str[i];
+              ++i;
+          }
+          vec.push_back(User(resID.toInt(), resLogin, resStatus.toInt()));
+      }
+      return vec;
+}
 */

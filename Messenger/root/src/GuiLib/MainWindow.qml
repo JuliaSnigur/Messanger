@@ -59,15 +59,25 @@ Window {
 
                     delegate: ItemDelegate
                     {
-                        text: modelData.login
+                        id: del
+                        readonly property bool flag: modelData.status === true
+
+                        text: modelData.login+' '+model.status
                         width: listView.width - listView.leftMargin - listView.rightMargin
                         height: 30
 
+
+
                          onClicked:
                          {
-                             gui.choiceFriend(modelData.login)
-                             inConversationWith = modelData.login
-                             recDialog.visible=true
+                             if(modelData.status === true)
+                             {
+                                 gui.choiceFriend(modelData.id)
+                                 inConversationWith = modelData.login
+                                 recDialog.visible = true
+                             }
+                             else
+                                 recDialog.visible = false
                          }
                     }
 
@@ -231,7 +241,7 @@ ColumnLayout {
                                   font.pointSize: 12
                                   onClicked:
                                   {
-                                      fileDialog.visible = true
+                                    //  fileDialog.visible = true
                                   }
 
                               }

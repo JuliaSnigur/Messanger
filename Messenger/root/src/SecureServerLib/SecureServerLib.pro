@@ -34,6 +34,7 @@ INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
 
+
 CONFIG += ordered
 
 SecureServerLib.depends = DBLib ParseDataLib

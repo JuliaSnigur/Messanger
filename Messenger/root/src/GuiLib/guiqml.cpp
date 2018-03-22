@@ -12,8 +12,8 @@
 Gui::GuiQML::GuiQML(QObject* parent)
     : QObject(parent)
 {
-    //qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
-    //qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
+    qmlRegisterType<FriendElement>("Element", 1, 0, "Element");
+    qmlRegisterType<DialogElement>("Element", 1, 0, "Element");
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 }
 
@@ -85,6 +85,11 @@ void Gui::GuiQML::setIP(const QString& str)
 
 void Gui::GuiQML::connection(const QString& ip, const QString& port)
 {
+    if(ip == "" || port == "")
+    {
+        emit signalError("Wrong data");
+        return;
+    }
 
     emit signalConnection(ip,port.toInt());
 }
@@ -92,6 +97,11 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
  void Gui::GuiQML::registration(const QString& login, const QString& pass)
  {
+    if(login == "" || pass == "")
+    {
+        emit signalError("Wrong data");
+        return;
+    }
     m_login=login;
     emit loginChange(login);
     emit signalRegistration(login,pass);
@@ -99,6 +109,11 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
  void Gui::GuiQML::authirization(const QString& login, const QString& pass)
  {
+    if(login == "" || pass == "")
+    {
+        emit signalError("Wrong data");
+        return;
+    }
     m_login=login;
     emit loginChange(login);
     emit signalAuthorisation(login,pass);
@@ -109,12 +124,11 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
      emit  signalGetListFriends();
  }
 
- void Gui::GuiQML::choiceFriend(const QString& login)
+ void Gui::GuiQML::choiceFriend(const int& id)
  {
      m_dataDialog.clear();
      emit dataDialogChanged();
-
-     emit signalChoiceFriend(login);
+     emit signalChoiceFriend(id);
  }
 
  void Gui::GuiQML::sendMessage(const QString& mess)
@@ -124,13 +138,11 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
      emit signalSendMessage(time + ' ' + mess);
 
-     DialogElement* element = new DialogElement(this);
-
-     element->setProperty("flag", Send);
+     DialogElement* element = new DialogElement();
+     element->setProperty("flag", Data::Send);
      element->setProperty("time", time);
      element->setProperty("message", mess);
      element->setProperty("idFile", 0);
-
      m_dataDialog << element;
      emit dataDialogChanged();
  }
@@ -139,74 +151,46 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
 void Gui::GuiQML::slotRespond( QString res)
 {
-     QHash<int,QString> hash;
-     QHash<int,QString>::const_iterator iter;
-
+    QVector<User*> vec;
     switch((Data::variable(res)).toInt())
     {
-    case Error:
-
+    case Data::Error:
         emit signalError(res);
-
       break;
-
-    case Connection:
+    case  Data::Connection:
         emit signalSuccessConect();
         break;
-
-    case Registration:
+    case  Data::Registration:
         emit signalSuccessRegistr(m_login);
         break;
-
-    case Authorization:
+    case  Data::Authorization:
         emit signalSuccessAuthor(m_login);
         break;
-
-    case GetListOfFriends:
-
+    case  Data::GetListOfFriends:
         m_dataClients.clear();
         emit dataClientsChanged();
-
         qDebug() << res;
-
-        hash = Data::separateHash(res);
-
-        iter = hash.begin();
-
-         while(iter != hash.end())
-         {
-             FriendElement* element = new FriendElement(this);
-
-             qDebug() << iter.key() << ' ' << iter.value();
-
-             element->setProperty("login", iter.value());
-
-             m_dataClients << element;
-             emit dataClientsChanged();
-
-
-             ++iter;
-         }
-
+        vec =Data::separateVecUser(res);
+        for(int i = 0; i<vec.size(); i++)
+        {
+            FriendElement* element = new FriendElement();
+            qDebug() << vec[i]->getID() << ' ' << vec[i]->getLogin() << ' ' << vec[i]->getStatus();
+            element->setProperty("id", vec[i]->getID());
+            element->setProperty("login", vec[i]->getLogin());
+            element->setProperty("status", vec[i]->getStatus());
+            m_dataClients << element;
+            emit dataClientsChanged();
+        }
         break;
+    case  Data::Message:
 
-    case GetFriend:
-        // отображение диалога
-        break;
-
-    case Message:
-
-        DialogElement* element = new DialogElement(this);
-
+        DialogElement* element = new DialogElement();
         // str =  time, messange
-
-        element->setProperty("flag", Get);
+        element->setProperty("flag",  Data::Get);
         element->setProperty("time", Data::variable(res));
         element->setProperty("message", res);
-
         m_dataDialog << element;
         emit dataDialogChanged();
-
         break;
     }
 
@@ -215,26 +199,18 @@ void Gui::GuiQML::slotRespond( QString res)
 
 void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 {
-
     m_dataDialog.clear();
     emit dataDialogChanged();
-
-
     QString str;
-
     for(int i = 0; i<q.size(); i++)
      {
-         DialogElement* element = new DialogElement(this);
-
+         DialogElement* element = new DialogElement();
          str = q[i];
-
          // str = flag, time, messange, idFile
          element->setProperty("flag", (Data::variable(str)).toInt());
          element->setProperty("time", Data::variable(str));
          element->setProperty("message", str);
-
          m_dataDialog << element;
-
          emit dataDialogChanged();
      }
 }
@@ -242,11 +218,7 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 
 void Gui::GuiQML::sendFile(const QUrl& mess)
 {
-
 }
-
-
-////////////////////////////////
 
 
 QQmlListProperty<Gui::FriendElement> Gui::GuiQML::dataClients()

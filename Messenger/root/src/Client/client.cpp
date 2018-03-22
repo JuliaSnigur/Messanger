@@ -9,7 +9,7 @@
 
 
 MainClient::MainClient(QObject* obj)
-    : QObject(obj)
+     : QObject(obj)
      , m_gui(this)
      , m_client(this)
 {

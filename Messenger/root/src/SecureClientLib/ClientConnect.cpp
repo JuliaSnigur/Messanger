@@ -4,7 +4,7 @@
 #include "data.h"
 
 #include "user.h"
-#include "idbpresenter.h"
+#include "dbpresenter.h"
 #include "dbclientpresenter.h"
 
 Client::ClientConnection::ClientConnection(QObject *parent)
@@ -18,7 +18,7 @@ Client::ClientConnection::ClientConnection(QObject *parent)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
-     m_clientKey = "-----BEGIN RSA PRIVATE KEY-----"
+    QString str = "-----BEGIN RSA PRIVATE KEY-----"
              "MIIEpQIBAAKCAQEA4LkPwh5YJDpEJjwGoszq1rTKkULBT1BVJng5hHw0W9blAhfg"
              "HtMwyPVN1eLwaXuODCOlKDGmlLy6/0QMn6o5l1emmRQRRBRGpweJ5aNrlE5p3nCx"
              "CmNyK4yCSdzQjJPnCyioCMtXISoJMSDMFRGnVOhpqpNUPtsamdFS5Tbbup/7BeDa"
@@ -46,7 +46,9 @@ Client::ClientConnection::ClientConnection(QObject *parent)
              "U/Xiz7aDDpst412OcWSHWEL4zUYqWEEbKY7GBlNGrOe1ysI1KhCaxX8="
              "-----END RSA PRIVATE KEY-----";
 
-     m_certServer = "-----BEGIN CERTIFICATE-----"
+   // m_key.QSslKey::(str,QSsl::Rsa,QSsl::Pem,"2048");
+
+     str = "-----BEGIN CERTIFICATE-----"
              "MIID2zCCAsOgAwIBAgIJALw0xDUVwv68MA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD"
              "VQQGEwJGUjEPMA0GA1UECAwGRnJhbmNlMQ8wDQYDVQQKDAZHdWlUZUsxHTAbBgNV"
              "BAsMFFF0LVNzbFNlcnZlci1FeGFtcGxlMRIwEAYDVQQDDAkxMjcuMC4wLjExHzAd"
@@ -70,7 +72,7 @@ Client::ClientConnection::ClientConnection(QObject *parent)
              "7BppFrbxPgUCg6RV2MXinG1Njt6z25dV2AQUZro9vA=="
              "-----END CERTIFICATE-----";
 
-     m_certClient = "-----BEGIN CERTIFICATE REQUEST-----"
+     str = "-----BEGIN CERTIFICATE REQUEST-----"
              "MIICojCCAYoCAQAwXTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx"
              "ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEWMBQGA1UEAwwNMTky"
              "LjE2OC4wLjEwMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOC5D8Ie"
@@ -87,10 +89,11 @@ Client::ClientConnection::ClientConnection(QObject *parent)
              "+Xw+3l71J0cMXBsgYKPV/TdHWanS6TSjYbPwQ+m+3K4+bKnmHtibO5XtzppCBkFA"
              "gJ0gRAns"
              "-----END CERTIFICATE REQUEST-----";
-
 }
 
-void Client::ClientConnection::slotConnection(const QString& hostName,int port)
+Client::ClientConnection::~ClientConnection(){}
+
+void Client::ClientConnection::slotConnection(const QString& hostName,const int& port)
 {
     m_client = std::shared_ptr<QSslSocket>(new QSslSocket(this));
 
@@ -100,29 +103,34 @@ void Client::ClientConnection::slotConnection(const QString& hostName,int port)
         emit signalSendRespond( "Don't connect to server" );
         return;
     }
-
     qDebug() << hostName + ' ' + QString::number(port);
 
+/*
     QSslCertificate certSever(m_certServer.toLocal8Bit());
     QSslCertificate certClient(m_certClient.toLatin1());
     QSslKey key(m_clientKey.toLatin1() ,QSsl::Rsa, QSsl::Pem);
-
-
     m_client->setLocalCertificate(certClient);
     m_client->setPrivateKey(key);
-    m_client->addCaCertificate(certSever);
-    m_client->connectToHostEncrypted(hostName, port);
+    m_client->addCaCertificates("../secure/sslserver.pem");
     m_client->setProtocol(QSsl::TlsV1_2);
+    m_client->connectToHostEncrypted(hostName, port);
+    m_client->waitForConnected();
+*/
+    m_client->setLocalCertificate("../../secure/client.crt");
+    m_client->setPrivateKey("../../secure/client.key",QSsl::Rsa,QSsl::Pem,"2048");
+    m_client->addCaCertificates("../../secure/sslserver.pem");
+    m_client->setProtocol(QSsl::TlsV1_2);
+    m_client->connectToHostEncrypted(hostName, port);
 
-    connect(m_client.get(),&QSslSocket::encrypted,this, &ClientConnection::slotEncrypted);
-    connect(m_client.get(),&QSslSocket::readyRead,this,&ClientConnection::slotReadyRead);
-    connect(m_client.get(), SIGNAL(sslErrors(QList<QSslError>)),this, SLOT(sslError(QList<QSslError>)) );
-    connect(m_client.get(),&QSslSocket::disconnected, this, &ClientConnection::slotDisconnect);
 
 
+    connect(m_client.get(), &QSslSocket::encrypted, this, &ClientConnection::slotEncrypted);
+    connect(m_client.get(), &QSslSocket::readyRead, this, &ClientConnection::slotReadyRead);
+    connect(m_client.get(), SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(sslError(QList<QSslError>)));
+    //connect(m_client.get(),&QSslSocket::disconnected, this, &ClientConnection::slotDisconnect);
 }
 
- void Client::ClientConnection::sslError( QList<QSslError> errors )
+ void Client::ClientConnection::sslError(QList<QSslError> errors)
  {
      QString erroStr = "";
      foreach (const QSslError &e, errors)
@@ -133,22 +141,20 @@ void Client::ClientConnection::slotConnection(const QString& hostName,int port)
      m_client->ignoreSslErrors();
  }
 
-void Client::ClientConnection::slotDisconnect()
+ void Client::ClientConnection::slotDisconnect()
 {
-    m_client->disconnectFromHost();
+   // m_client->disconnectFromHost();
+    qDebug()<<"Disconnect";
 }
 
-
-void Client::ClientConnection::slotEncrypted()
+ void Client::ClientConnection::slotEncrypted()
 {
     qDebug() << "Mode is encryped";
 }
 
-
-
  void  Client::ClientConnection::slotReadyRead()
  {
-     int idSender = -1;
+     int idSender = 0;
      int idFile = 0;
      QString time;
 
@@ -158,33 +164,35 @@ void Client::ClientConnection::slotEncrypted()
          switch((Data::variable(message)).toInt())
          {
 
-         case Error:
+         case  Data::Error:
              qDebug() << "Error... " << message;
-             emit signalSendRespond(QString::number(Error) + ' ' + message);
+             emit signalSendRespond(QString::number(Data::Error) + ' ' + message);
              break;
 
-         case Connection:
+         case  Data::Connection:
             qDebug() << message;
-            emit signalSendRespond(QString::number(Connection));
+            emit signalSendRespond(QString::number(Data::Connection));
             break;
 
-         case Registration:
+         case  Data::Registration:
              qDebug()<<"Success registration";
              m_db.createDB("Client_" + m_user.getLogin() + ".db");
              m_user.setID(Data::variable(message).toInt());
              qDebug()<<"My ID-> "<<m_user.getID();
-             emit signalSendRespond(QString::number(Registration));
+             emit signalSendRespond(QString::number( Data::Registration));
+             sendToServer(QString::number( Data::GetListOfFriends));
              break;
 
-         case Authorization:
+         case  Data::Authorization:
              qDebug()<<"Success authorization";
              m_db.createDB("Client_" + m_user.getLogin() + ".db");
              m_user.setID(Data::variable(message).toInt());
              qDebug()<<"My ID-> "<<m_user.getID();
-             emit signalSendRespond(QString::number(Authorization));
+             emit signalSendRespond(QString::number( Data::Authorization));
+             sendToServer(QString::number( Data::GetListOfFriends));
              break;
 
-         case Message:
+         case  Data::Message:
             //  key, idFriend, idFile, time, mess
             idSender = (Data::variable(message)).toInt();
             idFile = (Data::variable(message)).toInt();
@@ -193,29 +201,30 @@ void Client::ClientConnection::slotEncrypted()
             qDebug() << message;
             m_idDialog = m_db.searchIdDialog(idSender);
 
-            if(m_idDialog < 0 )
+            if(m_idDialog == 0 )
             {
                 qDebug() << "The dialog dosn't exist";
                 m_db.insertDialog(idSender);
             }
             else
             {
-                m_db.insertMessage(m_idDialog,Get,message,time);
+                m_db.insertMessage(m_idDialog, Data::Get,message,time);
             }
-            // str = loginRecipeint, time, messange, idFile
-            emit signalSendRespond(QString::number(Message) + ' ' + time + ' ' + message);
-            break;
+            if(m_idFriend == idSender)
+            {
+                // str = loginRecipeint, time, messange, idFile
+                emit signalSendRespond(QString::number( Data::Message) + ' ' + time + ' ' + message);
+            }
+             break;
 
-         case File:
+         case  Data::File:
 
              break;
 
-         case GetListOfFriends:
+         case  Data::GetListOfFriends:
              qDebug() << "GetNewList";
-             emit signalSendRespond(QString::number(GetListOfFriends) + ' ' + message);
-             m_hash=Data::separateHash(message);
+             emit signalSendRespond(QString::number( Data::GetListOfFriends) + ' ' + message);
              break;
-
     }
  }
 
@@ -228,10 +237,7 @@ void Client::ClientConnection::slotEncrypted()
      }
      else
          qDebug() << "SendToServer: m_client=nullptr";
-
  }
-
-
 
  //////////////////////////////////////////////////////
 
@@ -239,88 +245,61 @@ void Client::ClientConnection::slotEncrypted()
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);
-
-    sendToServer(QString::number(Registration) + ' ' + login + ' ' + pass);
-
-
+     sendToServer(QString::number(Data::Registration) + ' ' + login + ' ' + pass);
  }
 
  void Client::ClientConnection::slotGetListFriend()
  {
-     // get lists of clients who are online
-    sendToServer(QString::number(GetListOfFriends));
+    sendToServer(QString::number(Data::GetListOfFriends));
  }
 
-
- void Client::ClientConnection::slotChoiceFriend(const QString& login)
- {
-
-     m_idFriend = m_hash.key(login);
-
+ // присылать id
+ void Client::ClientConnection::slotChoiceFriend(const int& id)
+ {  
+     m_idFriend = id;
      qDebug()<<"My id-> " << m_user.getID() << "Friend id-> " << m_idFriend;
-
-     // search dialog
      int idDialog = m_db.searchIdDialog(m_idFriend);
-
-     if(idDialog < 0)
+     if(idDialog == 0)
      {
          qDebug() << "The dialog doesn't exist";
-         // add dialog
          m_db.insertDialog(m_idFriend);
-
      }
      else
      {
          qDebug()<<"The dialog exists";
-
          QQueue<QString> q = m_db.showDialog(idDialog);
-
          for(int i = 0 ; i<q.size(); i++)
          {
               qDebug() << q[i];
          }
-
          emit signalSendDialog(q);
-
-
      }
-     emit signalSendRespond(QString::number(GetFriend));
-
-
  }
-
 
  void Client::ClientConnection::slotAuthorization(const QString& login,const QString& pass)
  {
      m_user.setLogin(login);
      m_user.setPassword(pass);
-
-    sendToServer(QString::number(Authorization) + ' ' + login + ' ' + pass);
+     sendToServer(QString::number(Data::Authorization) + ' ' + login + ' ' + pass);
  }
 
-
- // format: time, message
  void Client::ClientConnection::slotSendMessage(const QString& message)
  {
      QString mess = message;
      QString time = Data::variable(mess);
-
      m_idDialog = m_db.searchIdDialog(m_idFriend);
-
-     if(m_idDialog < 0 )
+     if(m_idDialog == 0 )
      {
          qDebug() << "The dialog dosn't exist";
          m_db.insertDialog(m_idFriend);
          m_idDialog = m_db.searchIdDialog(m_idFriend);
      }
-         m_db.insertMessage(m_idDialog, Send, mess, time);
-
+     m_db.insertMessage(m_idDialog, Data::Send, mess, time);
      if(m_idFriend != m_user.getID())
      {
-         sendToServer(QString::number(Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + message);
+         sendToServer(QString::number(Data::Message) + ' ' + QString::number(m_user.getID()) + ' ' + QString::number(m_idFriend) + ' ' + message);
      }
  }
-
 
  void Client::ClientConnection::slotSendFile(const QString& fileName)
  {
@@ -348,7 +327,6 @@ void Client::ClientConnection::slotEncrypted()
      */
  }
 
-
  void Client::ClientConnection::sendFile(const QString& filename)
  {
 
@@ -371,8 +349,7 @@ void Client::ClientConnection::slotEncrypted()
 
  }
 
-
-void Client::ClientConnection::getFile()
+ void Client::ClientConnection::getFile()
 {
     int i=1;
     QFile file;

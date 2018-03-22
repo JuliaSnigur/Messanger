@@ -21,9 +21,7 @@ namespace DB {
     protected:
 
         QString m_nameDB;
-
         QSqlDatabase m_db;
-
         std::shared_ptr<QSqlQuery> m_query;
 
 
