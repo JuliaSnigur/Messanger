@@ -216,8 +216,15 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
 }
 
 
-void Gui::GuiQML::sendFile(const QUrl& mess)
+void Gui::GuiQML::sendFile(const QString& filePath)
 {
+    QString str;
+    for(int i = 8; i < filePath.size();i++)
+    {
+        str += filePath[i];
+    }
+    qDebug() << str;
+    emit signalSendFile(str);
 }
 
 

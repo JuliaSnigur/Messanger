@@ -9,7 +9,7 @@
     , m_mutexDB()
     , m_mutexHashTab()
     , m_sslClient(nullptr)
-    , m_file()
+    , m_file(nullptr)
     , m_sizeReceiveFile(0)
     , m_db(nullptr)
     , m_hash(nullptr)
@@ -18,7 +18,6 @@
     this->m_socketDescriptor = ID;
     m_db = db;
     m_hash = hash;
-
     m_certServer = "-----BEGIN CERTIFICATE-----"
             "MIID2zCCAsOgAwIBAgIJALw0xDUVwv68MA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD"
             "VQQGEwJGUjEPMA0GA1UECAwGRnJhbmNlMQ8wDQYDVQQKDAZHdWlUZUsxHTAbBgNV"
@@ -42,7 +41,6 @@
             "VQNvID9efhMtDnTotI3puNwqRLXK8LEB6mbj27lPik1Mx7r81zvDAkkd+D/9oNF2"
             "7BppFrbxPgUCg6RV2MXinG1Njt6z25dV2AQUZro9vA=="
             "-----END CERTIFICATE-----";
-
     m_certClient = "-----BEGIN CERTIFICATE REQUEST-----"
             "MIICojCCAYoCAQAwXTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx"
             "ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEWMBQGA1UEAwwNMTky"
@@ -60,8 +58,6 @@
             "+Xw+3l71J0cMXBsgYKPV/TdHWanS6TSjYbPwQ+m+3K4+bKnmHtibO5XtzppCBkFA"
             "gJ0gRAns"
             "-----END CERTIFICATE REQUEST-----";
-
-
     m_serverKey = "-----BEGIN PRIVATE KEY-----"
             "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC1nUxXUbA1wv5z"
             "rPPyf+Qgj2xlkZQ9ejfOPbTAN31IrnW9YOGBcr1BOwoXsVJkhXgLYAxVvvNrkYSf"
@@ -90,8 +86,6 @@
             "EYKnRAehS39kAw0o1byn6KkYWPM3Nktjvz6piTkqeHSKrjba/Qbe/E58QoLYrqPT"
             "DKFdnoWRZ7T9mhny4HKKKCi4Vg=="
             "-----END PRIVATE KEY-----";
-
-
 }
 
 void  Server::MyThread::run()
@@ -104,7 +98,6 @@ void  Server::MyThread::run()
         emit error(m_sslClient->error());
         return;
     }
-
    /* QSslCertificate certSever(m_certServer.toLatin1());
     QSslCertificate certClient(m_certClient.toLatin1());
     QSslKey key(m_serverKey.toLatin1(), QSsl::Rsa, QSsl::Pem);
@@ -114,13 +107,10 @@ void  Server::MyThread::run()
     m_sslClient->setPrivateKey("../secure/sslserver.key",QSsl::Rsa, QSsl::Pem);
     m_sslClient->setProtocol(QSsl::TlsV1_2);
     m_sslClient->startServerEncryption();
-
 */
     QFile certificateFile("../../secure/client.crt");
-
     if (!certificateFile.open(QIODevice::ReadOnly))
       return;
-
     QSslCertificate cert(certificateFile.readAll());
     certificateFile.close();
     m_sslClient->addCaCertificate(cert);
@@ -129,10 +119,10 @@ void  Server::MyThread::run()
     m_sslClient->setProtocol(QSsl::TlsV1_2);
     m_sslClient->startServerEncryption();
 
-
     connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead, Qt::DirectConnection);
     connect(m_sslClient.get(), &QSslSocket::disconnected, this, &MyThread::slotDisconnect);
-
+    connect(m_sslClient.get(), &QSslSocket::destroyed, this, &MyThread::slotDisconnect);
+    //connect(m_sslClient.get(), &QSslSocket::sslErrors, this, &MyThread::slotError);
     sendToClient(m_sslClient.get(), QString::number(Data::Connection) + " Hello Client");
     exec();
 }
@@ -152,22 +142,21 @@ bool  Server::MyThread::sendToClient(QSslSocket* pSocket, const QString& message
     }
 }
 
+
+
+
 void  Server::MyThread::slotReadyRead()
 {
     QString fileName;
-
     if(m_sslClient==nullptr)
     {
         qDebug()<<"Read: m_sslClient=nullptr";      
         return;
     }
-
     QString mess = m_sslClient->readAll();    // Read message
     qDebug() << "Client has sent -" << mess;
-
     switch ((Data::variable(mess)).toInt())
     {
-
     case Data::Error:
         qDebug()<<"Upss..";
         break;
@@ -285,7 +274,7 @@ void  Server::MyThread::authorization(QString& req)
 
     // update Status
     m_mutexDB.lock();
-    if(!m_db->updateStatus(us->getID()))
+    if(!m_db->updateStatus(us->getID(),true))
     {
         qDebug()<<"The status doesn't update";
     }
@@ -318,9 +307,8 @@ void  Server::MyThread::message(QString& str)
 
 void  Server::MyThread::receiveFile(const QString& fileName)
 {
-    // путь сохранения файла
-    m_file.setFileName(fileName);
-    m_file.open(QIODevice::WriteOnly|QIODevice::Append);
+    m_file = std::shared_ptr<QFile>( new QFile(/*"Download/" + */fileName));
+    m_file->open(QIODevice::WriteOnly|QIODevice::Append);
     sendToClient(m_sslClient.get(), QString::number(Data::File));
     disconnect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead);
     connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReceiveFile);
@@ -328,26 +316,38 @@ void  Server::MyThread::receiveFile(const QString& fileName)
 
 void  Server::MyThread::slotReceiveFile()
 {
-    static ulong sizeReceivedData;
+    static quint64 sizeReceivedData;
 
-    QByteArray buff = m_sslClient->readAll();
-    quint64 size =  m_file.write(buff);
-    qDebug()<<"Write: "<<size;
-    sizeReceivedData += size;
+       QByteArray buff =  m_sslClient->readAll();
 
-    if(sizeReceivedData == m_sizeReceiveFile)
-    {
-      m_file.close();
+       // char buff[1024] = "";
+        //sizeReceivedData +=  m_sslClient->read(buff, 1024);
+        if(m_file != nullptr)
+        {
+            // ошибка
+            sizeReceivedData += m_file->write(buff);
+            qDebug()<<"Write: " << sizeReceivedData ;
+            buff.clear();
+        }
+        else
+        {
+            disconnect(m_sslClient.get(), SIGNAL(readyRead()), this, SLOT(slotReceiveFile()));
+            connect(m_sslClient.get(), SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+            return;
+        }
+        if(sizeReceivedData == m_sizeReceiveFile)
+        {
+          m_file->close();
+          m_file = nullptr;
+          m_sizeReceiveFile = 0;
+          sizeReceivedData = 0;
+          qDebug() << "Finished";
+          disconnect(m_sslClient.get(), SIGNAL(readyRead()), this, SLOT(slotReceiveFile()));
+          connect(m_sslClient.get(), SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+       // сообщить клиента, что файл отпрален
 
-      m_sizeReceiveFile = 0;
-      sizeReceivedData = 0;
-      qDebug() << "Finished";
-
-      disconnect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReceiveFile);
-      connect(m_sslClient.get(), &QSslSocket::readyRead, this, &MyThread::slotReadyRead);
-    }
+        }
 }
-
 
 void  Server::MyThread::slotDisconnect()
 {
@@ -364,7 +364,7 @@ void  Server::MyThread::slotDisconnect()
 
                 //std::unique_lock<QMutex> lockDB(m_mutexDB);
                 m_mutexDB.lock();
-                m_db->updateStatus(iter.key());
+                m_db->updateStatus(iter.key(),false);
                 m_mutexDB.unlock();
                 m_mutexHashTab.lock();
                 m_hash->erase(iter);
@@ -381,7 +381,7 @@ void  Server::MyThread::slotDisconnect()
      iter=m_hash->begin();
      while(iter!=m_hash->end())
      {
-         sendToClient(iter.value(), QString::number(Data::Error) + "You should refresh list of clients");
+         sendToClient(iter.value(), QString::number(Data::Error) + " You should refresh list of clients");
          ++iter;
      }
 

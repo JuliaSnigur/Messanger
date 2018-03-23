@@ -35,7 +35,7 @@ namespace DBServerTests
 
     TEST(DBServer, updateStatus)
     {
-        EXPECT_TRUE(s_db.updateStatus(1));
+        EXPECT_TRUE(s_db.updateStatus(1,1));
     }
 
     TEST(DBServer, deleteDB )

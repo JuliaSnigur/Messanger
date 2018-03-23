@@ -7,6 +7,8 @@
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
 
+#include "filethread.h"
+
 Client::ClientConnection::ClientConnection(QObject *parent)
   : QObject(parent)
   , m_client(nullptr)
@@ -96,7 +98,6 @@ Client::ClientConnection::~ClientConnection(){}
 void Client::ClientConnection::slotConnection(const QString& hostName,const int& port)
 {
     m_client = std::shared_ptr<QSslSocket>(new QSslSocket(this));
-
     if(m_client == nullptr)
     {
         qDebug() << "Start client: m_client=nullptr";
@@ -104,7 +105,6 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
         return;
     }
     qDebug() << hostName + ' ' + QString::number(port);
-
 /*
     QSslCertificate certSever(m_certServer.toLocal8Bit());
     QSslCertificate certClient(m_certClient.toLatin1());
@@ -135,10 +135,8 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
      QString erroStr = "";
      foreach (const QSslError &e, errors)
          erroStr.append(e.errorString()).append("\n");
-
     qDebug() << erroStr;
-
-     m_client->ignoreSslErrors();
+    m_client->ignoreSslErrors();
  }
 
  void Client::ClientConnection::slotDisconnect()
@@ -157,10 +155,8 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
      int idSender = 0;
      int idFile = 0;
      QString time;
-
      QString message = m_client->readAll();    // Read message
      qDebug() << "Client got-> " << message;
-
          switch((Data::variable(message)).toInt())
          {
 
@@ -176,7 +172,7 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
 
          case  Data::Registration:
              qDebug()<<"Success registration";
-             m_db.createDB("Client_" + m_user.getLogin() + ".db");
+             m_db.createDB(m_user.getLogin() + ".db");
              m_user.setID(Data::variable(message).toInt());
              qDebug()<<"My ID-> "<<m_user.getID();
              emit signalSendRespond(QString::number( Data::Registration));
@@ -185,7 +181,7 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
 
          case  Data::Authorization:
              qDebug()<<"Success authorization";
-             m_db.createDB("Client_" + m_user.getLogin() + ".db");
+             m_db.createDB(m_user.getLogin() + ".db");
              m_user.setID(Data::variable(message).toInt());
              qDebug()<<"My ID-> "<<m_user.getID();
              emit signalSendRespond(QString::number( Data::Authorization));
@@ -218,7 +214,9 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
              break;
 
          case  Data::File:
-
+            //m_thread = std::shared_ptr<FileThread>(new FileThread(m_client, m_fileName ,this));
+            //m_thread->start();
+             sendFile();
              break;
 
          case  Data::GetListOfFriends:
@@ -303,52 +301,68 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
 
  void Client::ClientConnection::slotSendFile(const QString& fileName)
  {
-
-     /*m_fileName = fileName;
-     QFile file = QFile(fileName);
-
-     if(file.open(QFile::ReadOnly))
+     int i = fileName.size() -1;
+     QString fName;
+     while(i >=0 && fileName[i] != '/' && fileName[i] != '\\')
+         --i;
+     ++i;
+     for(;i<fileName.size(); i++)
+         fName += fileName[i];
+     qDebug()<<"File name : "<< fName;
+     if(!m_file)
      {
-         qDebug()<<file.size();
-        if(m_client)
-        {
-            m_client->write((QString::number(File) + ' ' + fileName + ' ' + QString::number(file.size())).toLatin1());
-        }
-        else
-        {
-            qDebug()<<"Error with sending file: m_client=nullptr";
-        }
+         m_file = std::shared_ptr<QFile>(new QFile(fileName));
      }
      else
      {
-       qDebug()<<"File not can open for read";
-       return;
+         m_file->setFileName(fileName);
      }
-     */
+     if(!m_file->open(QIODevice::ReadOnly))
+     {
+        qDebug() << "Error";
+        return;
+     }
+     qDebug()<<m_file->size();
+     if(m_client)
+     {
+         m_client->write((QString::number(Data::File) + ' ' + fName + ' ' + QString::number(m_file->size())).toLatin1());
+     }
+     else
+     {
+         qDebug()<<"Error with sending file: m_client=nullptr";
+     }
  }
 
+ void Client::ClientConnection::sendFile()
+ {
+     char block[1024];
+     qint64 in;
+     while(!m_file->atEnd())
+     {
+       in = m_file->read(block, sizeof(block));
+       qDebug()<<"Read: " << in;
+       m_client->write(block, in);
+     }
+       m_file->close();
+       m_file = nullptr;
+       qDebug()<<"Finished";
+ }
+
+/*
  void Client::ClientConnection::sendFile(const QString& filename)
  {
+     m_file = std::shared_ptr<QFile>(new QFile(filename));
 
-     QFile file(filename);
-
-     if(!file.open(QIODevice::ReadOnly))
-     {
-         qDebug() << "Error";
-     }
+    if(!m_file->open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error";
+    }
      // create inByteArray for saving file
-     QByteArray inByteArray=file.readAll();
+     QByteArray inByteArray=m_file->readAll();
      qDebug()<<inByteArray;
-
-
-     file.close();
-
      m_db.insertFile(filename,inByteArray);
-
-
-
  }
-
+*/
  void Client::ClientConnection::getFile()
 {
     int i=1;

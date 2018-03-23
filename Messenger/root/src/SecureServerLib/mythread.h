@@ -17,19 +17,14 @@
 
 
 namespace Server {
-
-
-
 class MyThread : public QThread
 {
     Q_OBJECT
 public:
-     MyThread(qintptr id,  std::shared_ptr<DB::DBServerPresenter> db,   std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent = 0);
-
-
+    MyThread(qintptr id,  std::shared_ptr<DB::DBServerPresenter> db,   std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent = 0);
+    // нужен ли деструктор ?
     void run();
     bool sendToClient(QSslSocket* m_sslClient, const QString& str);
-
     void registration(QString& str);
     void authorization(QString& str);
     void sendList();
@@ -40,31 +35,20 @@ public slots:
     void slotReadyRead();
     void slotDisconnect();
     void slotReceiveFile();
-
-
 signals:
-    void error(const QAbstractSocket::SocketError& errors);
-
+    void error(const QAbstractSocket::SocketError& error);
 
 private:
-
-    QFile m_file;
-
-    ulong m_sizeReceiveFile;
+    std::shared_ptr<QFile> m_file;
+    qint64 m_sizeReceiveFile;
     qintptr m_socketDescriptor;
-
     QMutex m_mutexDB;
     QMutex m_mutexHashTab;
-
     std::shared_ptr<QSslSocket> m_sslClient;
     std::shared_ptr<DB::DBServerPresenter> m_db;
     std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
-
     QString m_serverKey;
     QString m_certServer;
     QString m_certClient;
-
-
 };
-
 }

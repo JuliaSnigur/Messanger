@@ -68,8 +68,9 @@ Window {
 
 
 
-                         onClicked:
+                         onClicked:   
                          {
+                              recDialog.visible = true
                              if(modelData.status === true)
                              {
                                  gui.choiceFriend(modelData.id)
@@ -241,7 +242,7 @@ ColumnLayout {
                                   font.pointSize: 12
                                   onClicked:
                                   {
-                                    //  fileDialog.visible = true
+                                      fileDialog.visible = true
                                   }
 
                               }
@@ -322,13 +323,12 @@ ColumnLayout {
     FileDialog {
         id: fileDialog
         title: "Please choose a file"
-        folder: shortcuts.home
         visible: false
         onAccepted:
         {
             console.log("You chose: " + fileDialog.fileUrls)
             gui.sendFile(fileDialog.fileUrls)
-            Qt.quit()
+            fileDialog.visible = false
         }
         onRejected:
         {

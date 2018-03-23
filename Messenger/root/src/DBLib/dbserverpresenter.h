@@ -19,7 +19,7 @@ namespace DB {
         QString searchLogin(const int& id);
         bool searchStatus(const int& id);
         QVector<User*> getListOfUser();
-        bool updateStatus(const int& id);
+        bool updateStatus(const int& id, const bool& status);
 
     protected:
         virtual void createTables();

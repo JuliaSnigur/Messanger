@@ -42,7 +42,7 @@ public:
  Q_INVOKABLE void getListFriends();
  Q_INVOKABLE void choiceFriend(const int &id);
  Q_INVOKABLE void sendMessage(const QString& mess);
- Q_INVOKABLE void sendFile(const QUrl& mess);
+ Q_INVOKABLE void sendFile(const QString &filePath);
 
 public slots:
     void setLogin(const QString&);

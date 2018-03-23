@@ -178,12 +178,11 @@ QVector<User *> DB::DBServerPresenter::getListOfUser()
       return vec;
 }
 
-bool DB::DBServerPresenter::updateStatus(const int& id)
+bool DB::DBServerPresenter::updateStatus(const int& id, const bool& status)
 {
     try
     {
-        bool status = searchStatus(id);
-        QString params = "status = " + QString::number(!status);
+        QString params = "status = " + QString::number(status);
         QString values = "id = " + QString::number(id);
         QString str = Request::updateData(m_tabUsers, params, values);
         if( m_query->exec(str))

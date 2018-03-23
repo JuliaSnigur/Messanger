@@ -10,6 +10,7 @@
 #include "user.h"
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
+#include "filethread.h"
 
 
 namespace Client {
@@ -24,6 +25,8 @@ namespace Client {
         virtual ~ClientConnection();
 
         void sendFile(const QString& filename);
+        void sendFile();
+        void receiveFile(const QString& fileName);
         void getFile();
 
 
@@ -55,6 +58,7 @@ namespace Client {
 
     private:
         std::shared_ptr<QSslSocket> m_client;
+        std::shared_ptr<FileThread> m_thread;
         DB::DBClientPresenter m_db;
 
         User m_user;
@@ -66,6 +70,7 @@ namespace Client {
         QSslCertificate m_certSever;
         QSslCertificate m_certClient;
         QSslKey m_key;
+        std::shared_ptr<QFile> m_file;
 
     };
 

@@ -28,7 +28,7 @@ void  Server::SslServer::incomingConnection(qintptr socketDescriptor)
 {
     thread = new MyThread(socketDescriptor, m_db, m_hash, this);
     connect(thread,&MyThread::error,this,&SslServer::slotSslError);
-    //connect(thread, &QThread::destroyed, this, &QThread::destroyed);
+    connect(thread, &QThread::destroyed, this, &QThread::destroyed);
     thread->start();
 }
 
