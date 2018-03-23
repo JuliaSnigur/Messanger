@@ -3,7 +3,7 @@ include( ../../common.pri )
 
 QT       -= gui
 
-TARGET = ParseDataLib$${LIB_SUFFIX}
+TARGET = DataLib$${LIB_SUFFIX}
 TEMPLATE = lib
 CONFIG += staticlib
 
@@ -19,21 +19,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    data.cpp
+    data.cpp \
+    user.cpp
 
 HEADERS += \
     stable.h \
     stdafx.h \
-    data.h
+    data.h \
+    user.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
-
-LIBS +=  $${DBLIB_LIBRARY}
-INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
-
-
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
 

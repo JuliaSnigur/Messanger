@@ -4,7 +4,7 @@
 #include <QHash>
 #include <QDebug>
 
-#include "DBLib/user.h"
+#include "user.h"
 
 
 
@@ -14,21 +14,13 @@ enum request {Error, Connection, Registration, Authorization, Message, File, Get
 
 enum stateMessage {Send, Get};
 
-/*
-   static QString variable(QString& str);
-   static QHash<int,QString> separateHash(QString& str);
-   static QString concatenationHash(const QHash<int,QString>& hash);
-*/
-
 static QString concatinationVecUser(const QVector<User*>& vec)
 {
     QString str;
-
     for(int i = 0; i<vec.size();i++)
     {
          str += QString::number(vec[i]->getID()) + ' ' + vec[i]->getLogin() + ' ' + ' ' + QString::number(vec[i]->getStatus()) +' ';
     }
-
     return str;
 }
 
@@ -39,7 +31,6 @@ static QVector<User*> separateVecUser( QString& str)
     QString resLogin;
     QString resStatus;
     int i = 0;
-
       for(; i<str.size();)
       {
           resID="";
@@ -71,73 +62,22 @@ static QVector<User*> separateVecUser( QString& str)
       return vec;
 }
 
-  static QString variable(QString& str)
+static QString variable(QString& str)
    {
        QString res;
        QString st;
-       int i=0;
-
-       while(i<str.size() && str[i]!=' ')
+       int i = 0;
+       while(i<str.size() && str[i] != ' ')
        {
            res+=str[i];
            i++;
        }
-        if(str[i]==' ')
+        if(str[i] == ' ')
             i++;
-
-       for(;i<str.size();i++)
-           st+=str[i];
-
-       str=st;
-
+       for( ; i<str.size() ; i++)
+           st += str[i];
+       str = st;
        return res;
    }
-
-
-
-  static QString concatenationHash(const QHash<int,QString>& hash)
-   {
-     QString str;
-
-     QHash<int,QString>::const_iterator iter=hash.begin();
-
-       while(iter != hash.end())
-       {
-          str += QString::number(iter.key()) + ' ' + iter.value() + ' ';
-          ++iter;
-       }
-
-     return str;
-   }
-
-
-  static QHash<int,QString> separateHash(QString& str)
-   {
-     QHash<int,QString> hash;
-
-       QString resID,resLogin;
-       int i = 0;
-       for(; i<str.size(); i++)
-       {
-           resID="";
-           while(i<str.size() && str[i] != ' ')
-           {
-               resID += str[i];
-               ++i;
-           }
-           ++i;
-           resLogin="";
-           while(i<str.size() && str[i] != ' ')
-           {
-               resLogin += str[i];
-               ++i;
-           }
-           hash.insert(resID.toInt(),resLogin);
-       }
-
-       return hash;
-   }
-
-
 
 }

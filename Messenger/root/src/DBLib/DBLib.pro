@@ -22,7 +22,6 @@ SOURCES += \
     request.cpp \
     dbserverpresenter.cpp \
     dbclientpresenter.cpp \
-    user.cpp \
     dbpresenter.cpp
 
 
@@ -32,7 +31,6 @@ HEADERS += \
     request.h \
     dbserverpresenter.h \
     dbclientpresenter.h \
-    user.h \
     dbpresenter.h
 
 unix {
@@ -46,3 +44,7 @@ CONFIG -= precompile_header
 PRECOMPILED_HEADER = stable.h
 
 ########################################
+LIBS+=$${PARSEDATALIB_LIBRARY}
+INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
+
+DBLib.depends = DataLib

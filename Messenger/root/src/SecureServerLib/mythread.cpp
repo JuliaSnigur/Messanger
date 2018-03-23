@@ -1,10 +1,9 @@
 #include "stdafx.h"
 
 #include "mythread.h"
-#include "data.h"
-#include "cryptographicpassword.h"
+#include "DataLib/data.h"
 
- Server::MyThread::MyThread(qintptr ID,   std::shared_ptr<DB::DBServerPresenter> db,  std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent)
+Server::MyThread::MyThread(qintptr ID,   std::shared_ptr<DB::DBServerPresenter> db,  std::shared_ptr<QHash<int,QSslSocket*>> hash, QObject *parent)
     : QThread(parent)
     , m_mutexDB()
     , m_mutexHashTab()
@@ -41,6 +40,7 @@
             "VQNvID9efhMtDnTotI3puNwqRLXK8LEB6mbj27lPik1Mx7r81zvDAkkd+D/9oNF2"
             "7BppFrbxPgUCg6RV2MXinG1Njt6z25dV2AQUZro9vA=="
             "-----END CERTIFICATE-----";
+
     m_certClient = "-----BEGIN CERTIFICATE REQUEST-----"
             "MIICojCCAYoCAQAwXTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx"
             "ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEWMBQGA1UEAwwNMTky"
@@ -58,6 +58,7 @@
             "+Xw+3l71J0cMXBsgYKPV/TdHWanS6TSjYbPwQ+m+3K4+bKnmHtibO5XtzppCBkFA"
             "gJ0gRAns"
             "-----END CERTIFICATE REQUEST-----";
+
     m_serverKey = "-----BEGIN PRIVATE KEY-----"
             "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC1nUxXUbA1wv5z"
             "rPPyf+Qgj2xlkZQ9ejfOPbTAN31IrnW9YOGBcr1BOwoXsVJkhXgLYAxVvvNrkYSf"
@@ -98,19 +99,21 @@ void  Server::MyThread::run()
         emit error(m_sslClient->error());
         return;
     }
-   /* QSslCertificate certSever(m_certServer.toLatin1());
-    QSslCertificate certClient(m_certClient.toLatin1());
-    QSslKey key(m_serverKey.toLatin1(), QSsl::Rsa, QSsl::Pem);
-
+/*
+    QSslCertificate certSever(m_certServer);
+    QSslCertificate certClient(m_certClient);
+    QSslKey key(m_serverKey, QSsl::Rsa, QSsl::Pem);
     m_sslClient->addCaCertificate(certClient);// certificates client
-    m_sslClient->setLocalCertificate("../secure/sslserver.pem");// certificates server
-    m_sslClient->setPrivateKey("../secure/sslserver.key",QSsl::Rsa, QSsl::Pem);
+    m_sslClient->setLocalCertificate(certSever);// certificates server
+    m_sslClient->setPrivateKey(key);
     m_sslClient->setProtocol(QSsl::TlsV1_2);
     m_sslClient->startServerEncryption();
 */
     QFile certificateFile("../../secure/client.crt");
     if (!certificateFile.open(QIODevice::ReadOnly))
-      return;
+    {
+        return;
+    }
     QSslCertificate cert(certificateFile.readAll());
     certificateFile.close();
     m_sslClient->addCaCertificate(cert);
@@ -199,91 +202,69 @@ void  Server::MyThread::registration(QString& req)
     int id = 0;
     QString log = Data::variable(req);
     QString pass = Data::variable(req);
-
-    // insert user into db
     qDebug() << "User: " << log << ", " << pass;
 
-    m_mutexDB.lock();
+    std::unique_lock<QMutex> lockDB(m_mutexDB);
 
-    if(!m_db->insertUser(User(log, Server::encryptedPassword(pass), true)))
-      {
-        m_mutexDB.unlock();
-
+    if(!m_db->insertUser(Data::User(log, encryptedPassword(pass), true)))
+    {
         sendToClient(m_sslClient.get(), QString::number(Data::Error) + " The user's already existed with that login");
         return;
-      }
-
-     m_mutexDB.unlock();
-
-     id = m_db->searchID(log);
-
+    }
+    id = m_db->searchID(log);
     if(id == 0)
     {
         qDebug() << "The id doesn't exist";
+        sendToClient(m_sslClient.get(),QString::number(Data::Error) +" Server error" );
     }
     else
     {
-         m_mutexHashTab.lock();
-
+         std::unique_lock<QMutex> lockHash(m_mutexHashTab);
          qDebug() << "ID: " << id;
          m_hash->insert(id, m_sslClient.get());
-
-         m_mutexHashTab.unlock();
-
-        sendToClient(m_sslClient.get(), QString::number(Data::Registration) + ' ' + QString::number(id));
+         sendToClient(m_sslClient.get(), QString::number(Data::Registration) + ' ' + QString::number(id));
     }
+    notificateClients();
 }
 
 void  Server::MyThread::authorization(QString& req)
 {
     QString log = Data::variable(req);
     QString pass = Data::variable(req);
-
-    // search user into db
     qDebug() << "User: " << log << ", " << pass;
-
-    User* us = m_db->searchUser(log);
-
+    Data::User* us = m_db->searchUser(log);
     if(us == nullptr)
     {
         sendToClient(m_sslClient.get(), QString::number(Data::Error) + " The user didn't exist with that login");
         return;
     }
-
-    if(us->getPassword() != Server::encryptedPassword(pass))
+    if(us->getPassword() != encryptedPassword(pass))
     {
          sendToClient(m_sslClient.get(), QString::number(Data::Error) + " The wrong password");
          return;
     }
-
     if(m_hash->contains(us->getID()))
     {
          sendToClient(m_sslClient.get(),QString::number(Data::Error) + " The account is already used");
          return;
     }
-    // send message to client
     sendToClient(m_sslClient.get(), QString::number(Data::Authorization) + " " + QString::number(us->getID()));
-
-   // std::unique_lock<QMutex> lock(m_mutexHashTab);
-    m_mutexHashTab.lock();
-
+    std::unique_lock<QMutex> lockHash(m_mutexHashTab);
     qDebug() << "ID: " << us->getID();
     m_hash->insert(us->getID(), m_sslClient.get());
-
-    m_mutexHashTab.unlock();
-
-    // update Status
-    m_mutexDB.lock();
+    std::unique_lock<QMutex> lockDB(m_mutexDB);
     if(!m_db->updateStatus(us->getID(),true))
     {
         qDebug()<<"The status doesn't update";
+        sendToClient(m_sslClient.get(),QString::number(Data::Error) +" Server error" );
+        return;
     }
-    m_mutexDB.unlock();
+     notificateClients();
 }
 
 void  Server::MyThread::sendList()
 {
-    QVector<User*> vec = m_db->getListOfUser();
+    QVector<Data::User*> vec = m_db->getListOfUser();
     qDebug()<<"Vector: " + Data::concatinationVecUser(vec);
     sendToClient(m_sslClient.get(),QString::number(Data::GetListOfFriends)+' '+Data::concatinationVecUser(vec));
 }
@@ -293,16 +274,12 @@ void  Server::MyThread::message(QString& str)
     int myID = Data::variable(str).toInt();
     int friendID = Data::variable(str).toInt();
     bool flag;
-
     qDebug()<<"myID="<<myID<<" friendID"<<friendID;
-
     flag = sendToClient((*m_hash)[friendID], QString::number(Data::Message) + ' ' + QString::number(myID) + ' ' +QString::number(0) + ' ' + str);
-
     if(!flag)
     {
         sendToClient((*m_hash)[myID], QString::number(Data::Error) + " The message doesn't send");
     }
-
 }
 
 void  Server::MyThread::receiveFile(const QString& fileName)
@@ -319,7 +296,6 @@ void  Server::MyThread::slotReceiveFile()
     static quint64 sizeReceivedData;
 
        QByteArray buff =  m_sslClient->readAll();
-
        // char buff[1024] = "";
         //sizeReceivedData +=  m_sslClient->read(buff, 1024);
         if(m_file != nullptr)
@@ -351,38 +327,40 @@ void  Server::MyThread::slotReceiveFile()
 
 void  Server::MyThread::slotDisconnect()
 {
-   //std::unique_lock<QMutex> lockHash (m_mutexHashTab);
-
     QHash<int,QSslSocket*>::iterator iter=m_hash->begin();
-
     qDebug()<<"Disconnect: size of hash="<<m_hash->size();
-        while(iter != m_hash->end())
-        {
-            if(iter.value() == m_sslClient.get())
-            {
-                qDebug()<<"Dissconect: id="<<iter.key();
+    while(iter != m_hash->end())
+    {
+       if(iter.value() == m_sslClient.get())
+       {
+          qDebug()<<"Dissconect: id=" << iter.key();
+          std::unique_lock<QMutex> lockDB(m_mutexDB);
+          m_db->updateStatus(iter.key(),false);
 
-                //std::unique_lock<QMutex> lockDB(m_mutexDB);
-                m_mutexDB.lock();
-                m_db->updateStatus(iter.key(),false);
-                m_mutexDB.unlock();
-                m_mutexHashTab.lock();
-                m_hash->erase(iter);
-                m_mutexHashTab.unlock();
-                qDebug()<<" Size of hash="<<m_hash->size();
-                break;
-            }
-             ++iter;
-        }
+          std::unique_lock<QMutex> lockHash (m_mutexHashTab);
+          m_hash->erase(iter);
+          qDebug()<<" Size of hash=" << m_hash->size();
+          break;
+       }
+       ++iter;
+    }
+    m_sslClient->disconnect();
+    m_sslClient->deleteLater();
+    notificateClients();
+}
 
-     m_sslClient->disconnect();
-     m_sslClient->deleteLater();
+QByteArray Server::MyThread::encryptedPassword(const QString& pass)
+{
+    return QCryptographicHash::hash(pass.toLocal8Bit(), QCryptographicHash::Md5);
+}
 
-     iter=m_hash->begin();
-     while(iter!=m_hash->end())
-     {
-         sendToClient(iter.value(), QString::number(Data::Error) + " You should refresh list of clients");
-         ++iter;
-     }
-
+void Server::MyThread::notificateClients()
+{
+    QHash<int,QSslSocket*>::iterator iter=m_hash->begin();
+    iter=m_hash->begin();
+    while(iter!=m_hash->end())
+    {
+        sendToClient(iter.value(), QString::number(Data::Error) + " You should refresh list of clients");
+        ++iter;
+    }
 }

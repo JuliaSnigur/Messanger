@@ -22,23 +22,25 @@ SOURCES += main.cpp \
 HEADERS += \
     stdafx.h \
     stable.h \
-    client.h
-
+    client.h 
 
 PRECOMPILED_HEADER = stable.h
 CONFIG -= precompile_header
+CONFIG += ordered
 
-
-LIBS +=  $${GUILIB_LIBRARY}
-INCLUDEPATH+= $${GUILIB_INCLUDEPATH}
+LIBS+=$${PARSEDATALIB_LIBRARY}
+INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
 LIBS +=  $${DBLIB_LIBRARY}
 INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
 
+LIBS +=  $${GUILIB_LIBRARY}
+INCLUDEPATH+= $${GUILIB_INCLUDEPATH}
+
 LIBS+=$${SECURECLIENTLIB_LIBRARY}
 INCLUDEPATH+=$${SECURECLIENTLIB_INCLUDEPATH}
 
-CONFIG += ordered
+Client.depends = DataLib DBLib GuiLib SecureClientLib
 
-Client.depends =  SecureClientLib GuiLib
+
 

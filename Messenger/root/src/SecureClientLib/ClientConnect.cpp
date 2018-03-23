@@ -1,12 +1,10 @@
 #include "stdafx.h"
 
 #include "ClientConnect.h"
-#include "data.h"
-
-#include "user.h"
+#include "DataLib/data.h"
+#include "DataLib/user.h"
 #include "dbpresenter.h"
 #include "dbclientpresenter.h"
-
 #include "filethread.h"
 
 Client::ClientConnection::ClientConnection(QObject *parent)
@@ -20,7 +18,7 @@ Client::ClientConnection::ClientConnection(QObject *parent)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
-    QString str = "-----BEGIN RSA PRIVATE KEY-----"
+     m_clientKey = "-----BEGIN RSA PRIVATE KEY-----"
              "MIIEpQIBAAKCAQEA4LkPwh5YJDpEJjwGoszq1rTKkULBT1BVJng5hHw0W9blAhfg"
              "HtMwyPVN1eLwaXuODCOlKDGmlLy6/0QMn6o5l1emmRQRRBRGpweJ5aNrlE5p3nCx"
              "CmNyK4yCSdzQjJPnCyioCMtXISoJMSDMFRGnVOhpqpNUPtsamdFS5Tbbup/7BeDa"
@@ -48,9 +46,8 @@ Client::ClientConnection::ClientConnection(QObject *parent)
              "U/Xiz7aDDpst412OcWSHWEL4zUYqWEEbKY7GBlNGrOe1ysI1KhCaxX8="
              "-----END RSA PRIVATE KEY-----";
 
-   // m_key.QSslKey::(str,QSsl::Rsa,QSsl::Pem,"2048");
 
-     str = "-----BEGIN CERTIFICATE-----"
+     m_certServer = "-----BEGIN CERTIFICATE-----"
              "MIID2zCCAsOgAwIBAgIJALw0xDUVwv68MA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD"
              "VQQGEwJGUjEPMA0GA1UECAwGRnJhbmNlMQ8wDQYDVQQKDAZHdWlUZUsxHTAbBgNV"
              "BAsMFFF0LVNzbFNlcnZlci1FeGFtcGxlMRIwEAYDVQQDDAkxMjcuMC4wLjExHzAd"
@@ -74,7 +71,8 @@ Client::ClientConnection::ClientConnection(QObject *parent)
              "7BppFrbxPgUCg6RV2MXinG1Njt6z25dV2AQUZro9vA=="
              "-----END CERTIFICATE-----";
 
-     str = "-----BEGIN CERTIFICATE REQUEST-----"
+
+     m_certClient = "-----BEGIN CERTIFICATE REQUEST-----"
              "MIICojCCAYoCAQAwXTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx"
              "ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEWMBQGA1UEAwwNMTky"
              "LjE2OC4wLjEwMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOC5D8Ie"
@@ -100,21 +98,20 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
     m_client = std::shared_ptr<QSslSocket>(new QSslSocket(this));
     if(m_client == nullptr)
     {
+        emit signalSendRespond(QString::number(Data::Error) + " Don't connect to server" );
         qDebug() << "Start client: m_client=nullptr";
-        emit signalSendRespond( "Don't connect to server" );
         return;
     }
     qDebug() << hostName + ' ' + QString::number(port);
 /*
-    QSslCertificate certSever(m_certServer.toLocal8Bit());
-    QSslCertificate certClient(m_certClient.toLatin1());
-    QSslKey key(m_clientKey.toLatin1() ,QSsl::Rsa, QSsl::Pem);
+    QSslCertificate certSever(m_certServer);
+    QSslCertificate certClient(m_certClient);
+    QSslKey key(m_clientKey ,QSsl::Rsa, QSsl::Pem);
     m_client->setLocalCertificate(certClient);
     m_client->setPrivateKey(key);
-    m_client->addCaCertificates("../secure/sslserver.pem");
+    m_client->addCaCertificate(certSever);
     m_client->setProtocol(QSsl::TlsV1_2);
     m_client->connectToHostEncrypted(hostName, port);
-    m_client->waitForConnected();
 */
     m_client->setLocalCertificate("../../secure/client.crt");
     m_client->setPrivateKey("../../secure/client.key",QSsl::Rsa,QSsl::Pem,"2048");
@@ -122,12 +119,16 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
     m_client->setProtocol(QSsl::TlsV1_2);
     m_client->connectToHostEncrypted(hostName, port);
 
-
+    if(!m_client->waitForConnected())
+    {
+        emit signalSendRespond(QString::number(Data::Error) + " Not connection. Try again" );
+        return;
+    }
 
     connect(m_client.get(), &QSslSocket::encrypted, this, &ClientConnection::slotEncrypted);
     connect(m_client.get(), &QSslSocket::readyRead, this, &ClientConnection::slotReadyRead);
     connect(m_client.get(), SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(sslError(QList<QSslError>)));
-    //connect(m_client.get(),&QSslSocket::disconnected, this, &ClientConnection::slotDisconnect);
+    connect(m_client.get(),&QSslSocket::disconnected, this, &ClientConnection::slotDisconnect);
 }
 
  void Client::ClientConnection::sslError(QList<QSslError> errors)
@@ -141,7 +142,7 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
 
  void Client::ClientConnection::slotDisconnect()
 {
-   // m_client->disconnectFromHost();
+    m_client->disconnectFromHost();
     qDebug()<<"Disconnect";
 }
 
@@ -155,11 +156,11 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
      int idSender = 0;
      int idFile = 0;
      QString time;
-     QString message = m_client->readAll();    // Read message
+     QString message = m_client->readAll();
      qDebug() << "Client got-> " << message;
-         switch((Data::variable(message)).toInt())
-         {
 
+     switch((Data::variable(message)).toInt())
+     {
          case  Data::Error:
              qDebug() << "Error... " << message;
              emit signalSendRespond(QString::number(Data::Error) + ' ' + message);
@@ -193,10 +194,8 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
             idSender = (Data::variable(message)).toInt();
             idFile = (Data::variable(message)).toInt();
             time = Data::variable(message);
-
             qDebug() << message;
             m_idDialog = m_db.searchIdDialog(idSender);
-
             if(m_idDialog == 0 )
             {
                 qDebug() << "The dialog dosn't exist";
@@ -348,21 +347,7 @@ void Client::ClientConnection::slotConnection(const QString& hostName,const int&
        qDebug()<<"Finished";
  }
 
-/*
- void Client::ClientConnection::sendFile(const QString& filename)
- {
-     m_file = std::shared_ptr<QFile>(new QFile(filename));
 
-    if(!m_file->open(QIODevice::ReadOnly))
-    {
-        qDebug() << "Error";
-    }
-     // create inByteArray for saving file
-     QByteArray inByteArray=m_file->readAll();
-     qDebug()<<inByteArray;
-     m_db.insertFile(filename,inByteArray);
- }
-*/
  void Client::ClientConnection::getFile()
 {
     int i=1;

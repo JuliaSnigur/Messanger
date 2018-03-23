@@ -23,24 +23,21 @@ SOURCES += \
     FriendElement.cpp \
     dialogelement.cpp
 
-
 HEADERS += \
     stdafx.h \
     guiqml.h \
     FriendElement.h \
     dialogelement.h
-   # listmodel.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-
 LIBS+=$${PARSEDATALIB_LIBRARY}
 INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
 
-
+GuiLib.depends =  ParseDataLib
 ########################################
 
 CONFIG -= precompile_header
@@ -57,6 +54,3 @@ DISTFILES += \
     MyRow.qml \
     Connection.qml
 
-CONFIG += ordered
-
-GuiLib.depends =  ParseDataLib

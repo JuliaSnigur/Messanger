@@ -2,28 +2,28 @@
 #include "request.h"
 
 
-QString Request::createTable(const QString& name_tb,const QString& params)
+QString Request::createTable(const QString& name_tb, const QString& params)
 {
-    return "CREATE TABLE "+name_tb+" ("+params+");";
+    return "CREATE TABLE " + name_tb + " (" + params + ");";
 }
 
-QString Request::insertData(const QString& name_tb, const QString& params,const QString& values)
+QString Request::insertData(const QString& name_tb, const QString& params, const QString& values)
 {
-    return "INSERT INTO "+name_tb+" ("+params+") VALUES ("+values+");";
+    return "INSERT INTO " + name_tb + " (" + params + ") VALUES (" + values + ");";
 }
 
- QString Request::searchData(const QString& nameTable,const QString& params,const QString& values)
+ QString Request::searchData(const QString& nameTable, const QString& params, const QString& values)
  {
-     return "SELECT "+params+" FROM "+nameTable+" WHERE "+values;
+     return "SELECT " + params + " FROM " + nameTable + " WHERE " + values;
  }
 
- QString Request::updateData(const QString& nameTable,const QString& params,const QString values)
+ QString Request::updateData(const QString& nameTable, const QString& params, const QString values)
  {
-      return "UPDATE  "+nameTable+" SET "+params+" WHERE "+values+";";
+      return "UPDATE  " + nameTable + " SET " + params + " WHERE " + values + ";";
  }
 
  QString Request::searchAllData(const QString& nameTable, const QString& params)
  {
-      return "SELECT "+params+" FROM "+nameTable;
+      return "SELECT " + params + " FROM " + nameTable;
  }
 

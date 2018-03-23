@@ -12,15 +12,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     SslServer.cpp \
-    mythread.cpp \
-    cryptographicpassword.cpp
+    mythread.cpp
 
 HEADERS += \
     stable.h \
     stdafx.h \
     SslServer.h \
-    mythread.h \
-    cryptographicpassword.h
+    mythread.h
 
 
 unix {
@@ -28,12 +26,11 @@ unix {
     INSTALLS += target
 }
 
-LIBS+=$${PARSEDATALIB_LIBRARY}
-INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
+LIBS += $${PARSEDATALIB_LIBRARY}
+INCLUDEPATH += $${PARSEDATALIB_INCLUDEPATH}
 
 LIBS +=  $${DBLIB_LIBRARY}
-INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
-
+INCLUDEPATH += $${DBLIB_INCLUDEPATH}
 
 CONFIG += ordered
 

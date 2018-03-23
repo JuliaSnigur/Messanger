@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 
-#include "user.h"
+#include "DataLib/user.h"
 #include "dbpresenter.h"
 #include "dbserverpresenter.h"
 
@@ -12,12 +12,12 @@ namespace DBServerTests
 
     TEST(DBServer, insertUser1)
     {
-        EXPECT_TRUE(s_db.insertUser(User("user", "123", true)));
+        EXPECT_TRUE(s_db.insertUser(Data::User("user", "123", true)));
     }
 
     TEST(DBServer, insertUser2)
     {
-        EXPECT_FALSE(s_db.insertUser(User("user", "123", true)));
+        EXPECT_FALSE(s_db.insertUser(Data::User("user", "123", true)));
     }
 
 /*

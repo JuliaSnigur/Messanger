@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include"request.h"
-#include"user.h"
-#include"dbpresenter.h"
+#include "request.h"
+#include "user.h"
+#include "dbpresenter.h"
 
 #include "dbserverpresenter.h"
 
@@ -10,8 +10,8 @@ DB::DBServerPresenter::DBServerPresenter()
 {
     m_nameDB = "Server_db.db";
     m_tabUsers = "users";
-
-    try{
+    try
+    {
         createConnection();
         createTables();
     }
@@ -25,8 +25,8 @@ DB::DBServerPresenter::DBServerPresenter(const QString &nameDB)
 {
     m_nameDB = nameDB;
     m_tabUsers = "users";
-
-    try{
+    try
+    {
         createConnection();
         createTables();
     }
@@ -41,10 +41,8 @@ DB::DBServerPresenter::~DBServerPresenter(){}
 
  void DB::DBServerPresenter::createTables()
  {
-     // users
      QString params="id INTEGER PRIMARY KEY AUTOINCREMENT,login TEXT UNIQUE,password TEXT, status INTEGER";
      QString str=Request::createTable(m_tabUsers,params);
-
      if(m_query->exec(str))
      {
          qDebug()<<"The table "<<m_tabUsers<<" is creating";
@@ -58,14 +56,12 @@ DB::DBServerPresenter::~DBServerPresenter(){}
  }
 
 
- bool DB::DBServerPresenter::insertUser(const User& us)
+ bool DB::DBServerPresenter::insertUser(const Data::User& us)
  {
      QString params = "login, password, status";
      QString values = "'%1','%2', %3";
-
      QString str_insert = Request::insertData(m_tabUsers,params,values);
      QString str = str_insert.arg(us.getLogin()).arg(us.getPassword()).arg(us.getStatus());
-
      if (m_query->exec(str))
      {
          qDebug() << "To make insert operation";
@@ -79,27 +75,25 @@ DB::DBServerPresenter::~DBServerPresenter(){}
  }
 
 
- User* DB::DBServerPresenter::searchUser(const QString& log)
+ Data::User* DB::DBServerPresenter::searchUser(const QString& log)
  {
-     User* us = nullptr;
+     Data::User* us = nullptr;
      QString params = '*';
      QString values = "login = '" + log + "'";
      QString str = Request::searchData(m_tabUsers,params,values);
-
-       m_query->exec(str);
-       if(m_query->next())
-       {
-          us=new User(log);
+     m_query->exec(str);
+     if(m_query->next())
+     {
+          us=new Data::User(log);
           us->setID( m_query->value(0).toInt());
           us->setPassword(m_query->value(2).toString());
           us->setStatus(m_query->value(3).toInt());
 
           qDebug() << "The data search";
           return us;
-       }
-       else
+      }
+      else
           qDebug() << "The data dosn't search";
-
        return nullptr;
  }
 
@@ -108,36 +102,31 @@ DB::DBServerPresenter::~DBServerPresenter(){}
      QString params = "id";
      QString values = "login = '" + log + "'";
      QString str = Request::searchData(m_tabUsers, params, values);
-
-       m_query->exec(str);
-       if(m_query->next())
-          {
-              qDebug()<<"The data search";
-              return m_query->value(0).toInt();
-          }
-          else
-          qDebug()<<"The data dosn't search";
-
-       return 0;
+     m_query->exec(str);
+     if(m_query->next())
+     {
+         qDebug()<<"The data search";
+         return m_query->value(0).toInt();
+     }
+     else
+         qDebug()<<"The data dosn't search";
+     return 0;
  }
 
  QString DB::DBServerPresenter::searchLogin(const int& id)
  {
-
      QString params = "login";
      QString values = "id=" + QString::number(id);
      QString str = Request::searchData(m_tabUsers, params, values);
-
-       m_query->exec(str);
-       if(m_query->next())
-          {
-              qDebug()<<"The data search";
-              return m_query->value(0).toString();
-          }
-          else
-           qDebug()<<"The data doesn't search";
-
-       return "";
+     m_query->exec(str);
+     if(m_query->next())
+     {
+          qDebug()<<"The data search";
+          return m_query->value(0).toString();
+     }
+     else
+          qDebug()<<"The data doesn't search";
+     return "";
  }
 
  bool DB::DBServerPresenter::searchStatus(const int& id)
@@ -146,36 +135,32 @@ DB::DBServerPresenter::~DBServerPresenter(){}
      QString params = "status";
      QString values = "id=" + QString::number(id);
      QString str = Request::searchData(m_tabUsers, params, values);
-
-       m_query->exec(str);
-       if(m_query->next())
-          {
-              qDebug() << "The data search";
-              res = m_query->value(0).toInt();
-              return res;
-          }
-          else
-           qDebug()<<"The data doesn't search";
-
-      throw std::exception("The user doesn't exist");
+     m_query->exec(str);
+     if(m_query->next())
+     {
+         qDebug() << "The data search";
+         res = m_query->value(0).toInt();
+         return res;
+     }
+     else
+         qDebug()<<"The data doesn't search";
+     throw std::exception("The user doesn't exist");
  }
 
 
-QVector<User *> DB::DBServerPresenter::getListOfUser()
+QVector<Data::User*> DB::DBServerPresenter::getListOfUser()
 {
-    User* us = nullptr;
-    QVector<User*> vec;
+    Data::User* us = nullptr;
+    QVector<Data::User*> vec;
     QString params = '*';
     QString str = Request::searchAllData(m_tabUsers, params);
-
-      m_query->exec(str);
-
-      while(m_query->next())
-      {
-          us = new User(m_query->value(0).toInt(), m_query->value(1).toString(), m_query->value(3).toInt());
-          vec.push_back(us);
-      }
-      return vec;
+    m_query->exec(str);
+    while(m_query->next())
+    {
+        us = new Data::User(m_query->value(0).toInt(), m_query->value(1).toString(), m_query->value(3).toInt());
+        vec.push_back(us);
+    }
+    return vec;
 }
 
 bool DB::DBServerPresenter::updateStatus(const int& id, const bool& status)

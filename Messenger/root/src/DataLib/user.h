@@ -1,5 +1,6 @@
 #pragma once
 
+namespace Data {
 class User
 {
 private:
@@ -31,4 +32,4 @@ public:
     bool getStatus() const;
 
 };
-
+}

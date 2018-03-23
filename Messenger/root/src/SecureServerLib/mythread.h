@@ -9,12 +9,9 @@
 #include <QMutex>
 #include <QPointer>
 
-
-#include "user.h"
+#include "DataLib/user.h"
 #include "dbpresenter.h"
 #include "dbserverpresenter.h"
-
-
 
 namespace Server {
 class MyThread : public QThread
@@ -25,11 +22,13 @@ public:
     // нужен ли деструктор ?
     void run();
     bool sendToClient(QSslSocket* m_sslClient, const QString& str);
+    void notificateClients();
     void registration(QString& str);
     void authorization(QString& str);
     void sendList();
     void message(QString& str);
     void receiveFile(const QString& fileName);
+    QByteArray encryptedPassword(const QString& pass);
 
 public slots:
     void slotReadyRead();
@@ -47,8 +46,8 @@ private:
     std::shared_ptr<QSslSocket> m_sslClient;
     std::shared_ptr<DB::DBServerPresenter> m_db;
     std::shared_ptr<QHash<int,QSslSocket*>> m_hash;
-    QString m_serverKey;
-    QString m_certServer;
-    QString m_certClient;
+    QByteArray m_serverKey;
+    QByteArray m_certServer;
+    QByteArray m_certClient;
 };
 }

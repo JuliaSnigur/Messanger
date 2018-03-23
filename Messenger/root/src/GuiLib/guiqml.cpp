@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
 #include "guiqml.h"
-#include "data.h"
+#include "DataLib/data.h"
 
 #include "FriendElement.h"
 #include "dialogelement.h"
-
-
-
 
 Gui::GuiQML::GuiQML(QObject* parent)
     : QObject(parent)
@@ -151,21 +148,25 @@ void Gui::GuiQML::connection(const QString& ip, const QString& port)
 
 void Gui::GuiQML::slotRespond( QString res)
 {
-    QVector<User*> vec;
+    QVector<Data::User*> vec;
     switch((Data::variable(res)).toInt())
     {
     case Data::Error:
         emit signalError(res);
       break;
+
     case  Data::Connection:
         emit signalSuccessConect();
         break;
+
     case  Data::Registration:
         emit signalSuccessRegistr(m_login);
         break;
+
     case  Data::Authorization:
         emit signalSuccessAuthor(m_login);
         break;
+
     case  Data::GetListOfFriends:
         m_dataClients.clear();
         emit dataClientsChanged();
@@ -182,8 +183,8 @@ void Gui::GuiQML::slotRespond( QString res)
             emit dataClientsChanged();
         }
         break;
-    case  Data::Message:
 
+    case  Data::Message:
         DialogElement* element = new DialogElement();
         // str =  time, messange
         element->setProperty("flag",  Data::Get);
@@ -214,7 +215,6 @@ void Gui::GuiQML::slotShowDialog(const QQueue<QString>& q)
          emit dataDialogChanged();
      }
 }
-
 
 void Gui::GuiQML::sendFile(const QString& filePath)
 {
