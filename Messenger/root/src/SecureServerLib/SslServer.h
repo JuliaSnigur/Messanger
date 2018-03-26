@@ -21,6 +21,7 @@ class SslServer : public QTcpServer
 public:
     SslServer(QObject *parent = 0);
     void start(const int& port);
+    virtual ~SslServer();   
 
 public slots:
      void slotSslError(const QAbstractSocket::SocketError& errors);
@@ -32,6 +33,7 @@ private:
      std::shared_ptr<QHash<int, QSslSocket*>> m_hash;
      std::shared_ptr<DB::DBServerPresenter> m_db;
      QPointer<MyThread> thread;
+
 };
 
 }

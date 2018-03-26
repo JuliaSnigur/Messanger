@@ -1,8 +1,9 @@
 #pragma once
 
-
 #include <QObject>
 #include <QQmlListProperty>
+#include <QQueue>
+
 #include <memory>
 
 #include "FriendElement.h"
@@ -32,6 +33,7 @@ public:
     QString getPort() const;
     QString getIP() const;
 
+    const QString variable(QString& str);
 
     QQmlListProperty<Gui::FriendElement> dataClients();
     QQmlListProperty<Gui::DialogElement> dataDialog();
@@ -69,15 +71,18 @@ signals:
      void signalSendMessage(const QString&  message);
      void signalSendFile(const QString&  file);
 
+
      void signalSuccessConect();
      void signalSuccessRegistr(const QString& login);
      void signalSuccessAuthor(const QString& login);
      void signalError(const QString& error);
+     void signalSuccessSendFile();
 private:
 
     QList<FriendElement*> m_dataClients;
     QList<DialogElement*> m_dataDialog;
 
+    QRegExp reg;
     QString m_login;
     QString m_password;
     QString m_port;

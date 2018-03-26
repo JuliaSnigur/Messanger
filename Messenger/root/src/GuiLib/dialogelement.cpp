@@ -6,7 +6,6 @@ Gui::DialogElement::DialogElement(QObject* parent)
     , m_stateMess("")
     , m_flag()
     , m_time("")
-    , m_idFile(0)
 {}
 
 Gui::DialogElement::DialogElement()
@@ -14,14 +13,7 @@ Gui::DialogElement::DialogElement()
     , m_stateMess("")
     , m_flag()
     , m_time("")
-    , m_idFile(0)
 {}
-
-
-  int Gui::DialogElement::idFile() const
-  {
-      return m_idFile;
-  }
 
 QString Gui::DialogElement::time() const
 {
@@ -50,15 +42,6 @@ void Gui::DialogElement::setMessage(const QString& mess)
     {
         m_message = mess;
         emit messageChanged(m_message);
-    }
-}
-
-void Gui::DialogElement::setIdFile(const int& idFile)
-{
-    if (m_idFile != idFile)
-    {
-        m_idFile = idFile;
-        emit idFileChanged(m_idFile);
     }
 }
 

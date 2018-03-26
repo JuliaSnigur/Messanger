@@ -1,4 +1,5 @@
-#include"stdafx.h"
+#include <QString>
+
 #include "request.h"
 
 
@@ -27,3 +28,7 @@ QString Request::insertData(const QString& name_tb, const QString& params, const
       return "SELECT " + params + " FROM " + nameTable;
  }
 
+ QString Request::updateAllData(const QString& nameTable, const QString& params)
+ {
+     return "UPDATE  " + nameTable + " SET " + params + ";";
+ }

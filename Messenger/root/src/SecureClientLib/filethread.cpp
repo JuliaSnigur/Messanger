@@ -1,39 +1,58 @@
 #include "filethread.h"
 
-#include <QDataStream>
+#include "data.h"
 
-Client::FileThread::FileThread(std::shared_ptr<QSslSocket> client,const QString& fileName,  QObject *parent)
+
+Client::FileThread::FileThread(QObject *parent)
             : QThread(parent)
-            , m_fileName(fileName)
-            , m_file()
-            , m_client(client)
+            , m_file(new QFile())
 {
 }
 
 Client::FileThread::~FileThread(){}
 
+void Client::FileThread::setInfo(std::shared_ptr<QSslSocket> client, const QString& fileName)
+{
+    m_file->close();
+    m_client = client;
+    m_file->setFileName(fileName);
+    if(!m_file->open(QIODevice::ReadOnly))
+    {
+        emit signalError(QString::number(Data::Info) + ' ' + "Error with reading file");
+        throw std::exception( "Error with reading file");
+    }
+    qDebug() << "File's opening";
+}
+
+
 
  void Client::FileThread::run()
  {
-
-       m_file.setFileName(m_fileName);
-        if(!m_file.open(QIODevice::ReadOnly))
-        {
-            qDebug()<<"Error reading file for sending";
-            return;
-        }
-
-     QByteArray data;
-
-     while(1)
-         {
-             data.clear();
-             data = m_file.read(32768*8);
-             qDebug() << "Read : " << m_file.size();
-             if(data.size()==0)
-                 break;
-             qDebug() << "Written : " << m_client->write(data);
-             m_client->waitForBytesWritten();
-             data.clear();
-         }
+     exec();
  }
+
+  void Client::FileThread::sendFileBlock()
+  {
+      static qlonglong size = 0;
+      QByteArray block;
+      if(!m_file->atEnd())
+      {
+          block = m_file->read(4096);
+          size += block.size();
+          qDebug()<<"Read: " << size << ' ' << block.size();
+          if(m_client)
+          {
+              m_client->write(block, block.size());
+          }
+          else
+          {
+              emit signalError(QString::number(Data::Info) + ' ' + "Error with sending file");
+          }
+      }
+      else
+      {
+         m_file->close();
+         qDebug() << "Finished";
+
+      }
+  }

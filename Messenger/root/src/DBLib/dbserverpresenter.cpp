@@ -1,9 +1,9 @@
-#include "stdafx.h"
+#include <QDebug>
+#include <QSqlError>
 
 #include "request.h"
 #include "user.h"
 #include "dbpresenter.h"
-
 #include "dbserverpresenter.h"
 
 DB::DBServerPresenter::DBServerPresenter()
@@ -41,7 +41,7 @@ DB::DBServerPresenter::~DBServerPresenter(){}
 
  void DB::DBServerPresenter::createTables()
  {
-     QString params="id INTEGER PRIMARY KEY AUTOINCREMENT,login TEXT UNIQUE,password TEXT, status INTEGER";
+     QString params="id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT UNIQUE, password TEXT, status INTEGER";
      QString str=Request::createTable(m_tabUsers,params);
      if(m_query->exec(str))
      {
@@ -50,7 +50,7 @@ DB::DBServerPresenter::~DBServerPresenter(){}
      }
     else
      {
-         qDebug() << "DataBase: error of create " <<m_tabUsers;
+         qDebug() << "DataBase: error of create " << m_tabUsers;
          qDebug() << m_query->lastError().text();
      }
  }
@@ -75,20 +75,19 @@ DB::DBServerPresenter::~DBServerPresenter(){}
  }
 
 
- Data::User* DB::DBServerPresenter::searchUser(const QString& log)
+ std::shared_ptr<Data::User> DB::DBServerPresenter::searchUser(const QString& log)
  {
-     Data::User* us = nullptr;
+     std::shared_ptr<Data::User> us = nullptr;
      QString params = '*';
      QString values = "login = '" + log + "'";
      QString str = Request::searchData(m_tabUsers,params,values);
      m_query->exec(str);
      if(m_query->next())
      {
-          us=new Data::User(log);
+          us = std::shared_ptr<Data::User>(new Data::User(log));
           us->setID( m_query->value(0).toInt());
           us->setPassword(m_query->value(2).toString());
           us->setStatus(m_query->value(3).toInt());
-
           qDebug() << "The data search";
           return us;
       }
@@ -148,16 +147,16 @@ DB::DBServerPresenter::~DBServerPresenter(){}
  }
 
 
-QVector<Data::User*> DB::DBServerPresenter::getListOfUser()
+QVector<std::shared_ptr<Data::User>> DB::DBServerPresenter::getListOfUser()
 {
-    Data::User* us = nullptr;
-    QVector<Data::User*> vec;
+    std::shared_ptr<Data::User> us = nullptr;
+    QVector<std::shared_ptr<Data::User>> vec;
     QString params = '*';
     QString str = Request::searchAllData(m_tabUsers, params);
     m_query->exec(str);
     while(m_query->next())
     {
-        us = new Data::User(m_query->value(0).toInt(), m_query->value(1).toString(), m_query->value(3).toInt());
+        us = std::shared_ptr<Data::User>(new Data::User(m_query->value(0).toInt(), m_query->value(1).toString(), m_query->value(3).toInt()));
         vec.push_back(us);
     }
     return vec;
@@ -165,20 +164,26 @@ QVector<Data::User*> DB::DBServerPresenter::getListOfUser()
 
 bool DB::DBServerPresenter::updateStatus(const int& id, const bool& status)
 {
-    try
-    {
-        QString params = "status = " + QString::number(status);
-        QString values = "id = " + QString::number(id);
-        QString str = Request::updateData(m_tabUsers, params, values);
-        if( m_query->exec(str))
-        {
-           qDebug()<<"The data update";
-           return true;
-        }
-    }
-    catch(const std::exception& ex)
-    {
-        qDebug() << ex.what();
-    }
-    return false;
+   QString params = "status = " + QString::number(status);
+   QString values = "id = " + QString::number(id);
+   QString str = Request::updateData(m_tabUsers, params, values);
+   if( m_query->exec(str))
+   {
+      qDebug()<<"The data update";
+      return true;
+   }
+   return false;
 }
+
+ bool DB::DBServerPresenter::updateStatusAllClients(const bool& status)
+ {
+
+     QString params = "status = " + QString::number(status);
+     QString str = Request::updateAllData(m_tabUsers, params);
+     if( m_query->exec(str))
+     {
+        qDebug()<<"The data update";
+        return true;
+     }
+     return false;
+ }

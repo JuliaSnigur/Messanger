@@ -1,18 +1,19 @@
 include( ../../common.pri )
 
+
+DESTDIR = $${BIN_PATH}/
+linux-g++: QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN/../../lib.$${OS_SUFFIX}/
+
+
 QT       += core network widgets sql
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-HEADERS += stable.h \
-           stdafx.h
+HEADERS +=
 
 SOURCES += main.cpp
-
-PRECOMPILED_HEADER = stable.h
-CONFIG -= precompile_header
 
 LIBS+=$${PARSEDATALIB_LIBRARY}
 INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}

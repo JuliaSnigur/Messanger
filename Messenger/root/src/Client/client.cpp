@@ -1,4 +1,10 @@
-#include"stdafx.h"
+#include<QTcpSocket>
+#include<QTcpServer>
+
+#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include"guiqml.h"
 #include "ClientConnect.h"

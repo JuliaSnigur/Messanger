@@ -27,9 +27,8 @@ SUBDIRS  = \
     src/GTLib \
     src/GTests\
 
-
 Client.depends = GuiLib SecureClientLib  DataLib
-Server.depends =  SecureServerLib DBLib DataLib
+Server.depends = SecureServerLib DBLib DataLib
 
 SecureClientLib.depends = DBLib DataLib
 SecureServerLib.depends = DBLib DataLib

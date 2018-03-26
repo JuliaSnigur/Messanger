@@ -12,7 +12,8 @@ namespace DB {
     public:
         DBPresenter();
         virtual ~DBPresenter();
-        virtual void createConnection();
+         void createConnection();
+        void createDB(const QString& nameDB);
         void deleteDB();
 
     protected:

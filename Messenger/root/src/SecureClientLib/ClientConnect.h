@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QSslSocket>
 #include <QFile>
-#include <QSslKey>
+#include <QMutex>
 
 #include "DataLib/user.h"
 #include "DBLib/dbpresenter.h"
@@ -19,9 +19,8 @@ namespace Client {
         virtual ~ClientConnection();
 
         void sendFile(const QString& filename);
-        void sendFile();
-        void receiveFile(const QString& fileName);
-        void getFile();
+        const QString variable(QString& str);
+        void sendToServer(const QString& message);
 
     public slots:
        void slotEncrypted();
@@ -35,8 +34,8 @@ namespace Client {
        void slotGetListFriend();
        void slotChoiceFriend(const int &id);
        void slotSendMessage(const QString& message);
-       void slotSendFile(const QString& filename);
-
+       void slotSendFile(const QString& path);
+       void slotError(const QString& error);
 
     signals:
        void signalSendRespond(const QString& res);
@@ -44,20 +43,15 @@ namespace Client {
        void signalGetID(int);
        void signalSendInfo();
        void signalSendDialog(QQueue<QString> q);
+       void signalSendFileBlock();
 
     private:
         std::shared_ptr<QSslSocket> m_client;
         std::shared_ptr<FileThread> m_thread;
-        std::shared_ptr<QFile> m_file;
         DB::DBClientPresenter m_db;
         Data::User m_user;
         int m_idFriend;
         int m_idDialog;
-        QString m_fileName;
-        QByteArray m_clientKey;
         QByteArray m_certServer;
-        QByteArray m_certClient;
-
-        void sendToServer(const QString& message);
     };
 }

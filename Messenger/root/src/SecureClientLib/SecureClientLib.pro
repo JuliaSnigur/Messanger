@@ -1,5 +1,9 @@
 include( ../../common.pri )
 
+DESTDIR = $${LIBS_PATH}/
+win32: DLLDESTDIR = $${BIN_PATH}/
+QMAKE_TARGET_COPYRIGHT = (c) My Company Name
+
 
 QT       -= gui
 QT += network sql
@@ -24,8 +28,6 @@ SOURCES += \
     filethread.cpp
 
 HEADERS += \
-    stable.h \
-    stdafx.h \
     ClientConnect.h \
     filethread.h
 
@@ -40,11 +42,4 @@ INCLUDEPATH+= $${DBLIB_INCLUDEPATH}
 
 LIBS+=$${PARSEDATALIB_LIBRARY}
 INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
-
-
-CONFIG -= precompile_header
-PRECOMPILED_HEADER = stable.h
-
-CONFIG += ordered
-SecureClientLib.depends=DBLib
 

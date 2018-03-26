@@ -27,8 +27,10 @@ public:
     void authorization(QString& str);
     void sendList();
     void message(QString& str);
-    void receiveFile(const QString& fileName);
-    QByteArray encryptedPassword(const QString& pass);
+    void receiveFile(QString& info);
+    const QByteArray encryptedPassword(const QString& pass);
+    const QString concatinationVec(const QVector<std::shared_ptr<Data::User>> vec);
+    const QString variable(QString& str); 
 
 public slots:
     void slotReadyRead();
@@ -38,8 +40,8 @@ signals:
     void error(const QAbstractSocket::SocketError& error);
 
 private:
-    std::shared_ptr<QFile> m_file;
-    qint64 m_sizeReceiveFile;
+    QString m_fileName;
+    qlonglong m_sizeReceiveFile;
     qintptr m_socketDescriptor;
     QMutex m_mutexDB;
     QMutex m_mutexHashTab;
@@ -49,5 +51,6 @@ private:
     QByteArray m_serverKey;
     QByteArray m_certServer;
     QByteArray m_certClient;
+    int m_idClient;
 };
 }

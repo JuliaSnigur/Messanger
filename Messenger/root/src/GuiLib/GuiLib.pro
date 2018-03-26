@@ -1,5 +1,8 @@
 include( ../../common.pri )
 
+DESTDIR = $${LIBS_PATH}/
+win32: DLLDESTDIR = $${BIN_PATH}/
+QMAKE_TARGET_COPYRIGHT = (c) My Company Name
 
 QT+=qml sql
 
@@ -24,7 +27,6 @@ SOURCES += \
     dialogelement.cpp
 
 HEADERS += \
-    stdafx.h \
     guiqml.h \
     FriendElement.h \
     dialogelement.h
@@ -34,16 +36,10 @@ unix {
     INSTALLS += target
 }
 
-LIBS+=$${PARSEDATALIB_LIBRARY}
-INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
+LIBS += $${PARSEDATALIB_LIBRARY}
+INCLUDEPATH += $${PARSEDATALIB_INCLUDEPATH}
 
-GuiLib.depends =  ParseDataLib
-########################################
-
-CONFIG -= precompile_header
-PRECOMPILED_HEADER = stable.h
-
-########################################
+GuiLib.depends = ParseDataLib
 
 DISTFILES += \
     functions.js \
