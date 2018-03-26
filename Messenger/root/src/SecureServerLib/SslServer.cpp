@@ -1,5 +1,4 @@
-#include "stdafx.h"
-
+#include <QTextCodec>
 #include "SslServer.h"
 #include "mythread.h"
 
@@ -9,18 +8,21 @@
     , m_hash(new QHash<int,QSslSocket*>())
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-}
+    m_db->updateStatusAllClients(false);
+ }
+
+
+Server::SslServer::~SslServer()
+{}
 
 void  Server::SslServer::start(const int& port)
 {
-    //start listening
     if (listen(QHostAddress::Any, port))
     {
         qDebug() << "Now listening on:" << port;
     }
     else
         qDebug() << "ERROR: could not bind to:" << port;
-
 }
 
 
@@ -34,6 +36,6 @@ void  Server::SslServer::incomingConnection(qintptr socketDescriptor)
 
 void  Server::SslServer::slotSslError(const QAbstractSocket::SocketError& errors)
 {
-      qDebug()<<errors;
+    qDebug()<<errors;
 }
 

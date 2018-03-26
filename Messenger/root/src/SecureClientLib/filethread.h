@@ -6,24 +6,23 @@
 
 
 namespace Client {
-
-
-
     class FileThread: public QThread
     {
+         Q_OBJECT
     public:
-        FileThread( std::shared_ptr<QSslSocket> client, const QString& fileName, QObject *parent = 0);
+        FileThread(QObject *parent = 0);
         virtual ~FileThread();
-
         void run();
+        void setInfo(std::shared_ptr<QSslSocket> client, const QString& fileName);
 
+    signals:
+        void signalError(const QString& error );
+
+    public slots:
+        void sendFileBlock();
 
     private:
-        QFile m_file;
-        QString m_fileName;
+        std::shared_ptr<QFile> m_file;
         std::shared_ptr<QSslSocket> m_client;
-
-
     };
-
 }

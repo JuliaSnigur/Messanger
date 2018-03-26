@@ -3,35 +3,26 @@
 #include <QObject>
 #include <QSslSocket>
 #include <QFile>
-#include <QSslKey>
+#include <QMutex>
 
-
-
-#include "user.h"
-#include "dbpresenter.h"
-#include "dbclientpresenter.h"
+#include "DataLib/user.h"
+#include "DBLib/dbpresenter.h"
+#include "DBLib/dbclientpresenter.h"
 #include "filethread.h"
-
 
 namespace Client {
     class ClientConnection : public QObject
     {
         Q_OBJECT
-
-    void sendToServer(const QString& message);
-
     public:
         ClientConnection(QObject *parent = 0);
         virtual ~ClientConnection();
 
         void sendFile(const QString& filename);
-        void sendFile();
-        void receiveFile(const QString& fileName);
-        void getFile();
-
+        const QString variable(QString& str);
+        void sendToServer(const QString& message);
 
     public slots:
-
        void slotEncrypted();
        void slotReadyRead();
        void sslError( QList<QSslError> errors );
@@ -43,36 +34,24 @@ namespace Client {
        void slotGetListFriend();
        void slotChoiceFriend(const int &id);
        void slotSendMessage(const QString& message);
-       void slotSendFile(const QString& filename);
-
+       void slotSendFile(const QString& path);
+       void slotError(const QString& error);
 
     signals:
-
-
        void signalSendRespond(const QString& res);
        void signalSendListClients(const QString& res);
-
        void signalGetID(int);
        void signalSendInfo();
        void signalSendDialog(QQueue<QString> q);
+       void signalSendFileBlock();
 
     private:
         std::shared_ptr<QSslSocket> m_client;
         std::shared_ptr<FileThread> m_thread;
         DB::DBClientPresenter m_db;
-
-        User m_user;
+        Data::User m_user;
         int m_idFriend;
         int m_idDialog;
-
-        QString m_fileName;
-
-        QSslCertificate m_certSever;
-        QSslCertificate m_certClient;
-        QSslKey m_key;
-        std::shared_ptr<QFile> m_file;
-
+        QByteArray m_certServer;
     };
-
-
 }

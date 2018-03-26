@@ -18,21 +18,20 @@ CONFIG += ordered
 
 SUBDIRS  = \
     src/DBLib \
-    src/ParseDataLib \
+    src/DataLib \
     src/GuiLib \
     src/SecureClientLib \
     src/SecureServerLib \
     src/Client \
     src/Server \
     src/GTLib \
-    src/GTests
+    src/GTests\
 
+Client.depends = GuiLib SecureClientLib  DataLib
+Server.depends = SecureServerLib DBLib DataLib
 
-Client.depends =  SecureClientLib GuiLib ParseDataLib
-Server.depends =  SecureServerLib DBLib ParseDataLib
-
-SecureClientLib.depends = DBLib ParseDataLib
-SecureServerLib.depends = DBLib ParseDataLib
+SecureClientLib.depends = DBLib DataLib
+SecureServerLib.depends = DBLib DataLib
 
 
 

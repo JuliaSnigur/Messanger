@@ -15,14 +15,10 @@ Item {
     signal signalSignIn(string login,string password)   // Задаём сигнал
     signal signalBack()
 
-    Rectangle{
+    Rectangle
+    {
         id: column
-        width: 300
-        height: 184
-        anchors.top: parent.top
-        anchors.topMargin: 10
-
-
+        anchors.fill: parent
         Text
         {
             id:title
@@ -31,7 +27,6 @@ Item {
             text:"Registration"
             font.pixelSize: 24
         }
-
         MyRow
         {
             id: login
@@ -42,8 +37,6 @@ Item {
             mytext:"Login:"
             focus:true
         }
-
-
         MyRow
         {
             id: password
@@ -52,9 +45,7 @@ Item {
             anchors.top: login.bottom
             anchors.topMargin: 20
             mytext:"Password:"
-
         }
-
         Item
         {
             id:row3
@@ -63,11 +54,8 @@ Item {
             anchors.rightMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 20
-
-
             anchors.top: password.bottom
             anchors.topMargin: 20
-
             Button
             {
                 id: butBack
@@ -76,18 +64,15 @@ Item {
                 font.pointSize: 12
                 anchors.top: parent.top
                 anchors.topMargin: 0
-
                 height: 30
-
                 clip: true
                 visible: true
-
                 onClicked:
                 {
-                     wRegistration.signalBack
+                     wRegistration.signalBack()
+
                 }
             }
-
             Button
             {
                 id: butSignIn
@@ -96,20 +81,15 @@ Item {
                 font.pointSize: 12
                 anchors.top: parent.top
                 anchors.topMargin: 0
-
                 width: 100
                 height: 30
-
                 clip: true
                 visible: true
-
                 onClicked:
                 {
                      wRegistration.signalSignIn(login.editText,password.editText)
                 }
-
             }
         }
     }
-
 }

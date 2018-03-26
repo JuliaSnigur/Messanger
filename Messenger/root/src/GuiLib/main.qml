@@ -9,102 +9,92 @@ Window {
     visible:true
     title: qsTr("Messenger")
 
-    property string errorText
-
-    Connections{
-
+    Connections
+    {
         target: gui
-
         onSignalSuccessConect:
         {
-
             wConnect.visible = false
             wAuth.visible = true
         }
-
         onSignalSuccessRegistr:
         {
-             wMain.myLogin=login
+             wMain.myLogin = login
              window.hide()
              wMain.show()
-
         }
-
         onSignalSuccessAuthor:
         {
             wMain.show()
             window.hide()
             wMain.myLogin=login
         }
-
         onSignalError:
         {
             messageDialog.visible=true
             messageDialog.text=error
         }
-
     }
 
-    Connection{
-
+    Connection
+    {
         id:wConnect
-      //  visible: true
-
-        onSignalExit:{
-
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        onSignalExit:
+        {
            gui.connection(ip,port)
-
         }
-     }
+    }
 
-    Authorization{
-
+    Authorization
+    {
         id:wAuth
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
         visible: false
-
-        onSignalRegistration: {
-
-                wAuth.visible = false
-                wRegistr.visible = true
+        onSignalRegistration:
+        {
+            wAuth.visible = false
+            wRegistr.visible = true
         }
-
-        onSignalSignIn: {
-
+        onSignalSignIn:
+        {
             gui.authirization(login,password)
         }
     }
 
-
-    Registration{
-
+    Registration
+    {
         id:wRegistr
-        visible:false
-
-        onSignalSignIn: {
-
-           gui.registration(login,password)
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        visible:false     
+        onSignalSignIn:
+        {
+           gui.registration(login, password)
+        }
+        onSignalBack:
+        {
+            wAuth.visible = true
+            wRegistr.visible = false
         }
     }
 
-
-    MainWindow {
+    MainWindow
+    {
         id: wMain
         visible:false
-
     }
 
-
-
-
-    MessageDialog {
+    MessageDialog
+    {
         id: messageDialog
-        title: "Error"
+        title: "Information"
         visible: false
-
-        onAccepted: {
+        onAccepted:
+        {
             messageDialog.visible = false
         }
     }
-
-
 }

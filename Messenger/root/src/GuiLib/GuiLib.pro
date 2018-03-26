@@ -1,5 +1,8 @@
 include( ../../common.pri )
 
+DESTDIR = $${LIBS_PATH}/
+win32: DLLDESTDIR = $${BIN_PATH}/
+QMAKE_TARGET_COPYRIGHT = (c) My Company Name
 
 QT+=qml sql
 
@@ -23,30 +26,20 @@ SOURCES += \
     FriendElement.cpp \
     dialogelement.cpp
 
-
 HEADERS += \
-    stdafx.h \
     guiqml.h \
     FriendElement.h \
     dialogelement.h
-   # listmodel.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
+LIBS += $${PARSEDATALIB_LIBRARY}
+INCLUDEPATH += $${PARSEDATALIB_INCLUDEPATH}
 
-LIBS+=$${PARSEDATALIB_LIBRARY}
-INCLUDEPATH+=$${PARSEDATALIB_INCLUDEPATH}
-
-
-########################################
-
-CONFIG -= precompile_header
-PRECOMPILED_HEADER = stable.h
-
-########################################
+GuiLib.depends = ParseDataLib
 
 DISTFILES += \
     functions.js \
@@ -57,6 +50,3 @@ DISTFILES += \
     MyRow.qml \
     Connection.qml
 
-CONFIG += ordered
-
-GuiLib.depends =  ParseDataLib

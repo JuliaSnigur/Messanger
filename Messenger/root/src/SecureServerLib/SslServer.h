@@ -9,25 +9,19 @@
 #include<QSslSocket>
 #include<QPointer>
 
-#include "user.h"
+#include "DataLib/user.h"
 #include "dbpresenter.h"
 #include "dbserverpresenter.h"
-
 #include "mythread.h"
 
-
 namespace Server {
-
-
-
 class SslServer : public QTcpServer
 {
     Q_OBJECT
-
 public:
     SslServer(QObject *parent = 0);
-
     void start(const int& port);
+    virtual ~SslServer();   
 
 public slots:
      void slotSslError(const QAbstractSocket::SocketError& errors);
@@ -38,8 +32,8 @@ protected:
 private:
      std::shared_ptr<QHash<int, QSslSocket*>> m_hash;
      std::shared_ptr<DB::DBServerPresenter> m_db;
-
      QPointer<MyThread> thread;
+
 };
 
 }
