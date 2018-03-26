@@ -16,6 +16,4 @@ MakeFile.Release
 *.nQoMel
 .qmake.stash
 *.db
-1/
-ClientLib/
-ServerLib/
+GTLib/
